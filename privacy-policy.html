@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>プライバシーポリシー | miraisil</title>
+  <style>
+    :root {
+      --ink:    #1a1a2e;
+      --mid:    #4a4a6a;
+      --pale:   #8888aa;
+      --bg:     #f9f8fc;
+      --surface:#ffffff;
+      --accent: #7c6af7;
+      --rule:   #e4e2f0;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.85;
+      font-size: 15px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--rule);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+    .logo-tagline {
+      font-size: 11px;
+      color: var(--pale);
+      margin-left: 4px;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Main layout ── */
+    main {
+      max-width: 760px;
+      margin: 56px auto 80px;
+      padding: 0 24px;
+    }
+
+    /* ── Page title ── */
+    .page-header {
+      margin-bottom: 48px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .page-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 10px;
+    }
+    .page-header .meta {
+      font-size: 13px;
+      color: var(--pale);
+    }
+
+    /* ── Sections ── */
+    section {
+      margin-bottom: 44px;
+    }
+    h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h2::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 14px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    p {
+      color: var(--mid);
+      margin-bottom: 12px;
+    }
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 12px;
+    }
+    ul li {
+      color: var(--mid);
+      padding: 5px 0 5px 18px;
+      position: relative;
+    }
+    ul li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* ── Contact box ── */
+    .contact-box {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--accent);
+      border-radius: 6px;
+      padding: 20px 24px;
+      margin-top: 8px;
+    }
+    .contact-box p {
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+    .contact-box a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .contact-box a:hover { text-decoration: underline; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 12px;
+      color: var(--pale);
+      border-top: 1px solid var(--rule);
+    }
+    footer a { color: var(--pale); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/">mirai<span>sil</span></a>
+  <span class="logo-tagline">天体と、毎日を。</span>
+</header>
+
+<main>
+  <div class="page-header">
+    <h1>プライバシーポリシー</h1>
+    <p class="meta">制定日：2026年6月12日　／　最終更新：2026年6月12日</p>
+  </div>
+
+  <section>
+    <h2>はじめに</h2>
+    <p>miraisil（以下「当サービス」）は、株式会社DOPAが運営するInstagramアカウント「今日の運勢 by miraisil」を通じて提供する星座別デイリー占いサービスです。本プライバシーポリシーは、当サービスがどのような情報を取り扱うかをご説明するものです。</p>
+  </section>
+
+  <section>
+    <h2>収集する情報</h2>
+    <p>当サービスは以下の情報を取得することがあります。</p>
+    <ul>
+      <li>Instagramアカウントに関する公開プロフィール情報（Instagram Graph APIを通じて取得）</li>
+      <li>Instagram上でのコンテンツ投稿に必要なアクセストークン</li>
+      <li>お問い合わせフォーム等からご連絡いただいた場合の氏名・メールアドレス等</li>
+    </ul>
+    <p>当サービスは、フォロワーの個人情報を収集・保存・販売することはありません。</p>
+  </section>
+
+  <section>
+    <h2>情報の利用目的</h2>
+    <p>取得した情報は以下の目的のみに使用します。</p>
+    <ul>
+      <li>Instagram Storiesへのコンテンツ自動投稿（運勢画像の配信）</li>
+      <li>サービスの運用・改善</li>
+      <li>お問い合わせへの対応</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Meta（Facebook）プラットフォームの利用</h2>
+    <p>当サービスはMeta社のInstagram Graph APIを利用してコンテンツを配信しています。APIを通じて取得する情報はInstagramへの投稿管理目的のみに限定して使用し、第三者への提供・販売は行いません。</p>
+    <p>Metaのデータポリシーについては、<a href="https://www.facebook.com/policy.php" target="_blank" rel="noopener">Meta Privacy Policy</a>をご参照ください。</p>
+  </section>
+
+  <section>
+    <h2>情報の第三者提供</h2>
+    <p>当サービスは、以下の場合を除き、取得した個人情報を第三者に提供しません。</p>
+    <ul>
+      <li>ご本人の同意がある場合</li>
+      <li>法令に基づき開示が必要な場合</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>情報の管理・セキュリティ</h2>
+    <p>当サービスは、取得した情報の漏洩・紛失・改ざんを防ぐため、適切なセキュリティ対策を講じます。アクセストークン等の認証情報は暗号化して管理し、不要になった時点で速やかに削除します。</p>
+  </section>
+
+  <section>
+    <h2>Cookieおよびアクセス解析</h2>
+    <p>当ウェブサイトでは、アクセス状況を把握するためGoogle Analyticsなどの解析ツールを将来的に導入する場合があります。その際は本ポリシーを更新してお知らせします。現時点では、個人を特定するCookieの収集は行っておりません。</p>
+  </section>
+
+  <section>
+    <h2>お子様のプライバシー</h2>
+    <p>当サービスは13歳未満の方を対象としたサービスではありません。13歳未満の方の個人情報を意図的に収集することはありません。</p>
+  </section>
+
+  <section>
+    <h2>プライバシーポリシーの変更</h2>
+    <p>当サービスは、必要に応じて本ポリシーを変更することがあります。変更後のポリシーは本ページに掲載した時点で効力を生じるものとします。</p>
+  </section>
+
+  <section>
+    <h2>お問い合わせ</h2>
+    <p>本ポリシーに関するご質問・ご意見は、以下よりお問い合わせください。</p>
+    <div class="contact-box">
+      <p><strong>運営者</strong>：株式会社DOPA</p>
+      <p><strong>サービス名</strong>：miraisil（今日の運勢）</p>
+      <p><strong>メール</strong>：<a href="mailto:info@miraisil.jp">info@miraisil.jp</a></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>&copy; 2026 <a href="/">miraisil</a> / 株式会社DOPA　―　<a href="/privacy-policy.html">プライバシーポリシー</a></p>
+</footer>
+
+</body>
+</html>
