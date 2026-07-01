@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>昨日の運勢フィードバック | miraisil</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    :root {
+      --ink:    #1a1a2e;
+      --mid:    #4a4a6a;
+      --pale:   #8888aa;
+      --bg:     #f9f8fc;
+      --surface:#ffffff;
+      --accent: #7c6af7;
+      --rule:   #e4e2f0;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--rule);
+      padding: 16px 24px;
+    }
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+
+    main {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--pale);
+      font-size: 14px;
+    }
+
+    /* Header */
+    .card-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .date-label {
+      font-size: 12px;
+      color: var(--pale);
+      margin-bottom: 8px;
+    }
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--pale);
+    }
+
+    /* Legend */
+    .legend {
+      background: #F5F5F5;
+      border-radius: 8px;
+      padding: 8px 12px;
+      text-align: center;
+      font-size: 12px;
+      color: #999999;
+      margin-bottom: 8px;
+    }
+
+    /* Category rows */
+    .categories {
+      border-top: 1px solid var(--rule);
+      margin-bottom: 24px;
+    }
+    .category-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .category-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .category-name {
+      font-size: 14px;
+      color: #444444;
+    }
+    .category-score {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* Segment control */
+    .segment {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .seg-btn {
+      width: 42px;
+      height: 38px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #EEEEEE;
+      color: #AAAAAA;
+      transition: background 0.12s, color 0.12s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .seg-btn.sel-up   { background: #EBF3FC; color: #1B5FA6; }
+    .seg-btn.sel-same { background: #EDF7EE; color: #2D6A30; }
+    .seg-btn.sel-down { background: #FCEEED; color: #9C3B2E; }
+
+    /* Submit */
+    .submit-wrap {
+      margin-top: 4px;
+    }
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      background: var(--accent);
+      color: #ffffff;
+      transition: opacity 0.2s;
+      touch-action: manipulation;
+    }
+    .btn-submit:disabled {
+      background: #CCCCCC;
+      cursor: not-allowed;
+    }
+    .btn-submit:not(:disabled):active {
+      opacity: 0.85;
+    }
+    .progress-label {
+      text-align: center;
+      font-size: 12px;
+      color: var(--pale);
+      margin-top: 8px;
+    }
+
+    /* Result */
+    .result-msg {
+      text-align: center;
+      padding: 60px 24px 40px;
+      display: none;
+    }
+    .result-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    .result-text {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .result-sub {
+      font-size: 13px;
+      color: var(--pale);
+    }
+
+    /* Error */
+    .error-msg {
+      background: #fff3f3;
+      border: 1px solid #f8c8c8;
+      border-radius: 8px;
+      padding: 14px 16px;
+      color: #c44444;
+      font-size: 13px;
+      margin-top: 16px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/">mirai<span>sil</span></a>
+</header>
+
+<main>
+  <div id="loading" class="loading">読み込み中...</div>
+
+  <div id="feedback-form" style="display:none;">
+    <div class="card-header">
+      <p class="date-label" id="date-label"></p>
+      <h1 class="card-title">昨日の運勢を教えてください</h1>
+      <p class="card-subtitle">予測と実際を比べて教えてください</p>
+    </div>
+
+    <div class="legend">↑ 高かった　→ 同じくらい　↓ 低かった</div>
+
+    <div class="categories" id="categories"></div>
+
+    <div class="submit-wrap">
+      <button class="btn-submit" id="btn-submit" disabled>送信する</button>
+      <p class="progress-label" id="progress-label">0 / 7 回答済み</p>
+    </div>
+
+    <div class="error-msg" id="error-msg"></div>
+  </div>
+
+  <div id="result-msg" class="result-msg">
+    <div class="result-icon">✅</div>
+    <div class="result-text">回答を送信しました</div>
+    <div class="result-sub">ウィンドウを閉じます...</div>
+  </div>
+</main>
+
+<script>
+const LIFF_ID = "2010567986-HzBIKMfR";
+const WEBHOOK_URL = "https://miraisil-webhook.onrender.com/liff-feedback";
+
+const CATEGORIES = [
+  { key: "overall",       emoji: "✨", name: "総合運" },
+  { key: "money",         emoji: "💰", name: "金運" },
+  { key: "love",          emoji: "💗", name: "恋愛運" },
+  { key: "work",          emoji: "💼", name: "仕事運" },
+  { key: "interpersonal", emoji: "🤝", name: "対人運" },
+  { key: "health",        emoji: "🌿", name: "健康運" },
+  { key: "study",         emoji: "📚", name: "勉強運" },
+];
+
+const ZODIAC_JA = {
+  aries: "牡羊座", taurus: "牡牛座", gemini: "双子座", cancer: "蟹座",
+  leo: "獅子座", virgo: "乙女座", libra: "天秤座", scorpio: "蠍座",
+  sagittarius: "射手座", capricorn: "山羊座", aquarius: "水瓶座", pisces: "魚座",
+};
+
+const answers = {};
+let userId = null;
+let feedbackDate = null;
+
+function getParams() {
+  let urlParams = new URLSearchParams(window.location.search);
+  const liffState = urlParams.get("liff.state");
+  if (liffState) {
+    const decoded = decodeURIComponent(liffState);
+    const stateStr = decoded.startsWith("?") ? decoded.slice(1) : decoded;
+    return new URLSearchParams(stateStr);
+  }
+  return urlParams;
+}
+
+function formatDate(dateStr) {
+  const parts = dateStr.split("-");
+  return `${parts[0]}年${parseInt(parts[1])}月${parseInt(parts[2])}日`;
+}
+
+function buildCategoryRows(scores) {
+  const container = document.getElementById("categories");
+  CATEGORIES.forEach(function(cat, i) {
+    const score = scores[i] !== undefined ? scores[i] : "?";
+    const row = document.createElement("div");
+    row.className = "category-row";
+    row.innerHTML =
+      '<div class="category-info">' +
+        '<div class="category-name">' + cat.emoji + " " + cat.name + "</div>" +
+        '<div class="category-score">' + score + "点</div>" +
+      "</div>" +
+      '<div class="segment">' +
+        '<button class="seg-btn" id="btn-' + cat.key + '-up"   onclick="selectAnswer(\'' + cat.key + '\',\'up\'  )">↑</button>' +
+        '<button class="seg-btn" id="btn-' + cat.key + '-same" onclick="selectAnswer(\'' + cat.key + '\',\'same\')">→</button>' +
+        '<button class="seg-btn" id="btn-' + cat.key + '-down" onclick="selectAnswer(\'' + cat.key + '\',\'down\')">↓</button>' +
+      "</div>";
+    container.appendChild(row);
+  });
+}
+
+function selectAnswer(key, value) {
+  ["up", "same", "down"].forEach(function(v) {
+    const btn = document.getElementById("btn-" + key + "-" + v);
+    if (btn) btn.classList.remove("sel-up", "sel-same", "sel-down");
+  });
+  const target = document.getElementById("btn-" + key + "-" + value);
+  if (target) target.classList.add("sel-" + value);
+  answers[key] = value;
+  updateProgress();
+}
+
+function updateProgress() {
+  const count = Object.keys(answers).length;
+  document.getElementById("progress-label").textContent = count + " / 7 回答済み";
+  document.getElementById("btn-submit").disabled = count < 7;
+}
+
+document.getElementById("btn-submit").addEventListener("click", function() {
+  submitFeedback();
+});
+
+async function submitFeedback() {
+  const submitBtn = document.getElementById("btn-submit");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "送信中...";
+
+  const payload = {
+    line_user_id: userId,
+    date: feedbackDate,
+    feedbacks: Object.assign({}, answers),
+  };
+
+  try {
+    const res = await fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error("HTTP " + res.status + ": " + body);
+    }
+    document.getElementById("feedback-form").style.display = "none";
+    document.getElementById("result-msg").style.display = "block";
+    setTimeout(function() {
+      if (liff.isInClient()) {
+        liff.closeWindow();
+      }
+    }, 2000);
+  } catch (err) {
+    const errEl = document.getElementById("error-msg");
+    errEl.textContent = "送信に失敗しました。再度お試しください。(" + err.message + ")";
+    errEl.style.display = "block";
+    submitBtn.disabled = false;
+    submitBtn.textContent = "送信する";
+  }
+}
+
+liff.init({ liffId: LIFF_ID })
+  .then(function() {
+    return liff.getProfile();
+  })
+  .then(function(profile) {
+    userId = profile.userId;
+
+    const params = getParams();
+    feedbackDate = params.get("date") || "";
+    const sun = params.get("sun") || "";
+    const scoresStr = params.get("scores") || "";
+    const scores = scoresStr ? scoresStr.split(",").map(Number) : [];
+
+    if (feedbackDate) {
+      const sunJa = ZODIAC_JA[sun] || "";
+      const dateText = formatDate(feedbackDate);
+      document.getElementById("date-label").textContent =
+        sunJa ? dateText + "　" + sunJa : dateText;
+    }
+
+    buildCategoryRows(scores);
+
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("feedback-form").style.display = "block";
+  })
+  .catch(function(err) {
+    document.getElementById("loading").textContent =
+      "初期化に失敗しました。LINEアプリから開き直してください。(" + err.message + ")";
+  });
+</script>
+</body>
+</html>
