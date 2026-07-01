@@ -214,10 +214,10 @@
     <div class="card-header">
       <p class="date-label" id="date-label"></p>
       <h1 class="card-title">昨日の運勢を教えてください</h1>
-      <p class="card-subtitle">予測と実際を比べて教えてください</p>
+      <p class="card-subtitle">予測と実際を比べてどうでしたか？</p>
     </div>
 
-    <div class="legend">↑ 高かった　→ 同じくらい　↓ 低かった</div>
+    <div class="legend">↓ 低かった　→ 同じくらい　↑ 高かった</div>
 
     <div class="categories" id="categories"></div>
 
@@ -288,9 +288,9 @@ function buildCategoryRows(scores) {
         '<div class="category-score">' + score + "点</div>" +
       "</div>" +
       '<div class="segment">' +
-        '<button class="seg-btn" id="btn-' + cat.key + '-up"   onclick="selectAnswer(\'' + cat.key + '\',\'up\'  )">↑</button>' +
-        '<button class="seg-btn" id="btn-' + cat.key + '-same" onclick="selectAnswer(\'' + cat.key + '\',\'same\')">→</button>' +
         '<button class="seg-btn" id="btn-' + cat.key + '-down" onclick="selectAnswer(\'' + cat.key + '\',\'down\')">↓</button>' +
+        '<button class="seg-btn" id="btn-' + cat.key + '-same" onclick="selectAnswer(\'' + cat.key + '\',\'same\')">→</button>' +
+        '<button class="seg-btn" id="btn-' + cat.key + '-up"   onclick="selectAnswer(\'' + cat.key + '\',\'up\'  )">↑</button>' +
       "</div>";
     container.appendChild(row);
   });
@@ -364,14 +364,18 @@ liff.init({ liffId: LIFF_ID })
     const params = getParams();
     feedbackDate = params.get("date") || "";
     const sun = params.get("sun") || "";
+    const moon = params.get("moon") || "";
     const scoresStr = params.get("scores") || "";
     const scores = scoresStr ? scoresStr.split(",").map(Number) : [];
 
     if (feedbackDate) {
       const sunJa = ZODIAC_JA[sun] || "";
+      const moonJa = ZODIAC_JA[moon] || "";
       const dateText = formatDate(feedbackDate);
-      document.getElementById("date-label").textContent =
-        sunJa ? dateText + "　" + sunJa : dateText;
+      let headerText = dateText;
+      if (sunJa && moonJa) headerText += "　" + sunJa + " × " + moonJa;
+      else if (sunJa) headerText += "　" + sunJa;
+      document.getElementById("date-label").textContent = headerText;
     }
 
     buildCategoryRows(scores);
