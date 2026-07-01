@@ -7,13 +7,14 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
-      --ink:    #1a1a2e;
-      --mid:    #4a4a6a;
-      --pale:   #8888aa;
-      --bg:     #f9f8fc;
-      --surface:#ffffff;
-      --accent: #7c6af7;
-      --rule:   #e4e2f0;
+      --ink:    #1A1A1A;
+      --mid:    #555555;
+      --pale:   #999999;
+      --bg:     #F7F6F4;
+      --surface:#FFFFFF;
+      --accent: #2D2D2D;
+      --rule:   #EEEEEE;
+      --muted:  #F0EFED;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -34,10 +35,10 @@
       font-size: 18px;
       font-weight: 700;
       letter-spacing: 0.04em;
-      color: var(--ink);
+      color: #2D2D2D;
       text-decoration: none;
     }
-    .logo span { color: var(--accent); }
+    .logo span { color: #2D2D2D; }
 
     main {
       max-width: 480px;
@@ -59,28 +60,28 @@
     }
     .date-label {
       font-size: 12px;
-      color: var(--pale);
+      color: #999999;
       margin-bottom: 8px;
     }
     .card-title {
       font-size: 20px;
       font-weight: 700;
-      color: var(--ink);
+      color: #1A1A1A;
       margin-bottom: 4px;
     }
     .card-subtitle {
       font-size: 12px;
-      color: var(--pale);
+      color: #888888;
     }
 
     /* Legend */
     .legend {
-      background: #F5F5F5;
+      background: #F0EFED;
       border-radius: 8px;
       padding: 8px 12px;
       text-align: center;
       font-size: 12px;
-      color: #999999;
+      color: #AAAAAA;
       margin-bottom: 8px;
     }
 
@@ -102,12 +103,12 @@
     }
     .category-name {
       font-size: 14px;
-      color: #444444;
+      color: #555555;
     }
     .category-score {
       font-size: 16px;
       font-weight: 700;
-      color: var(--ink);
+      color: #1A1A1A;
     }
 
     /* Segment control */
@@ -119,20 +120,20 @@
     .seg-btn {
       width: 42px;
       height: 38px;
-      border: none;
+      border: 1px solid #E0E0E0;
       border-radius: 6px;
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      background: #EEEEEE;
+      background: #F0EFED;
       color: #AAAAAA;
-      transition: background 0.12s, color 0.12s;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
     }
-    .seg-btn.sel-up   { background: #EBF3FC; color: #1B5FA6; }
-    .seg-btn.sel-same { background: #EDF7EE; color: #2D6A30; }
-    .seg-btn.sel-down { background: #FCEEED; color: #9C3B2E; }
+    .seg-btn.sel-up   { background: #EBF3FC; color: #1B5FA6; border-color: #BDD4EE; }
+    .seg-btn.sel-same { background: #EDF7EE; color: #2D6A30; border-color: #B8DEB9; }
+    .seg-btn.sel-down { background: #FCEEED; color: #9C3B2E; border-color: #F0C4C0; }
 
     /* Submit */
     .submit-wrap {
@@ -148,13 +149,14 @@
       font-weight: 700;
       letter-spacing: 0.04em;
       cursor: pointer;
-      background: var(--accent);
-      color: #ffffff;
+      background: #2D2D2D;
+      color: #FFFFFF;
       transition: opacity 0.2s;
       touch-action: manipulation;
     }
     .btn-submit:disabled {
       background: #CCCCCC;
+      color: #FFFFFF;
       cursor: not-allowed;
     }
     .btn-submit:not(:disabled):active {
@@ -163,7 +165,7 @@
     .progress-label {
       text-align: center;
       font-size: 12px;
-      color: var(--pale);
+      color: #BBBBBB;
       margin-top: 8px;
     }
 
@@ -180,12 +182,12 @@
     .result-text {
       font-size: 20px;
       font-weight: 700;
-      color: var(--ink);
+      color: #1A1A1A;
       margin-bottom: 8px;
     }
     .result-sub {
       font-size: 13px;
-      color: var(--pale);
+      color: #999999;
     }
 
     /* Error */
@@ -214,7 +216,7 @@
     <div class="card-header">
       <p class="date-label" id="date-label"></p>
       <h1 class="card-title">昨日の運勢を教えてください</h1>
-      <p class="card-subtitle">予測と実際を比べてどうでしたか？</p>
+      <p class="card-subtitle">回答を重ねるほど、あなただけの運勢に育っていきます</p>
     </div>
 
     <div class="legend">↓ 低かった　→ 同じくらい　↑ 高かった</div>
