@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ご登録ありがとうございます | miraisil</title>
+  <style>
+    :root {
+      --ink:    #1a1a2e;
+      --mid:    #4a4a6a;
+      --pale:   #8888aa;
+      --bg:     #f9f8fc;
+      --surface:#ffffff;
+      --accent: #7c6af7;
+      --rule:   #e4e2f0;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--rule);
+      padding: 20px 32px;
+    }
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 16px;
+      padding: 56px 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .icon {
+      font-size: 48px;
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    .label {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .message {
+      color: var(--mid);
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    .highlight {
+      background: #f3f0ff;
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      padding: 16px 20px;
+      margin: 28px 0;
+      text-align: left;
+      font-size: 14px;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #06C755;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 15px 36px;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 8px;
+    }
+    .btn:hover { opacity: 0.88; }
+
+    .sub-link {
+      display: block;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--pale);
+      text-decoration: none;
+    }
+    .sub-link:hover { color: var(--accent); }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 12px;
+      color: var(--pale);
+      border-top: 1px solid var(--rule);
+    }
+    footer a { color: var(--pale); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/">mirai<span>sil</span></a>
+</header>
+
+<main>
+  <div class="card">
+    <span class="icon">✨</span>
+    <p class="label">Registration Complete</p>
+    <h1>ご登録<br>ありがとうございます！</h1>
+    <p class="message">お支払いが正常に完了しました。</p>
+
+    <div class="highlight">
+      🌙 明日の朝 <strong>7:00</strong> から、あなた専用の運勢が届きます。<br>
+      太陽星座と月星座を組み合わせた、あなただけのメッセージをお楽しみに。
+    </div>
+
+    <p class="message" style="font-size:14px;">LINEアプリに戻って、配信をお待ちください。</p>
+
+    <a class="btn" href="https://line.me/R/ti/p/@miraisil">
+      LINEアプリへ戻る
+    </a>
+
+    <a class="sub-link" href="/">トップページへ</a>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2026 miraisil / 株式会社DOPA　―　<a href="/privacy-policy.html">プライバシーポリシー</a></p>
+</footer>
+
+</body>
+</html>

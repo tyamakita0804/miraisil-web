@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>決済をキャンセルしました | miraisil</title>
+  <style>
+    :root {
+      --ink:    #1a1a2e;
+      --mid:    #4a4a6a;
+      --pale:   #8888aa;
+      --bg:     #f9f8fc;
+      --surface:#ffffff;
+      --accent: #7c6af7;
+      --rule:   #e4e2f0;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--rule);
+      padding: 20px 32px;
+    }
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 16px;
+      padding: 56px 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .icon {
+      font-size: 48px;
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    .label {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--pale);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .message {
+      color: var(--mid);
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .warm {
+      font-size: 14px;
+      color: var(--pale);
+      margin-bottom: 36px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 15px 36px;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .btn:hover { opacity: 0.88; }
+
+    .btn-outline {
+      display: inline-block;
+      border: 1.5px solid var(--rule);
+      color: var(--mid);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      padding: 13px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 12px;
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 12px;
+      color: var(--pale);
+      border-top: 1px solid var(--rule);
+    }
+    footer a { color: var(--pale); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/">mirai<span>sil</span></a>
+</header>
+
+<main>
+  <div class="card">
+    <span class="icon">🌙</span>
+    <p class="label">Payment Cancelled</p>
+    <h1>決済を<br>キャンセルしました</h1>
+    <p class="message">お支払いはまだ完了していません。<br>カードへの請求は発生していません。</p>
+    <p class="warm">いつでもお気軽にご登録いただけます。<br>天体は毎晩あなたを待っています。</p>
+
+    <div class="btn-group">
+      <a class="btn" href="/plans.html">料金プランを見る</a>
+      <a class="btn-outline" href="/">トップページへ</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2026 miraisil / 株式会社DOPA　―　<a href="/privacy-policy.html">プライバシーポリシー</a></p>
+</footer>
+
+</body>
+</html>
