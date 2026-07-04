@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>決済ページへ移動中... | miraisil</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    :root {
+      --ink:    #1a1a2e;
+      --mid:    #4a4a6a;
+      --pale:   #8888aa;
+      --bg:     #f9f8fc;
+      --surface:#ffffff;
+      --accent: #7c6af7;
+      --rule:   #e4e2f0;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 16px;
+      padding: 48px 36px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--rule);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 24px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--ink);
+    }
+    .sub {
+      font-size: 14px;
+      color: var(--pale);
+      line-height: 1.7;
+    }
+    .error-icon { font-size: 40px; margin-bottom: 16px; }
+    .btn-line {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 13px 28px;
+      background: #06C755;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .btn-line:hover { opacity: 0.88; }
+    .btn-retry {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 24px;
+      background: transparent;
+      color: var(--accent);
+      font-size: 14px;
+      border: 1.5px solid var(--accent);
+      border-radius: 8px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <!-- ローディング表示 -->
+  <div id="state-loading">
+    <div class="spinner"></div>
+    <h2>決済ページへ移動しています...</h2>
+    <p class="sub">しばらくお待ちください</p>
+  </div>
+
+  <!-- エラー表示 -->
+  <div id="state-error" style="display:none;">
+    <p class="error-icon">⚠️</p>
+    <h2>エラーが発生しました</h2>
+    <p class="sub" id="error-detail">LINEとの連携に失敗しました。</p>
+    <a class="btn-line" href="https://line.me/R/ti/p/@768invlu">
+      LINEで登録する
+    </a><br>
+    <a class="btn-retry" onclick="location.reload()">再試行する</a>
+  </div>
+</div>
+
+<script>
+  var LIFF_ID = "LIFF_ID_CHECKOUT";   // ← LINE DevelopersコンソールのLIFF IDに差し替え
+  var CHECKOUT_BASE = "https://miraisil-webhook.onrender.com/checkout/";
+
+  var params = new URLSearchParams(location.search);
+  var plan = params.get("plan");
+
+  function showError(msg) {
+    document.getElementById("state-loading").style.display = "none";
+    if (msg) document.getElementById("error-detail").textContent = msg;
+    document.getElementById("state-error").style.display = "block";
+  }
+
+  if (!plan || (plan !== "light" && plan !== "premium")) {
+    showError("プランが指定されていません。plans.htmlに戻ってやり直してください。");
+  } else {
+    liff.init({ liffId: LIFF_ID })
+      .then(function() {
+        if (!liff.isLoggedIn()) {
+          // 外部ブラウザ等でLINE未ログインの場合、LINEログインへリダイレクト
+          liff.login({ redirectUri: location.href });
+          return;
+        }
+        return liff.getProfile();
+      })
+      .then(function(profile) {
+        if (!profile) return; // liff.login()のリダイレクト中
+        location.href = CHECKOUT_BASE + plan + "?uid=" + encodeURIComponent(profile.userId);
+      })
+      .catch(function(err) {
+        console.error("[LIFF] init/getProfile error:", err);
+        showError("LINEとの連携に失敗しました。もう一度お試しください。");
+      });
+  }
+</script>
+</body>
+</html>
