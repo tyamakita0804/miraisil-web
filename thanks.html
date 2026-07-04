@@ -198,16 +198,17 @@
     <!-- Stripe決済経由（?session_id=xxx）の場合はLINE ID入力フォームを表示 -->
     <div id="session-notice" style="display:none;">
       <div class="highlight">
-        📱 登録を完了するために、LINEのユーザーIDを入力してください。<br><br>
-        LINEアプリ → プロフィール →「自分のQRコード」の下に表示される<br>
-        <strong>@から始まるID</strong> を入力してください。
+        📱 登録を完了するために、LINEユーザーIDを入力してください。<br><br>
+        ① <a href="https://line.me/R/ti/p/@768invlu" style="color:var(--accent);">miraisil公式LINEを開く</a><br>
+        ② トーク画面に <strong>「自分のID」</strong> と送信<br>
+        ③ 返信されたIDをコピーして下のフォームに貼り付け
       </div>
       <form class="link-form" id="link-form">
         <input type="hidden" id="field-session-id" name="session_id">
-        <label for="field-line-id">LINEのユーザーID</label>
+        <label for="field-line-id">LINEユーザーID</label>
         <input type="text" id="field-line-id" name="line_user_id"
-               placeholder="@xxxxxxxx" autocomplete="off" required>
-        <p class="hint">例：@abc1234 （LINEプロフィールのQRコード画面に表示）</p>
+               placeholder="Uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" required>
+        <p class="hint">LINEで「自分のID」と送ると確認できます（Uから始まる文字列）</p>
         <button type="submit" class="btn-submit" id="submit-btn">登録を完了する</button>
       </form>
       <div class="result-msg" id="result-msg"></div>
