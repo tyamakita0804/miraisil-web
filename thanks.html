@@ -147,16 +147,37 @@
     <h1>ご登録<br>ありがとうございます！</h1>
     <p class="message">お支払いが正常に完了しました。</p>
 
-    <div class="highlight">
-      🌙 明日の朝 <strong>7:00</strong> から、あなた専用の運勢が届きます。<br>
-      太陽星座と月星座を組み合わせた、あなただけのメッセージをお楽しみに。
+    <!-- plans.html経由（?from=web）の場合はLINE誘導を表示 -->
+    <div id="web-notice" style="display:none;">
+      <div class="highlight">
+        📱 次のステップ：LINEで友だち追加をしてください。<br><br>
+        ① 下のボタンから <strong>miraisil公式LINEを友だち追加</strong><br>
+        ② LINEのトーク画面で <strong>生年月日を登録</strong>（月星座の計算に必要です）<br>
+        ③ 翌朝 <strong>7:00</strong> からあなた専用の運勢が届きます
+      </div>
+      <a class="btn" href="https://line.me/R/ti/p/@768invlu">
+        LINEで友だち追加する
+      </a>
     </div>
 
-    <p class="message" style="font-size:14px;">LINEアプリに戻って、配信をお待ちください。</p>
+    <!-- LINE経由の場合は従来の案内を表示 -->
+    <div id="line-notice">
+      <div class="highlight">
+        🌙 明日の朝 <strong>7:00</strong> から、あなた専用の運勢が届きます。<br>
+        太陽星座と月星座を組み合わせた、あなただけのメッセージをお楽しみに。
+      </div>
+      <p class="message" style="font-size:14px;">LINEアプリに戻って、配信をお待ちください。</p>
+      <a class="btn" href="https://line.me/R/ti/p/@768invlu">
+        LINEアプリへ戻る
+      </a>
+    </div>
 
-    <a class="btn" href="https://line.me/R/ti/p/@768invlu">
-      LINEアプリへ戻る
-    </a>
+    <script>
+      if (new URLSearchParams(location.search).get("from") === "web") {
+        document.getElementById("web-notice").style.display = "block";
+        document.getElementById("line-notice").style.display = "none";
+      }
+    </script>
 
     <a class="sub-link" href="/">トップページへ</a>
   </div>
