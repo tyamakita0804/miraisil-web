@@ -132,6 +132,54 @@
     }
     footer a { color: var(--pale); text-decoration: none; }
     footer a:hover { color: var(--accent); }
+
+    .link-form { margin: 24px 0; text-align: left; }
+    .link-form label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--mid);
+      margin-bottom: 8px;
+    }
+    .link-form input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      border: 1.5px solid var(--rule);
+      border-radius: 8px;
+      outline: none;
+      font-family: inherit;
+    }
+    .link-form input[type="text"]:focus { border-color: var(--accent); }
+    .link-form .hint {
+      font-size: 12px;
+      color: var(--pale);
+      margin-top: 6px;
+    }
+    .btn-submit {
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .btn-submit:hover { opacity: 0.88; }
+    .btn-submit:disabled { opacity: 0.5; cursor: default; }
+    .result-msg {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+    }
+    .result-msg.success { background: #e8f5e9; color: #2e7d32; }
+    .result-msg.error   { background: #fdecea; color: #c62828; }
   </style>
 </head>
 <body>
@@ -147,17 +195,22 @@
     <h1>ご登録<br>ありがとうございます！</h1>
     <p class="message">お支払いが正常に完了しました。</p>
 
-    <!-- plans.html経由（?from=web）の場合はLINE誘導を表示 -->
-    <div id="web-notice" style="display:none;">
+    <!-- Stripe決済経由（?session_id=xxx）の場合はLINE ID入力フォームを表示 -->
+    <div id="session-notice" style="display:none;">
       <div class="highlight">
-        📱 次のステップ：LINEで友だち追加をしてください。<br><br>
-        ① 下のボタンから <strong>miraisil公式LINEを友だち追加</strong><br>
-        ② LINEのトーク画面で <strong>生年月日を登録</strong>（月星座の計算に必要です）<br>
-        ③ 翌朝 <strong>7:00</strong> からあなた専用の運勢が届きます
+        📱 登録を完了するために、LINEのユーザーIDを入力してください。<br><br>
+        LINEアプリ → プロフィール →「自分のQRコード」の下に表示される<br>
+        <strong>@から始まるID</strong> を入力してください。
       </div>
-      <a class="btn" href="https://line.me/R/ti/p/@768invlu">
-        LINEで友だち追加する
-      </a>
+      <form class="link-form" id="link-form">
+        <input type="hidden" id="field-session-id" name="session_id">
+        <label for="field-line-id">LINEのユーザーID</label>
+        <input type="text" id="field-line-id" name="line_user_id"
+               placeholder="@xxxxxxxx" autocomplete="off" required>
+        <p class="hint">例：@abc1234 （LINEプロフィールのQRコード画面に表示）</p>
+        <button type="submit" class="btn-submit" id="submit-btn">登録を完了する</button>
+      </form>
+      <div class="result-msg" id="result-msg"></div>
     </div>
 
     <!-- LINE経由の場合は従来の案内を表示 -->
@@ -173,10 +226,46 @@
     </div>
 
     <script>
-      if (new URLSearchParams(location.search).get("from") === "web") {
-        document.getElementById("web-notice").style.display = "block";
+      var params = new URLSearchParams(location.search);
+      var sessionId = params.get("session_id");
+      if (sessionId) {
+        document.getElementById("session-notice").style.display = "block";
         document.getElementById("line-notice").style.display = "none";
+        document.getElementById("field-session-id").value = sessionId;
       }
+
+      document.getElementById("link-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        var btn = document.getElementById("submit-btn");
+        var msg = document.getElementById("result-msg");
+        var lineId = document.getElementById("field-line-id").value.trim();
+        var sid   = document.getElementById("field-session-id").value.trim();
+        btn.disabled = true;
+        btn.textContent = "送信中...";
+        fetch("https://miraisil-webhook.onrender.com/link-user", {
+          method: "POST",
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+          body: "line_user_id=" + encodeURIComponent(lineId) + "&session_id=" + encodeURIComponent(sid),
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.success) {
+            msg.className = "result-msg success";
+            msg.textContent = "✅ 登録が完了しました！LINEに確認メッセージが届きます。";
+          } else {
+            msg.className = "result-msg error";
+            msg.textContent = "⚠️ " + (data.error || "エラーが発生しました。もう一度お試しください。");
+            btn.disabled = false; btn.textContent = "登録を完了する";
+          }
+          msg.style.display = "block";
+        })
+        .catch(function() {
+          msg.className = "result-msg error";
+          msg.textContent = "⚠️ 通信エラーが発生しました。もう一度お試しください。";
+          msg.style.display = "block";
+          btn.disabled = false; btn.textContent = "登録を完了する";
+        });
+      });
     </script>
 
     <a class="sub-link" href="/">トップページへ</a>

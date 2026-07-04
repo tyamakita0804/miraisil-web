@@ -213,41 +213,6 @@
       color: var(--mid);
       line-height: 1.8;
     }
-    .copy-keyword {
-      color: var(--accent);
-      cursor: pointer;
-      text-decoration: underline;
-      text-decoration-style: dashed;
-      text-underline-offset: 3px;
-    }
-    #copy-toast {
-      position: fixed;
-      bottom: 28px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #333;
-      color: #fff;
-      padding: 10px 22px;
-      border-radius: 20px;
-      font-size: 14px;
-      opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-      z-index: 999;
-    }
-    #copy-toast.show { opacity: 1; }
-
-    .register-notice {
-      max-width: 680px;
-      margin: -16px auto 32px;
-      padding: 14px 24px;
-      background: #f3f0ff;
-      border: 1px solid rgba(124,106,247,0.25);
-      border-radius: 10px;
-      text-align: center;
-      font-size: 14px;
-      color: var(--mid);
-    }
 
     /* ── Note ── */
     .note {
@@ -289,10 +254,6 @@
   <p>すべてのプランでLINEから運勢を受け取れます。<br>いつでもキャンセル・変更できます。</p>
 </div>
 
-<div class="register-notice">
-  ご登録はLINEから行います。下のボタンからLINEを開いてください。
-</div>
-
 <div class="plans">
 
   <!-- 無料プラン -->
@@ -327,11 +288,10 @@
       <li><span class="dash">—</span> フィードバックによる精緻化</li>
     </ul>
     <!-- price_1TmEAtACc35SqRYaAWKyryUR -->
-    <a class="btn-plan" href="https://line.me/R/ti/p/@768invlu" onclick="window.location.href='line://ti/p/@768invlu'; return false;">LINEで友だち追加して登録する</a>
+    <a class="btn-plan" href="https://miraisil-webhook.onrender.com/checkout/light">登録する</a>
     <div class="plan-hint">
-      <p>① 上のボタンでLINEを開く</p>
-      <p>② トーク画面に<strong class="copy-keyword" data-text="ライト会員登録">「ライト会員登録」</strong>とコピーして送信</p>
-      <p>③ 登録リンクが届きます</p>
+      <p>① 上のボタンでStripeの決済ページへ</p>
+      <p>② お支払い完了後、LINEのユーザーIDを入力して登録完了</p>
     </div>
   </div>
 
@@ -351,11 +311,10 @@
       <li><span class="check">✓</span> <strong>フィードバックによる精緻化</strong></li>
     </ul>
     <!-- price_1TmEAtACc35SqRYa8PjM1X60 -->
-    <a class="btn-plan" href="https://line.me/R/ti/p/@768invlu" onclick="window.location.href='line://ti/p/@768invlu'; return false;">LINEで友だち追加して登録する</a>
+    <a class="btn-plan" href="https://miraisil-webhook.onrender.com/checkout/premium">登録する</a>
     <div class="plan-hint">
-      <p>① 上のボタンでLINEを開く</p>
-      <p>② トーク画面に<strong class="copy-keyword" data-text="プレミアム会員登録">「プレミアム会員登録」</strong>とコピーして送信</p>
-      <p>③ 登録リンクが届きます</p>
+      <p>① 上のボタンでStripeの決済ページへ</p>
+      <p>② お支払い完了後、LINEのユーザーIDを入力して登録完了</p>
     </div>
   </div>
 
@@ -363,8 +322,7 @@
 
 <div class="note">
   <p>
-    「LINEで登録する」ボタンをタップしてLINEを開き、案内のキーワードを送信してください。<br>
-    決済リンクが届いたら、Stripeの安全なページでお支払いが完結します。<br>
+    お支払い完了後、LINEとの連携手順が表示されます。<br>
     月額制・いつでもキャンセル可能。<a href="/privacy-policy.html">プライバシーポリシー</a>
   </p>
 </div>
@@ -373,26 +331,5 @@
   <p>&copy; 2026 miraisil　―　<a href="/privacy-policy.html">プライバシーポリシー</a></p>
 </footer>
 
-<div id="copy-toast">コピーしました</div>
-<script>
-  var toast = document.getElementById('copy-toast');
-  var timer;
-  document.querySelectorAll('.copy-keyword').forEach(function(el) {
-    el.addEventListener('click', function() {
-      var text = this.dataset.text;
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(text);
-      } else {
-        var ta = document.createElement('textarea');
-        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-        document.body.appendChild(ta); ta.select(); document.execCommand('copy');
-        document.body.removeChild(ta);
-      }
-      clearTimeout(timer);
-      toast.classList.add('show');
-      timer = setTimeout(function() { toast.classList.remove('show'); }, 2000);
-    });
-  });
-</script>
 </body>
 </html>
