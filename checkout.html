@@ -109,36 +109,41 @@
   var LIFF_ID = "2010604081-ZArs25u8";
   var CHECKOUT_BASE = "https://miraisil-webhook.onrender.com/checkout/";
 
-  var params = new URLSearchParams(location.search);
-  var plan = params.get("plan");
-
   function showError(msg) {
     document.getElementById("state-loading").style.display = "none";
     if (msg) document.getElementById("error-detail").textContent = msg;
     document.getElementById("state-error").style.display = "block";
   }
 
-  if (!plan || (plan !== "light" && plan !== "premium")) {
-    showError("プランが指定されていません。plans.htmlに戻ってやり直してください。");
-  } else {
-    liff.init({ liffId: LIFF_ID })
-      .then(function() {
-        if (!liff.isLoggedIn()) {
-          // 外部ブラウザ等でLINE未ログインの場合、LINEログインへリダイレクト
-          liff.login({ redirectUri: location.href });
-          return;
-        }
-        return liff.getProfile();
-      })
-      .then(function(profile) {
-        if (!profile) return; // liff.login()のリダイレクト中
-        location.href = CHECKOUT_BASE + plan + "?uid=" + encodeURIComponent(profile.userId);
-      })
-      .catch(function(err) {
-        console.error("[LIFF] init/getProfile error:", err);
-        showError("LINEとの連携に失敗しました。もう一度お試しください。");
-      });
+  // liff.init()後に呼ぶ: location.search → liff.state の順で plan を取得
+  // LINE内ブラウザでは ?liff.state=%3Fplan%3Dlight の形で渡されるため両方チェックが必要
+  function getPlan() {
+    var p = new URLSearchParams(location.search).get("plan");
+    if (!p && liff.state) {
+      p = new URLSearchParams(liff.state).get("plan");
+    }
+    return p;
   }
+
+  liff.init({ liffId: LIFF_ID })
+    .then(function() {
+      var plan = getPlan();
+      if (!plan || (plan !== "light" && plan !== "premium")) {
+        showError("プランが指定されていません。プランページに戻ってやり直してください。");
+        return;
+      }
+      if (!liff.isLoggedIn()) {
+        liff.login({ redirectUri: location.href });
+        return;
+      }
+      return liff.getProfile().then(function(profile) {
+        location.href = CHECKOUT_BASE + plan + "?uid=" + encodeURIComponent(profile.userId);
+      });
+    })
+    .catch(function(err) {
+      console.error("[LIFF] init/getProfile error:", err);
+      showError("LINEとの連携に失敗しました。もう一度お試しください。");
+    });
 </script>
 </body>
 </html>
