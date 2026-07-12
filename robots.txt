@@ -4,3 +4,4 @@ Disallow: /review/
 Disallow: /reel-test/
 Disallow: /feed-test/
 Disallow: /color-test/
+Disallow: /v3-test/
