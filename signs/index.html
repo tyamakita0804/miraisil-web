@@ -120,10 +120,19 @@
     { key: "pisces",      name: "魚座",   symbol: "♓", range: "2/19–3/20" }
   ];
 
-  // TODO: クリック計測エンドポイントが未実装のため、現在はconsole.logのみ（ダミー）。
-  // 実装方針の承認後、fetch(TRACK_URL, {method:'POST', keepalive:true, ...}) に差し替える。
+  var TRACK_URL = "https://miraisil-webhook.onrender.com/track-sign-click";
+
   function trackClick(signKey) {
-    console.log("[track] sign_click:", signKey);
+    try {
+      fetch(TRACK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sign: signKey }),
+        keepalive: true,
+      });
+    } catch (e) {
+      // 計測失敗でもInstagramへの遷移は妨げない
+    }
   }
 
   var grid = document.getElementById("sign-grid");
