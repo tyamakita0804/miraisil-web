@@ -3,3 +3,4 @@ Disallow: /preview/
 Disallow: /review/
 Disallow: /reel-test/
 Disallow: /feed-test/
+Disallow: /color-test/
