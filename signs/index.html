@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星座を選ぶ | 今日の運勢 by miraisil</title>
+<meta name="description" content="あなたの星座の専用アカウントで、今日の運勢を毎朝お届け。12星座から選んでください。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDMincho:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #f5f2ec;
+    color: #2a2723;
+    font-family: "Noto Sans JP", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    min-height: 100vh;
+    padding: 48px 20px 60px;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 8px; }
+  .brand-line1 {
+    font-family: "BIZ UDMincho", serif;
+    font-size: 16px; font-weight: 700; color: #4a4a4a;
+    letter-spacing: 0.14em;
+  }
+  .brand-line2 {
+    font-size: 12px; color: #a8a49a; font-weight: 400;
+    letter-spacing: 0.05em; margin-top: 5px;
+  }
+
+  .title {
+    font-family: "BIZ UDMincho", serif;
+    font-size: 30px; font-weight: 700; color: #2a2723;
+    text-align: center; letter-spacing: 0.08em;
+    margin-top: 30px;
+  }
+  .subtitle {
+    text-align: center; font-size: 13px; color: #7d7a70;
+    margin-top: 10px; letter-spacing: 0.03em; line-height: 1.7;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 36px;
+  }
+
+  a.card {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #e6e1d4;
+    border-radius: 18px;
+    padding: 26px 10px;
+    text-decoration: none;
+    color: inherit;
+    min-height: 140px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    box-shadow: 0 2px 6px rgba(60, 52, 40, 0.04);
+  }
+  a.card:active {
+    transform: scale(0.96);
+    border-color: #c9a94e;
+    box-shadow: 0 1px 3px rgba(60, 52, 40, 0.06);
+  }
+
+  .symbol {
+    font-family: "BIZ UDMincho", serif;
+    font-size: 34px; color: #a8720f; line-height: 1;
+  }
+  .name {
+    font-family: "BIZ UDMincho", serif;
+    font-size: 21px; font-weight: 700; color: #2a2723;
+    letter-spacing: 0.06em;
+  }
+  .range {
+    font-size: 12px; color: #9a9488; letter-spacing: 0.03em;
+  }
+
+  footer {
+    text-align: center; margin-top: 48px;
+    font-size: 11px; color: #b3ae9f; letter-spacing: 0.08em;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand-line1">今日の運勢 by miraisil（ミライシル）</div>
+    <div class="brand-line2">NASAの天体データを基礎に運勢を計算。</div>
+  </header>
+
+  <div class="title">星座を選ぶ</div>
+  <div class="subtitle">タップすると、あなたの星座専用アカウントへ<br>移動します。毎朝、その星座の運勢が届きます。</div>
+
+  <div class="grid" id="sign-grid"></div>
+
+  <footer>miraisil</footer>
+</div>
+
+<script>
+  var SIGNS = [
+    { key: "aries",       name: "牡羊座", symbol: "♈", range: "3/21–4/19" },
+    { key: "taurus",      name: "牡牛座", symbol: "♉", range: "4/20–5/20" },
+    { key: "gemini",      name: "双子座", symbol: "♊", range: "5/21–6/21" },
+    { key: "cancer",      name: "蟹座",   symbol: "♋", range: "6/22–7/22" },
+    { key: "leo",         name: "獅子座", symbol: "♌", range: "7/23–8/22" },
+    { key: "virgo",       name: "乙女座", symbol: "♍", range: "8/23–9/22" },
+    { key: "libra",       name: "天秤座", symbol: "♎", range: "9/23–10/23" },
+    { key: "scorpio",     name: "蠍座",   symbol: "♏", range: "10/24–11/22" },
+    { key: "sagittarius", name: "射手座", symbol: "♐", range: "11/23–12/21" },
+    { key: "capricorn",   name: "山羊座", symbol: "♑", range: "12/22–1/19" },
+    { key: "aquarius",    name: "水瓶座", symbol: "♒", range: "1/20–2/18" },
+    { key: "pisces",      name: "魚座",   symbol: "♓", range: "2/19–3/20" }
+  ];
+
+  // TODO: クリック計測エンドポイントが未実装のため、現在はconsole.logのみ（ダミー）。
+  // 実装方針の承認後、fetch(TRACK_URL, {method:'POST', keepalive:true, ...}) に差し替える。
+  function trackClick(signKey) {
+    console.log("[track] sign_click:", signKey);
+  }
+
+  var grid = document.getElementById("sign-grid");
+  SIGNS.forEach(function (s) {
+    var a = document.createElement("a");
+    a.className = "card";
+    a.href = "https://www.instagram.com/kyonounsei_" + s.key + "/";
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.addEventListener("click", function () { trackClick(s.key); });
+    a.innerHTML =
+      '<div class="symbol">' + s.symbol + '</div>' +
+      '<div class="name">' + s.name + '</div>' +
+      '<div class="range">' + s.range + '</div>';
+    grid.appendChild(a);
+  });
+</script>
+</body>
+</html>
