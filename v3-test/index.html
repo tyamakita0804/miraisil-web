@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>スコア校正v3 確認 | miraisil</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: #222; color: #eee; padding: 30px 0 60px;
+  }
+  h2 { text-align: center; font-size: 15px; letter-spacing: 0.1em; color: #ccc; margin: 30px 0 14px; }
+  .label { text-align: center; font-size: 12px; letter-spacing: 0.1em; color: #999; margin-bottom: 10px; }
+  .note { text-align: center; font-size: 12px; color: #888; margin: 0 20px 20px; line-height: 1.6; }
+  .row {
+    display: flex; gap: 12px; overflow-x: auto; padding: 0 20px 10px;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  }
+  .row img {
+    width: 60vw; max-width: 280px; flex-shrink: 0; border-radius: 6px;
+    scroll-snap-align: start; background: #fff;
+  }
+  figure { flex-shrink: 0; scroll-snap-align: start; }
+  figcaption { text-align: center; font-size: 11px; color: #aaa; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="label">SCORE CALIBRATION v3 TEST &middot; Internal Only</div>
+<div class="note">v2の平均ロジックはそのまま、calibrate側で分散を線形ストレッチ（k=2.4）。<br>
+本文はSheets既存原稿を流用、スコアのみ本日のastroデータからv3で再計算。</div>
+
+<h2>本日の実データ（12星座・総合運スライド・v3校正後）</h2>
+<div class="row">
+  <figure><img src="aries_slide6.png"><figcaption>牡羊座 71</figcaption></figure>
+  <figure><img src="taurus_slide6.png"><figcaption>牡牛座 86</figcaption></figure>
+  <figure><img src="gemini_slide6.png"><figcaption>双子座 81</figcaption></figure>
+  <figure><img src="cancer_slide6.png"><figcaption>蟹座 88</figcaption></figure>
+  <figure><img src="leo_slide6.png"><figcaption>獅子座 74</figcaption></figure>
+  <figure><img src="virgo_slide6.png"><figcaption>乙女座 88</figcaption></figure>
+  <figure><img src="libra_slide6.png"><figcaption>天秤座 81</figcaption></figure>
+  <figure><img src="scorpio_slide6.png"><figcaption>蠍座 88</figcaption></figure>
+  <figure><img src="sagittarius_slide6.png"><figcaption>射手座 71</figcaption></figure>
+  <figure><img src="capricorn_slide6.png"><figcaption>山羊座 83</figcaption></figure>
+  <figure><img src="aquarius_slide6.png"><figcaption>水瓶座 76</figcaption></figure>
+  <figure><img src="pisces_slide6.png"><figcaption>魚座 88</figcaption></figure>
+</div>
+<div class="note">本日の帯分布: 70-74帯×3　75-79帯×1　80-84帯×3　85-89帯×5　(4帯使用)<br>
+※ゴールド帯(95+)・65-69帯・90-94帯は本日は非出現（30日平均ではゴールド4.7%程度で出現する設計）</div>
+</body>
+</html>
