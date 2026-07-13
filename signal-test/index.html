@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>スコア帯カラー「信号版」確認 | miraisil</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: #222; color: #eee; padding: 30px 0 60px;
+  }
+  h2 { text-align: center; font-size: 15px; letter-spacing: 0.1em; color: #ccc; margin: 30px 0 14px; }
+  .label { text-align: center; font-size: 12px; letter-spacing: 0.1em; color: #999; margin-bottom: 10px; }
+  .note { text-align: center; font-size: 12px; color: #888; margin: 0 20px 20px; line-height: 1.6; }
+  .row {
+    display: flex; gap: 12px; overflow-x: auto; padding: 0 20px 10px;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  }
+  .row img {
+    width: 60vw; max-width: 280px; flex-shrink: 0; border-radius: 6px;
+    scroll-snap-align: start; background: #fff;
+  }
+  figure { flex-shrink: 0; scroll-snap-align: start; }
+  figcaption { text-align: center; font-size: 11px; color: #aaa; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="label">SCORE BAND COLOR「信号版」TEST &middot; Internal Only</div>
+<div class="note">青信号（動いていい日）＝緑 / 黄信号（ふつうの日）＝黄 / 赤信号（守る日）＝赤。<br>
+同ゾーン内は明度差のみで区別、中間色は廃止。黄ゾーンの可読性確保のためtext-shadowを全帯に追加。</div>
+
+<h2>帯サンプル（7段階・スコア固定）</h2>
+<div class="row">
+  <figure><img src="band_97.png"><figcaption>97点 ゴールド 95-100</figcaption></figure>
+  <figure><img src="band_92.png"><figcaption>92点 青信号:濃い緑 90-94</figcaption></figure>
+  <figure><img src="band_87.png"><figcaption>87点 青信号:緑 85-89</figcaption></figure>
+  <figure><img src="band_82.png"><figcaption>82点 黄信号:黄 80-84</figcaption></figure>
+  <figure><img src="band_77.png"><figcaption>77点 黄信号:濃い黄 75-79</figcaption></figure>
+  <figure><img src="band_72.png"><figcaption>72点 赤信号:赤 70-74</figcaption></figure>
+  <figure><img src="band_67.png"><figcaption>67点 赤信号:濃い赤 65-69</figcaption></figure>
+</div>
+
+<h2>本日の実データ（12星座・総合運スライド）</h2>
+<div class="row">
+  <figure><img src="aries_slide6.png"><figcaption>牡羊座 71</figcaption></figure>
+  <figure><img src="taurus_slide6.png"><figcaption>牡牛座 86</figcaption></figure>
+  <figure><img src="gemini_slide6.png"><figcaption>双子座 81</figcaption></figure>
+  <figure><img src="cancer_slide6.png"><figcaption>蟹座 88</figcaption></figure>
+  <figure><img src="leo_slide6.png"><figcaption>獅子座 74</figcaption></figure>
+  <figure><img src="virgo_slide6.png"><figcaption>乙女座 88</figcaption></figure>
+  <figure><img src="libra_slide6.png"><figcaption>天秤座 81</figcaption></figure>
+  <figure><img src="scorpio_slide6.png"><figcaption>蠍座 88</figcaption></figure>
+  <figure><img src="sagittarius_slide6.png"><figcaption>射手座 71</figcaption></figure>
+  <figure><img src="capricorn_slide6.png"><figcaption>山羊座 83</figcaption></figure>
+  <figure><img src="aquarius_slide6.png"><figcaption>水瓶座 76</figcaption></figure>
+  <figure><img src="pisces_slide6.png"><figcaption>魚座 88</figcaption></figure>
+</div>
+<div class="note">本日の帯分布: 赤信号(70-74)×3　黄信号(75-79)×1　黄信号(80-84)×3　青信号(85-89)×5</div>
+</body>
+</html>
