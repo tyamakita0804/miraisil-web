@@ -6,3 +6,4 @@ Disallow: /feed-test/
 Disallow: /color-test/
 Disallow: /v3-test/
 Disallow: /drafts/
+Disallow: /signal-test/
