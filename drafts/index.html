@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>カルーセル原稿レビュー | miraisil</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: #222; color: #eee; padding: 30px 0 60px;
+  }
+  .top-label { text-align: center; font-size: 12px; letter-spacing: 0.1em; color: #999; margin-bottom: 24px; }
+  .carousel-card { margin-bottom: 40px; }
+  .card-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 20px; margin-bottom: 10px;
+  }
+  .badge {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+    color: #fff; padding: 3px 9px; border-radius: 4px; flex-shrink: 0;
+  }
+  .card-head h2 { font-size: 16px; font-weight: 600; color: #eee; flex: 1; }
+  .card-head .count { font-size: 12px; color: #888; flex-shrink: 0; }
+  .warn {
+    margin: 0 20px 10px; padding: 8px 14px; list-style: none;
+    background: #4a2f1a; border-left: 3px solid #d97a0f;
+    font-size: 12px; color: #f0c896; border-radius: 4px;
+  }
+  .row {
+    display: flex; gap: 12px; overflow-x: auto; padding: 0 20px 10px;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  }
+  .row img {
+    width: 82vw; max-width: 380px; flex-shrink: 0; border-radius: 6px;
+    scroll-snap-align: center; background: #fff;
+  }
+</style>
+</head>
+<body>
+<div class="top-label">カルーセル原稿レビュー &middot; Internal Only</div>
+
+<section class="carousel-card">
+  <div class="card-head">
+    <span class="badge" style="background:#8a836f;">DRAFT</span>
+    <h2>ドタキャンされてホッとした人</h2>
+    <span class="count">9枚</span>
+  </div>
+  
+  <div class="row">
+    <img src="dotakyan/dotakyan_1.png" loading="lazy">
+    <img src="dotakyan/dotakyan_2.png" loading="lazy">
+    <img src="dotakyan/dotakyan_3.png" loading="lazy">
+    <img src="dotakyan/dotakyan_4.png" loading="lazy">
+    <img src="dotakyan/dotakyan_5.png" loading="lazy">
+    <img src="dotakyan/dotakyan_6.png" loading="lazy">
+    <img src="dotakyan/dotakyan_7.png" loading="lazy">
+    <img src="dotakyan/dotakyan_8.png" loading="lazy">
+    <img src="dotakyan/dotakyan_9.png" loading="lazy">
+  </div>
+</section>
+
+</body>
+</html>
