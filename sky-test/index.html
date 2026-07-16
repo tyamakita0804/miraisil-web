@@ -15,6 +15,7 @@
   .label { text-align: center; font-size: 12px; letter-spacing: 0.1em; color: #999; margin-bottom: 10px; }
   .note { text-align: center; font-size: 12px; color: #888; margin: 0 20px 20px; line-height: 1.6; }
   .note code { color: #bbb; background: #333; padding: 1px 5px; border-radius: 3px; }
+  .warn { color: #d9a441; }
   .row {
     display: flex; gap: 12px; overflow-x: auto; padding: 0 20px 10px;
     scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
@@ -25,55 +26,62 @@
   }
   figure { flex-shrink: 0; scroll-snap-align: start; }
   figcaption { text-align: center; font-size: 11px; color: #aaa; margin-top: 4px; }
-  .hr { border-top: 1px solid #3a3a3a; margin: 40px 20px; }
 </style>
 </head>
 <body>
-<div class="label">SCORE BAND COLOR &middot; 確定版への差し戻し確認 &middot; Internal Only</div>
+<div class="label">SCORE BAND COLOR &middot; 確定版への差し戻し確認（訂正版） &middot; Internal Only</div>
+
 <div class="note">
-本日このセッション中に何度もスコア帯（空グラデーション）を作り直したが、その前日
-（コミット時刻 2026-07-16 01:14）に一度「最終OK」となっていた版がすでに存在していた
-ため、本日分の変更（暖色オンリー版・青空スペクトル版・「小さな空の情景」プロトタイプ
-（96/85/77/66）等、一連の試行）はすべて破棄し、確定版に差し戻した。
+<span class="warn">前回の差し戻しは対象が1つ手前のコミットで、不十分でした。</span><br>
+探索の結果、ご指摘の「7段階・スコア固定・2026-07更新」版は miraisil-web 側のコミット
+<code>4715b44</code>（2026-07-16 15:25:22）で公開されていたページと完全に一致すること
+が分かりました。タイトルも同じ「帯サンプル（7段階・スコア固定・2026-07更新）」です。
 </div>
 <div class="note">
-確定版のコミット: <code>a499c89</code>（2026-07-16 01:14:09）
-「ストーリーズのスコア帯を空グラデーション5段階（信号版から刷新）に全面改修」<br>
-このコミットの内容は直後の <code>5629919</code>（2026-07-16 19:37:38・4枚構成への
-全面刷新）でも変更されずそのままHEADに残っていたため、実質的にHEAD =
-確定版のスコア帯、という状態だった。<br>
-差し戻し方法: <code>image_generator.py</code> の <code>SCORE_BAND_COLORS</code> /
-<code>_SKY_DECOR_CSS</code> / <code>_SKY_DECOR_HTML</code>（スコア帯生成部分一式）
-をHEAD時点の内容にそのまま置き換え。本日別途直したCTAスライド（見出し・サブライン・
-フッター位置）の変更はこの操作と無関係な箇所にあるため巻き込んでいない
-（<code>git diff HEAD</code> で確認済み、残る差分はCTA部分のみ）。
+ただし重要な点として、このバージョンに対応する dataunsei-automation 側のソースコードは
+<strong>一度もコミットされていません</strong>（全コミット・reflog・danglingコミットを
+確認済み、該当なし）。<code>4715b44</code> の直前 <code>dff63a2</code>（同日14:32・
+「夕暮れ」への差し戻し）から、直後に本日の一連の変更が始まるまでの間、コードは
+作業ツリー上の未コミット状態のまま存在し、そのまま失われていました。
 </div>
 <div class="note">
-この操作は dataunsei-automation 側では何もコミットしていない（元々HEADと同じ内容に
-戻しただけなので、スコア帯に関して差分なし＝コミットの必要なし）。
+そのため、miraisil-webに残っていた確定版のPNG（band_97/92/87/82/77/72/67.png）と、
+同じコミットのindex.htmlに書かれていた仕様メモを突き合わせて、コードを再構築しました。<br>
+比較の結果: 90-94 / 85-89 / 80-84 / 75-79 / 70-74 の5段は、直前に差し戻していた
+<code>a499c89</code>（2026-07-16 01:14）の実装と見比べても<strong>ほぼ同一</strong>
+でした（並べて目視確認済み）。実際に変更が必要だったのは以下の2段のみです。<br>
+・<strong>95-100</strong>: 光芒（線状の光条）が視認できるレベルで残っていたため、
+不透明度を大幅に下げて「光芒をほぼ消し、面の白熱だけで灼熱感を出す」仕様に合わせた。<br>
+・<strong>65-69</strong>: 星の数が仕様メモの「15個」に対して現状71個
+（小さな点62＋光条つきの明るい星9）だったため、15個（点10＋明るい星5）に絞った。
+天の川（ネビュラ）は元々使っていなかったため変更なし。
 </div>
 
-<h2>確定版：7段階（95-100 快晴 〜 65-69 夜）</h2>
+<h2>確定版：7段階（帯サンプル・スコア固定・2026-07更新）</h2>
 <div class="note">
 「快晴/青空/朝もや/夕暮れ/夜」と空の明るさでスコアの高低を表現する設計。
-95-100は面で焼く中心光＋薄い光芒＋レンズフレア＋金のきらめき5箇所。90-94は同じ構図で
-光を弱めた版。85-89は朝もや（もやの向こうに滲む太陽＋霞2本）。80-84も同系統でもう一段
-淡く。75-79は夕暮れ（暖色ではなく青〜ピンク〜オレンジのグラデ、白文字）。70-74は
-「暗くなっていく宇宙」。65-69は本物の星（60個以上、box-shadowによる光条つき）が浮かぶ
-夜空。
+区切りは 95-100/90-94/85-89/80-84/75-79/70-74/65-69 の7段階。<br>
+95-100は面で焼く中心光＋レンズフレア＋金のきらめき5箇所（光芒はほぼ消す）。
+90-94は同じ構図で光を弱めた版。85-89は朝もや（もやの向こうに滲む太陽＋霞2本）。
+80-84は85-89よりもやを濃く太陽の輪郭をさらにぼかした版。75-79は夕暮れ（地平から差す
+暖色の光＋朝焼け色の雲、星は使わない）。70-74は暖色帯を地平ぎりぎりまで沈め、上部の
+藍を濃くした版。65-69は本物の星（15個、box-shadowによる光条つき）が浮かぶ夜空、
+天の川は使わない。
 </div>
 <div class="row">
-  <figure><img src="band_96.png"><figcaption>96点 快晴 95-100 ★5</figcaption></figure>
+  <figure><img src="band_97.png"><figcaption>97点 快晴 95-100 ★5<br>（光芒を大幅に減らして再構築）</figcaption></figure>
   <figure><img src="band_92.png"><figcaption>92点 青空 90-94 ★4</figcaption></figure>
-  <figure><img src="band_85.png"><figcaption>85点 朝もや 85-89 ★3</figcaption></figure>
-  <figure><img src="band_82.png"><figcaption>82点 朝もや 80-84 ★3</figcaption></figure>
-  <figure><img src="band_77.png"><figcaption>77点 夕暮れ 75-79 ★2</figcaption></figure>
-  <figure><img src="band_72.png"><figcaption>72点 夕暮れ（深) 70-74 ★2</figcaption></figure>
-  <figure><img src="band_66.png"><figcaption>66点 夜 65-69 ★1</figcaption></figure>
+  <figure><img src="band_87.png"><figcaption>87点 朝もや・明 85-89 ★3</figcaption></figure>
+  <figure><img src="band_82.png"><figcaption>82点 朝もや・濃 80-84 ★3</figcaption></figure>
+  <figure><img src="band_77.png"><figcaption>77点 夕暮れ・明 75-79 ★2</figcaption></figure>
+  <figure><img src="band_72.png"><figcaption>72点 夕暮れ・濃 70-74 ★2</figcaption></figure>
+  <figure><img src="band_67.png"><figcaption>67点 夜 65-69 ★1<br>（星を15個に再構築）</figcaption></figure>
 </div>
 <div class="note">
-これが確定版そのものであることを確認してください（96のゴールド、66の本物の星空など、
-本日の一連の試行とは別物であることが見て分かるはずです）。
+97の光芒がほぼ消えて面の白熱だけになっているか、67の星が15個程度に絞られているか、
+その他5段が以前と変わっていないかを確認してください。<br>
+このコードはまだ dataunsei-automation にコミットしていません。ご確認後、OKであれば
+コミットします。
 </div>
 </body>
 </html>
