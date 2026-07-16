@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>ストーリーズ4枚構成 確認（3点修正後） | miraisil</title>
+<title>ストーリーズ4枚構成 確認（4点修正後） | miraisil</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -33,132 +33,133 @@
 </style>
 </head>
 <body>
-<div class="label">ストーリーズ4枚構成 TEST（3点修正後） &middot; Internal Only</div>
+<div class="label">ストーリーズ4枚構成 TEST（4点修正後） &middot; Internal Only</div>
 <div class="fixnote">
-<b>今回の3点修正</b><br>
-1. 改行バグ根本修正: 意味の途中で改行される原因は文字数見積もりではなく、Janomeのトークン境界を無視した改行だった。
-「動く」＋「日」（連体修飾＋非自立名詞）、「向かっ」＋「て」＋「いる」（動詞テ形＋非自立補助動詞）のような、
-本来1つの表現として扱うべき境界で分割されていたのが原因。_tokenize_surfaces に非自立名詞／非自立動詞・形容詞／
-接続助詞「て」「で」の結合ルールを追加し、12星座×3スライド全36本文を自動チェックして孤立短文がゼロであることを確認済み。<br>
-2. フックの意味破綻ガード: 反転型のプロンプトに「何を・どうしないほうが良いか」を具体的に明示する指示を追加し、
-「フックは一読して意味が通ること」を全体運セクションの最重要ルールとして明記。今回の再生成12本すべてで意味不明な省略は無し。<br>
-3. 70-79を夕暮れに復元: 星空だった70-79を、地平から暖色の光＋朝焼け色の雲の暖かい夕暮れに変更。
-80-89(朝もや)→70-79(夕暮れ)→65-69(夜)がなだらかに暗くなるようにした（sky-testも更新済み）。
+<b>今回の4点修正</b><br>
+1. 改行アルゴリズムを根本的に変更: 従来の「非自立語を前トークンへ結合」方式は取りこぼしがあったため、
+「行頭禁則ベースの折り返し」に全面変更。助詞・助動詞・記号は品詞大分類で全て、動詞/形容詞/名詞の非自立・接尾は
+細分類で、する/なる/くる/いく/しれる/みる/おく/しまう/いる/ある は基本形が一致した時点で常に、
+「行頭に置けない＝直前の塊に結合する」トークンとして扱う。トークン列を改行可能位置（塊の境界）でのみ
+greedyに詰め、塊がmax_charsを大きく超える場合のみ最後の手段として文字単位で強制分割する方式に変更。
+指定7文を含む再生成後の全文（109文×max_chars 11〜15）を自動チェックし、行頭禁則違反ゼロを確認済み。<br>
+2〜3. 帯見出しの統一とカテゴリ名の移動: 攻め運/守り運の帯見出しを全体運と同じ1行形式（「今日の攻め運スコアは」
+「今日の守り運スコアは」）に統一し、帯内のカテゴリ副題は削除。代わりに縦書き1行目の題名を実カテゴリ名で
+「〇〇座　〇月〇日の恋愛運」のように表示（「今日の」の重複と「攻め運/守り運」表記は廃止）。<br>
+4. スコア帯を7段階に細分化: 80-89と70-79をそれぞれ2分割（85-89/80-84、75-79/70-74）。80-84はもやを濃く
+太陽の輪郭をさらにぼかし、70-74は暖色帯を地平ぎりぎりまで沈めて上部を濃くすることで、
+85-89→80-84→75-79→70-74→65-69がより滑らかに暗くなるようにした（sky-testも更新済み）。
 </div>
 <div class="note">1.全体運（フック＋ほっこり） 2.今日の攻め運（最高スコア・数値表示） 3.今日の守り運（最低スコア・数値表示） 4.CTA<br>
 本日の実際の値: rank1=獅子座　天体イベント=新月<br>
 ※このページはデモのため、8つのフック型が一覧できるよう、星座ごとにフック型を強制的にばらけさせています（本番は日替わりで全星座共通1タイプ＋総合運1位の星座だけ数字・希少型に差し替え）。</div>
-
 
 <hr>
 <h2>牡羊座 (Aries)</h2>
 <div class="hooktype">フック型: 言い当て型</div>
 <div class="score">総合 83点</div>
 <div class="row">
-  <figure><img src="aries_slide1_overall.png"><figcaption><b>全体運</b><br>今日は、愛情が自然とあふれ出す日です。土星がすぐそばで安定を支え、金星も穏やかに味方しています。一生懸命なあなたの心が、ちゃんと相手に届きそうです。力まなくていい、今日はそのままで十分です。</figcaption></figure>
-  <figure><img src="aries_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(88点)</b><br>今日は、恋愛が攻め運の日。気持ちが自然と外に向かいやすいムードです。伝えたかったこと、今日なら素直に話せそうです。</figcaption></figure>
-  <figure><img src="aries_slide3_defense.png"><figcaption><b>守り運: 勉強運(73点)</b><br>今日は、勉強は慎重に進めます。水星が逆行中で、情報が整理しづらい日です。焦らないことが、あなたを守ります。</figcaption></figure>
+  <figure><img src="aries_slide1_overall.png"><figcaption><b>全体運</b><br>今日は、愛情が満ちてくる日です。土星がそばにあり、大切なものを見極める力が高まっています。素直な気持ちを大切にすると、自然と縁が動くかもしれません。</figcaption></figure>
+  <figure><img src="aries_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(88点)</b><br>今日は、恋愛が攻め運の日。金星が魅力を引き出してくれています。気になる人に、今日声をかけてみて。</figcaption></figure>
+  <figure><img src="aries_slide3_defense.png"><figcaption><b>守り運: 勉強運(73点)</b><br>今日は、勉強は慎重に。水星が逆行中で、情報が混乱しやすい日です。焦らないことが、あなたを守ります。</figcaption></figure>
 </div>
 <hr>
 <h2>牡牛座 (Taurus)</h2>
 <div class="hooktype">フック型: 問いかけ型</div>
 <div class="score">総合 79点</div>
 <div class="row">
-  <figure><img src="taurus_slide1_overall.png"><figcaption><b>全体運</b><br>急ぐ日？それとも、じっくり進む日？今日の流れは、焦らずゆっくり動く人を優しく後押しします。あなたがずっと積み上げてきたものは、ちゃんと根を張っています。今日はその根の深さを、静かに感じてみてください。</figcaption></figure>
-  <figure><img src="taurus_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(86点)</b><br>今日は、恋愛が攻め運の日。気持ちが穏やかに、でも確かに相手に届くムードです。いつも言えなかった本音を、少しだけ話してみましょう。</figcaption></figure>
-  <figure><img src="taurus_slide3_defense.png"><figcaption><b>守り運: 健康運(78点)</b><br>今日は、健康は慎重に。疲れを後回しにしやすい一日です。無理をしないことが、あなたを守ります。</figcaption></figure>
+  <figure><img src="taurus_slide1_overall.png"><figcaption><b>全体運</b><br>今日、大切にしたいのは「守る」ことですか、「動く」ことですか？恋愛の流れが整っているので、素直な気持ちを伝えるなら今日かもしれません。静かな日ほど、本当に必要なものが見えてくることがあります。</figcaption></figure>
+  <figure><img src="taurus_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(86点)</b><br>今日は、恋愛が攻め運の日。温かみのある言葉が、いつもより心に届きやすい状態です。伝えようか迷っていた気持ち、今日なら素直に言えそうです。</figcaption></figure>
+  <figure><img src="taurus_slide3_defense.png"><figcaption><b>守り運: 健康運(78点)</b><br>今日は、健康は慎重に。体のサインを見逃しやすい日です。無理をしないことが、あなたを守ります。</figcaption></figure>
 </div>
 <hr>
 <h2>双子座 (Gemini)</h2>
 <div class="hooktype">フック型: 反転型</div>
 <div class="score">総合 83点</div>
 <div class="row">
-  <figure><img src="gemini_slide1_overall.png"><figcaption><b>全体運</b><br>考えすぎないほうが、心が軽くなる日です。土星が安定を支え、木星が広がりを後押しする配置です。今日の感情の動きは、あなたに何かを気づかせてくれるかもしれません。頭より心の声を、少し信じてみてください。</figcaption></figure>
-  <figure><img src="gemini_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(92点)</b><br>今日は、恋愛が攻め運の日。ずっと温めていた気持ちが、自然とあふれ出すムードです。今日だから言える一言を、勇気を出して伝えてみて。</figcaption></figure>
-  <figure><img src="gemini_slide3_defense.png"><figcaption><b>守り運: 勉強運(76点)</b><br>今日は、勉強は慎重に。水星逆行中で、情報を詰め込みすぎると混乱しやすい日です。焦らないことが、あなたを守ります。</figcaption></figure>
+  <figure><img src="gemini_slide1_overall.png"><figcaption><b>全体運</b><br>考えすぎないほうが、いい縁がつながる日です。感情が自然に動いているとき、言葉より行動が気持ちを伝えます。今日の自分の感覚を、少し信じてみてもいいかもしれません。</figcaption></figure>
+  <figure><img src="gemini_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(92点)</b><br>今日は、恋愛が攻め運の日。気持ちが表情や言葉ににじみ出やすい状態です。気になる相手と、いつもより少し長く話してみて。</figcaption></figure>
+  <figure><img src="gemini_slide3_defense.png"><figcaption><b>守り運: 勉強運(76点)</b><br>今日は、勉強は慎重に。頭の中で情報が混乱しやすい日です。焦らずゆっくり進むことが、あなたを守ります。</figcaption></figure>
 </div>
 <hr>
 <h2>蟹座 (Cancer)</h2>
 <div class="hooktype">フック型: 呼びかけ型</div>
 <div class="score">総合 71点</div>
 <div class="row">
-  <figure><img src="cancer_slide1_overall.png"><figcaption><b>全体運</b><br>いつも人のことを考えすぎているあなたへ。今日は土星が少し重さをかけますが、金星が静かにそばで支えています。がんばってきたことは、ちゃんと積み上がっています。今日は、自分のペースで進んで大丈夫です。</figcaption></figure>
-  <figure><img src="cancer_slide2_attack.png"><figcaption><b>攻め運: 金運(82点)</b><br>今日は、金運が攻め運の日。木星が良い角度で、堅実な判断が実を結びやすいムードです。今日必要なものだけを、落ち着いて選んでみましょう。</figcaption></figure>
-  <figure><img src="cancer_slide3_defense.png"><figcaption><b>守り運: 仕事運(76点)</b><br>今日は、仕事は慎重に。土星が摩擦の角度にあり、判断が重くなりやすい日です。じっくり確かめることが、あなたを守ります。</figcaption></figure>
+  <figure><img src="cancer_slide1_overall.png"><figcaption><b>全体運</b><br>感じやすいあなたへ。今日は感情が敏感になりやすく、疲れを感じるかもしれません。それでも、あなたの感じる力は誰かを救う力でもあります。</figcaption></figure>
+  <figure><img src="cancer_slide2_attack.png"><figcaption><b>攻め運: 金運(82点)</b><br>今日は、金運が攻め運の日。小さくても積み重ねを意識すると、流れが動き始めます。今日は収支を確かめて、次の計画を立ててみて。</figcaption></figure>
+  <figure><img src="cancer_slide3_defense.png"><figcaption><b>守り運: 仕事運(76点)</b><br>今日は、仕事は慎重に。水星逆行中で、連絡ミスが起きやすい日です。確認を重ねることが、あなたを守ります。</figcaption></figure>
 </div>
 <hr>
 <h2>獅子座 (Leo) ★総合運1位</h2>
 <div class="hooktype">フック型: 数字・希少型</div>
 <div class="score">総合 86点</div>
 <div class="row">
-  <figure><img src="leo_slide1_overall.png"><figcaption><b>全体運</b><br>12星座の中で、今日いちばん恋愛運が高いのはあなたです。木星と金星が重なり、あなたの魅力が自然と輝きやすい特別な配置です。今日の笑顔は、いつもより誰かの心に残るかもしれません。自分らしくいるだけで、十分です。</figcaption></figure>
-  <figure><img src="leo_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(94点)</b><br>今日は、恋愛が攻め運の日。金星と太陽が重なり、あなたの存在感がいつもより増しています。気になるあの人に、今日こそ声をかけてみて。</figcaption></figure>
-  <figure><img src="leo_slide3_defense.png"><figcaption><b>守り運: 勉強運(73点)</b><br>今日は、勉強は慎重に。水星が逆行中で、新しい知識を詰め込みすぎると整理が追いつかない日です。焦らず復習を中心にすることが、あなたを守ります。</figcaption></figure>
+  <figure><img src="leo_slide1_overall.png"><figcaption><b>全体運</b><br>12星座の中で、今日いちばん運の流れが整っているのはあなたです。木星がすぐそばで恵みを注ぎ、土星が足元をしっかり支えています。この日を、ただ過ごすにはもったいないかもしれません。大切な一歩を踏み出すなら、今日が最適です。</figcaption></figure>
+  <figure><img src="leo_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(94点)</b><br>今日は、恋愛が攻め運の日。気持ちを伝えるほど、相手の心に届きやすい状態です。勇気を出して、素直な言葉をかけてみて。</figcaption></figure>
+  <figure><img src="leo_slide3_defense.png"><figcaption><b>守り運: 勉強運(73点)</b><br>今日は、勉強は慎重に。水星が逆行中で、新しい知識より復習が向く日です。焦らず丁寧に進むことが、あなたを守ります。</figcaption></figure>
 </div>
 <hr>
 <h2>乙女座 (Virgo)</h2>
 <div class="hooktype">フック型: 天体現象型</div>
 <div class="score">総合 81点</div>
 <div class="row">
-  <figure><img src="virgo_slide1_overall.png"><figcaption><b>全体運</b><br>今日、新月が静かに始まります。新月は何かを新しく始めるのに向いた日で、金星もすぐそばで輝いています。今日感じたことや気づいたことを、どこかに書き留めておくといいかもしれません。小さな始まりが、大きな変化につながることがあります。</figcaption></figure>
-  <figure><img src="virgo_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(86点)</b><br>今日は、恋愛が攻め運の日。新月という節目に、金星がすぐそばで魅力を引き出してくれています。気になる人への気持ち、今日から少しずつ動かしてみましょう。</figcaption></figure>
-  <figure><img src="virgo_slide3_defense.png"><figcaption><b>守り運: 仕事運(80点)</b><br>今日は、仕事は慎重に。水星が逆行中で、確認不足がミスにつながりやすい日です。丁寧に確かめることが、あなたを守ります。</figcaption></figure>
+  <figure><img src="virgo_slide1_overall.png"><figcaption><b>全体運</b><br>今日、新月を迎えます。金星がそばにいるこの新月は、新しい縁や気持ちの始まりにとても向いています。何かを手放して、新しいものを迎えたいなら、今日がそのタイミングかもしれません。</figcaption></figure>
+  <figure><img src="virgo_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(86点)</b><br>今日は、恋愛が攻め運の日。新月の始まりの力が、縁を引き寄せやすくしています。気になる相手に、今日初めてのメッセージを送ってみて。</figcaption></figure>
+  <figure><img src="virgo_slide3_defense.png"><figcaption><b>守り運: 仕事運(80点)</b><br>今日は、仕事は慎重に。水星逆行中で、情報の行き違いが起きやすい日です。確認を丁寧にすることが、あなたを守ります。</figcaption></figure>
 </div>
 <hr>
 <h2>天秤座 (Libra)</h2>
 <div class="hooktype">フック型: 比喩・情景型</div>
 <div class="score">総合 83点</div>
 <div class="row">
-  <figure><img src="libra_slide1_overall.png"><figcaption><b>全体運</b><br>今日のあなたは、夜明け前の静かな空のようです。土星が向かい側に立ち、少し重さを感じる配置ですが、金星が静かにそばで支えています。重さを感じるときほど、あなたの内側には大切なものが詰まっているかもしれません。今日は無理せず、静かにいることも立派な選択です。</figcaption></figure>
-  <figure><img src="libra_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(93点)</b><br>今日は、恋愛が攻め運の日。気持ちを体で感じながら、自然に言葉が出てくるムードです。今日だから言える素直な一言を、相手に届けてみましょう。</figcaption></figure>
-  <figure><img src="libra_slide3_defense.png"><figcaption><b>守り運: 勉強運(76点)</b><br>今日は、勉強は慎重に。水星逆行中で、情報の整理が追いつかない日です。焦らずじっくり確かめることが、あなたを守ります。</figcaption></figure>
+  <figure><img src="libra_slide1_overall.png"><figcaption><b>全体運</b><br>今日のあなたは、満開直前の花のように静かに力を蓄えています。土星が向かい合い、責任感が高まっているからこそ、本当に大切なものが見えやすい一日です。その感覚を信じると、縁が自然と動き出すかもしれません。</figcaption></figure>
+  <figure><img src="libra_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(93点)</b><br>今日は、恋愛が攻め運の日。体全体で恋愛のときめきを感じやすい状態になっています。心が動いたその瞬間を、見逃さないで。</figcaption></figure>
+  <figure><img src="libra_slide3_defense.png"><figcaption><b>守り運: 勉強運(76点)</b><br>今日は、勉強は慎重に。土星の影響で、じっくり取り組む時間が必要な日です。急がないことが、あなたを守ります。</figcaption></figure>
 </div>
 <hr>
 <h2>蠍座 (Scorpio)</h2>
 <div class="hooktype">フック型: 断言・背中押し型</div>
 <div class="score">総合 71点</div>
 <div class="row">
-  <figure><img src="scorpio_slide1_overall.png"><figcaption><b>全体運</b><br>今日は、信じた道を進んでいい日です。木星が穏やかに後押しし、金星も安定した光を届けています。迷いながらもここまで積み上げてきたものは、消えません。今日の一歩が、未来のあなたを支えます。</figcaption></figure>
-  <figure><img src="scorpio_slide2_attack.png"><figcaption><b>攻め運: 金運(83点)</b><br>今日は、金運が攻め運の日。木星が良い角度にあり、堅実な判断がしやすいムードです。ずっと気になっていた財布の整理、今日やってみましょう。</figcaption></figure>
-  <figure><img src="scorpio_slide3_defense.png"><figcaption><b>守り運: 仕事運(76点)</b><br>今日は、仕事は慎重に。水星が逆行中で、確認を省くとミスにつながりやすい日です。じっくり確かめることが、あなたを守ります。</figcaption></figure>
+  <figure><img src="scorpio_slide1_overall.png"><figcaption><b>全体運</b><br>迷っているなら、動いてください。木星が金運を大きく後押しする今日は、動いた分だけ流れが変わりやすいです。迷いのなかにも、もうすでに答えが見えているかもしれません。</figcaption></figure>
+  <figure><img src="scorpio_slide2_attack.png"><figcaption><b>攻め運: 金運(83点)</b><br>今日は、金運が攻め運の日。着実に動くほど、収入の流れが開きやすい状態です。気になっていた収支の見直し、今日やってみて。</figcaption></figure>
+  <figure><img src="scorpio_slide3_defense.png"><figcaption><b>守り運: 仕事運(76点)</b><br>今日は、仕事は慎重に。水星逆行中で、判断が鈍りやすい日です。急かされても、確認を怠らないことが、あなたを守ります。</figcaption></figure>
 </div>
 <hr>
 <h2>射手座 (Sagittarius)</h2>
 <div class="hooktype">フック型: 言い当て型</div>
 <div class="score">総合 83点</div>
 <div class="row">
-  <figure><img src="sagittarius_slide1_overall.png"><figcaption><b>全体運</b><br>今日は、心が自然と外へ向く日です。木星が三分の角度で光を送り、人との出会いや会話に広がりが生まれやすい配置です。どこかへ行きたい、誰かに会いたいという気持ちは、今日のあなたにとって正直なサインです。その直感を、少し信じてみてください。</figcaption></figure>
-  <figure><img src="sagittarius_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(93点)</b><br>今日は、恋愛が攻め運の日。心が開いて、自然と誰かを近くに感じたくなるムードです。気になる人との距離、今日少しだけ縮めてみて。</figcaption></figure>
-  <figure><img src="sagittarius_slide3_defense.png"><figcaption><b>守り運: 勉強運(73点)</b><br>今日は、勉強は慎重に。水星が逆行中で、情報が頭に入りにくい日です。じっくり確かめることが、あなたを守ります。</figcaption></figure>
+  <figure><img src="sagittarius_slide1_overall.png"><figcaption><b>全体運</b><br>今日は、心が自然と開く日です。木星が大きく後押しし、恋愛と対人の流れが勢いよく整っています。踏み出したいと思っていたことがあれば、今日がそのときかもしれません。</figcaption></figure>
+  <figure><img src="sagittarius_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(93点)</b><br>今日は、恋愛が攻め運の日。明るい笑顔がいつも以上に相手の心に届きやすい状態です。好きな人に、今日思い切って連絡してみて。</figcaption></figure>
+  <figure><img src="sagittarius_slide3_defense.png"><figcaption><b>守り運: 勉強運(73点)</b><br>今日は、勉強は慎重に。逆行中の水星が、新しい情報を混乱させやすい日です。知っていることを確かめることが、あなたを守ります。</figcaption></figure>
 </div>
 <hr>
 <h2>山羊座 (Capricorn)</h2>
 <div class="hooktype">フック型: 問いかけ型</div>
 <div class="score">総合 74点</div>
 <div class="row">
-  <figure><img src="capricorn_slide1_overall.png"><figcaption><b>全体運</b><br>今日は、休む？それとも、一歩だけ進む？水星と土星が重なり、思考や動きに少し重さを感じやすい配置です。でも金星が静かに支えていて、大切なものはちゃんとそばにあります。今日は小さな一歩で十分、あなたはもう十分やっています。</figcaption></figure>
-  <figure><img src="capricorn_slide2_attack.png"><figcaption><b>攻め運: 金運(85点)</b><br>今日は、金運が攻め運の日。木星が良い角度で、落ち着いた判断が実を結びやすいムードです。気になっていた節約や積み立て、今日見直してみましょう。</figcaption></figure>
-  <figure><img src="capricorn_slide3_defense.png"><figcaption><b>守り運: 仕事運(75点)</b><br>今日は、仕事は慎重に。水星が向かい側にあり、思考が重くなりやすい日です。確認を怠らないことが、あなたを守ります。</figcaption></figure>
+  <figure><img src="capricorn_slide1_overall.png"><figcaption><b>全体運</b><br>今日、頑張りすぎていませんか？水星が向かい合う角度にあり、思考が刺激されて疲れやすい一日です。あなたがいつも背負っているものは、今日少しだけ下ろしていいかもしれません。</figcaption></figure>
+  <figure><img src="capricorn_slide2_attack.png"><figcaption><b>攻め運: 金運(85点)</b><br>今日は、金運が攻め運の日。木星がしっかり後押しして、計画的な動きが実りやすい状態です。ずっと考えていたお金の使い道、今日決断してみて。</figcaption></figure>
+  <figure><img src="capricorn_slide3_defense.png"><figcaption><b>守り運: 仕事運(75点)</b><br>今日は、仕事は慎重に。水星が向かい合う位置にあり、判断が揺れやすい日です。確認を丁寧に重ねることが、あなたを守ります。</figcaption></figure>
 </div>
 <hr>
 <h2>水瓶座 (Aquarius)</h2>
 <div class="hooktype">フック型: 反転型</div>
 <div class="score">総合 79点</div>
 <div class="row">
-  <figure><img src="aquarius_slide1_overall.png"><figcaption><b>全体運</b><br>考えすぎるより動いたほうが、答えが見える日です。金星と太陽が近い位置にあり、あなたの存在感が自然と人に伝わりやすい配置です。今日の具体的な一歩が、思いがけない縁につながるかもしれません。動いてみてから、考えても遅くはないです。</figcaption></figure>
-  <figure><img src="aquarius_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(88点)</b><br>今日は、恋愛が攻め運の日。金星が近くで輝き、自然体のあなたが誰かの目に留まりやすいムードです。気になる人に、今日具体的に話しかけてみましょう。</figcaption></figure>
-  <figure><img src="aquarius_slide3_defense.png"><figcaption><b>守り運: 勉強運(72点)</b><br>今日は、勉強は慎重に。水星が逆行中で、情報を詰め込みすぎると整理が難しい日です。焦らず一つずつ確かめることが、あなたを守ります。</figcaption></figure>
+  <figure><img src="aquarius_slide1_overall.png"><figcaption><b>全体運</b><br>比べることをやめたほうが、本当の自分が輝く日です。金星と太陽が近い今日は、自分らしさがそのまま魅力になりやすい状態です。あなたが「普通」に見せようとしていた部分が、実は一番の個性かもしれません。</figcaption></figure>
+  <figure><img src="aquarius_slide2_attack.png"><figcaption><b>攻め運: 恋愛運(88点)</b><br>今日は、恋愛が攻め運の日。自分らしさをそのまま出すと、相手の心に響きやすい状態です。いつもより少し正直に、気持ちを言葉にしてみて。</figcaption></figure>
+  <figure><img src="aquarius_slide3_defense.png"><figcaption><b>守り運: 勉強運(72点)</b><br>今日は、勉強は慎重に。水星逆行中で、情報が頭に入りにくい日です。無理に詰め込まないことが、あなたを守ります。</figcaption></figure>
 </div>
 <hr>
 <h2>魚座 (Pisces)</h2>
 <div class="hooktype">フック型: 呼びかけ型</div>
 <div class="score">総合 74点</div>
 <div class="row">
-  <figure><img src="pisces_slide1_overall.png"><figcaption><b>全体運</b><br>いつも誰かのことを感じとってしまうあなたへ。金星が強く影響し、今日は特に人との縁が動きやすい配置です。今日感じた温かさは、本物です。大切にしてください。あなたが受け取ってきた愛は、ちゃんとそこにあります。</figcaption></figure>
-  <figure><img src="pisces_slide2_attack.png"><figcaption><b>攻め運: 金運(83点)</b><br>今日は、金運が攻め運の日。木星が三分の角度にあり、堅実な判断が自然とできるムードです。今日は収支を確認して、無理のない計画を立ててみましょう。</figcaption></figure>
-  <figure><img src="pisces_slide3_defense.png"><figcaption><b>守り運: 仕事運(76点)</b><br>今日は、仕事は慎重に。水星が逆行中で、連絡や確認作業に時間がかかりやすい日です。余裕を持って動くことが、あなたを守ります。</figcaption></figure>
+  <figure><img src="pisces_slide1_overall.png"><figcaption><b>全体運</b><br>繊細なあなたへ。金星が向かい合う位置にあり、人との縁がいつより大きく動きやすい一日です。疲れたときは、少し休んでいい。休んだ分だけ、また誰かに優しくなれます。</figcaption></figure>
+  <figure><img src="pisces_slide2_attack.png"><figcaption><b>攻め運: 金運(83点)</b><br>今日は、金運が攻め運の日。木星がしっかり後押しして、収入の流れが動きやすい状態です。気になっていたお金の計画、今日まとめてみて。</figcaption></figure>
+  <figure><img src="pisces_slide3_defense.png"><figcaption><b>守り運: 仕事運(76点)</b><br>今日は、仕事は慎重に。水星逆行中で、連絡や情報の行き違いが起きやすい日です。確認を丁寧にすることが、あなたを守ります。</figcaption></figure>
 </div>
-
-
 </body>
 </html>
