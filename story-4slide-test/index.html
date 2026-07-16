@@ -35,19 +35,20 @@
 <body>
 <div class="label">ストーリーズ4枚構成 TEST（CTAスライド3点修正） &middot; Internal Only</div>
 <div class="fixnote">
-<b>【現状確認】CTAスライド 仕上げの微修正2点・未コミット</b><br>
+<b>【現状確認】CTAスライド 緑を友だち追加ボタンだけに絞る・未コミット</b><br>
 dataunsei-automation 側にはまだコミットしていません。デザイン・文言はまだ確定していません。<br>
-まず現状を実描画して確認したところ、ご指摘の2点とも実際に問題が見えたため修正しました:<br>
-1. サブライン「総合・恋愛・金・仕事・勉強・健康・対人」: 色コード自体は前回から
-　<code>#1a1a1a</code>（本文と同じ墨色）でしたが、文字サイズが21pxと小さく太さも標準
-　（font-weight未指定＝継承の500）だったため、周囲の太字と比べて薄く見えていました。
-　<code>font-weight: 700</code> を追加し、はっきり濃く見えるようにしました（色コードは
-　<code>#1a1a1a</code>のまま）。<br>
-2. 「▲プロフィールのリンクから登録できます」の「リンク」: <code>#8a6a2f</code>（金茶系）から
-　<code>#06C755</code>（LINEグリーン、他の緑アクセントと同一コード）に変更。
+緑を友だち追加ボタンの1箇所だけに絞り、それ以外を上半分の明朝と同じ墨色<code>#1a1a1a</code>に統一:<br>
+1. 「続きはLINEで」ピル: 背景 <code>#06C755</code>→<code>#1a1a1a</code>（文字は白のまま維持）<br>
+2. カード枠（border）: <code>#06C755</code>→<code>#1a1a1a</code>の細線に。影の色味も
+　緑系<code>rgba(6,150,70,.15)</code>から墨系<code>rgba(26,26,26,.12)</code>に変更<br>
+3. 箇条書きの強調語（7時／7つの運勢スコア／144通り／あなたへの理解）: <code>#06C755</code>→
+　<code>#1a1a1a</code>の太字に<br>
+4. サブライン: 引き続き<code>#1a1a1a</code>・font-weight:700のまま（変更なし、既に濃い状態）<br>
+5. 「リンク」: <code>#06C755</code>→<code>#1a1a1a</code>に<br>
+6. 友だち追加ボタン: <code>#06C755</code>のまま維持（緑はここだけ）
 </div>
 <div class="row">
-  <figure><img src="cta_uncommitted_preview.png?v=1784219241"><figcaption><b>CTA（現状・未コミット・サブライン強調＋リンク色統一）</b></figcaption></figure>
+  <figure><img src="cta_uncommitted_preview.png?v=1784219817"><figcaption><b>CTA（現状・未コミット・緑はボタンのみ）</b></figcaption></figure>
 </div>
 
 <div class="fixnote">
