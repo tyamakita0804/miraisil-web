@@ -35,30 +35,33 @@
 （65-69）は廃止し、"静かな夕暮れ・残照"に置き換えた。
 </div>
 
-<h2>コントラスト拡張版（96→66の振れ幅を拡大）</h2>
+<h2>「天国の光→深い底」広域スペクトル版</h2>
 <div class="note">
-方針: 上下の振れ幅を広げて中間段階を見分けやすくする。上端(95-100)は最も明るい金のまま、
-下端(65-69 残照)を「暖色のまま深く」沈め、96→66を金→琥珀→深い赤茶へ一直線に。
-黒・灰・紫・寒色は一切混ぜず、以前ボツにした「黒い夜空」にも戻していません。<br>
-特に70-74・65-69は背景が明確に暗くなったため、文字色を従来の濃茶(#5a4222)から
-淡い生成り(#fdf0dc)に切り替え、濃い帯の上でも可読性を確保しています
-（95-100〜75-79の4段は従来通り濃茶文字のまま）。<br>
-R-B値（暖色度の簡易指標）でも96→66まで谷なく単調に増加することを確認済みです。
+方針転換: 全部オレンジに見えてしまう団子状態を解消するため、色の幅を大きく広げた。
+上端(95-100)は「天に近い白金の光」、下端(65-69)は「深紅の底」まで、
+金→橙→赤→深い夕闇の暖色ラインを一直線に通す。紫・青は一切通さず、
+底も真っ黒には落とさず"深紅どまり"にして低スコアの人への配慮を保っている。<br>
+光の効果も強度を7段階で作り分けた: 95-100は強い光芒＋グローコア＋きらめき5個、
+90-94は弱い光芒＋グロー、85-89は柔らかいグローのみ、80-84はごく弱いグローのみ、
+75-79は低い位置の夕日、70-74は沈みかけの残光（弱）、65-69は底にわずかな
+残照のみ、と上ほど強く下ほど静かに絞っている。<br>
+70-74・65-69は背景が明確に暗くなったため、文字色を淡い生成り(#fbe6c8)に
+切り替えて可読性を確保（95-100〜75-79の5段は従来通り濃い金茶 #5a4222 のまま）。<br>
+輝度は246.7→233.6→214.7→185.2→138.7→66.9→30.0と谷なく単調に沈んでいくことを確認済み。
 </div>
 <div class="row">
-  <figure><img src="band_96.png"><figcaption>96点 白熱 95-100 ★5<br>（変更なし）</figcaption></figure>
-  <figure><img src="band_92.png"><figcaption>92点 好天 90-94 ★4<br>#fef4de→#f8d59e</figcaption></figure>
-  <figure><img src="band_85.png"><figcaption>85点 うすもや 85-89 ★3<br>#fbecd2→#f0cd88</figcaption></figure>
-  <figure><img src="band_82.png"><figcaption>82点 もや濃い 80-84 ★3<br>#f3ddb4→#e6b877</figcaption></figure>
-  <figure><img src="band_77.png"><figcaption>77点 ゴールデンアワー 75-79 ★2<br>#ecca92→#d99f63</figcaption></figure>
-  <figure><img src="band_72.png"><figcaption>72点 ゴールデンアワー・静か 70-74 ★2<br>#dcab6e→#c2833f（一段深く／文字は生成りに）</figcaption></figure>
-  <figure><img src="band_66.png"><figcaption>66点 残照 65-69 ★1<br>#c2884e→#9c5f2a（深い赤茶／文字は生成りに）</figcaption></figure>
+  <figure><img src="band_96.png"><figcaption>96点 白熱 95-100 ★5<br>#ffffff→#ffefc0</figcaption></figure>
+  <figure><img src="band_92.png"><figcaption>92点 好天 90-94 ★4<br>#fdf1da→#ffdf9e</figcaption></figure>
+  <figure><img src="band_85.png"><figcaption>85点 うすもや 85-89 ★3<br>#fbe3bf→#f4c078</figcaption></figure>
+  <figure><img src="band_82.png"><figcaption>82点 もや濃い 80-84 ★3<br>#f2c488→#e59a4c</figcaption></figure>
+  <figure><img src="band_77.png"><figcaption>77点 夕焼け 75-79 ★2<br>#dd8f47→#bd6329</figcaption></figure>
+  <figure><img src="band_72.png"><figcaption>72点 深い夕闇 70-74 ★2<br>#8f4020→#5a2410（文字は生成りに）</figcaption></figure>
+  <figure><img src="band_66.png"><figcaption>66点 深紅の底 65-69 ★1<br>#4a1810→#2a0e0a（文字は生成りに）</figcaption></figure>
 </div>
 <div class="note">
-7段階を横に並べた状態で、96→66の振れ幅が広がり、隣どうし（特に85/82/77/72）が
-前より見分けやすくなっているか、かつ どの段も暖色で、くすみ・黒・紫が無いかを
-確認してください。背景グラデーションはすべて暖色（オレンジ〜ゴールド〜赤茶系）で
-統一しています。
+7段階を横に並べた状態で、上端の光と下端の深紅の底まで金→橙→赤→深闇で地続きに
+繋がっているか、中間（85/82/77）が団子にならず見分けられるか、紫/青/真っ黒が
+無いかを確認してください。
 </div>
 </body>
 </html>
