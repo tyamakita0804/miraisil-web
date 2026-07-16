@@ -35,27 +35,30 @@
 （65-69）は廃止し、"静かな夕暮れ・残照"に置き換えた。
 </div>
 
-<h2>85のくすみ修正＋全7段階の確認</h2>
+<h2>コントラスト拡張版（96→66の振れ幅を拡大）</h2>
 <div class="note">
-指摘: 85(うすもや)が灰みがかったベージュで、96(金)と77(黄金)の間で浮いて見えていた。
-→ 85-89を #fdf3e0→#f2dcae（灰色成分を抜いた明るい金クリーム）に差し替え。<br>
-併せて全7段階の色をR-B値（暖色度の簡易指標）でチェックしたところ、85を直した結果、
-今度は80-84が両隣（85-89・75-79）より暖色度が低い"谷"になっていることを発見したため、
-80-84 も #f8ebd2→#eac48e に調整し、96→66まで谷なく単調に暖色化するようにした。
+方針: 上下の振れ幅を広げて中間段階を見分けやすくする。上端(95-100)は最も明るい金のまま、
+下端(65-69 残照)を「暖色のまま深く」沈め、96→66を金→琥珀→深い赤茶へ一直線に。
+黒・灰・紫・寒色は一切混ぜず、以前ボツにした「黒い夜空」にも戻していません。<br>
+特に70-74・65-69は背景が明確に暗くなったため、文字色を従来の濃茶(#5a4222)から
+淡い生成り(#fdf0dc)に切り替え、濃い帯の上でも可読性を確保しています
+（95-100〜75-79の4段は従来通り濃茶文字のまま）。<br>
+R-B値（暖色度の簡易指標）でも96→66まで谷なく単調に増加することを確認済みです。
 </div>
 <div class="row">
-  <figure><img src="band_96.png"><figcaption>96点 白熱 95-100 ★5</figcaption></figure>
-  <figure><img src="band_92.png"><figcaption>92点 好天 90-94 ★4</figcaption></figure>
-  <figure><img src="band_85.png"><figcaption>85点 うすもや 85-89 ★3<br>（今回修正）</figcaption></figure>
-  <figure><img src="band_82.png"><figcaption>82点 もや濃い 80-84 ★3<br>（今回追加修正）</figcaption></figure>
-  <figure><img src="band_77.png"><figcaption>77点 ゴールデンアワー 75-79 ★2</figcaption></figure>
-  <figure><img src="band_72.png"><figcaption>72点 ゴールデンアワー・静か 70-74 ★2</figcaption></figure>
-  <figure><img src="band_66.png"><figcaption>66点 残照 65-69 ★1</figcaption></figure>
+  <figure><img src="band_96.png"><figcaption>96点 白熱 95-100 ★5<br>（変更なし）</figcaption></figure>
+  <figure><img src="band_92.png"><figcaption>92点 好天 90-94 ★4<br>#fef4de→#f8d59e</figcaption></figure>
+  <figure><img src="band_85.png"><figcaption>85点 うすもや 85-89 ★3<br>#fbecd2→#f0cd88</figcaption></figure>
+  <figure><img src="band_82.png"><figcaption>82点 もや濃い 80-84 ★3<br>#f3ddb4→#e6b877</figcaption></figure>
+  <figure><img src="band_77.png"><figcaption>77点 ゴールデンアワー 75-79 ★2<br>#ecca92→#d99f63</figcaption></figure>
+  <figure><img src="band_72.png"><figcaption>72点 ゴールデンアワー・静か 70-74 ★2<br>#dcab6e→#c2833f（一段深く／文字は生成りに）</figcaption></figure>
+  <figure><img src="band_66.png"><figcaption>66点 残照 65-69 ★1<br>#c2884e→#9c5f2a（深い赤茶／文字は生成りに）</figcaption></figure>
 </div>
 <div class="note">
-7段階を横に並べた状態で、96→66まで金→琥珀へ地続きに暗くなっていくか（途中でくすんだ
-灰・ベージュに落ちる帯が無いか）を確認してください。背景グラデーションはすべて
-暖色（オレンジ〜ゴールド系）で統一し、寒色・紫・黒は使用していません。
+7段階を横に並べた状態で、96→66の振れ幅が広がり、隣どうし（特に85/82/77/72）が
+前より見分けやすくなっているか、かつ どの段も暖色で、くすみ・黒・紫が無いかを
+確認してください。背景グラデーションはすべて暖色（オレンジ〜ゴールド〜赤茶系）で
+統一しています。
 </div>
 </body>
 </html>
