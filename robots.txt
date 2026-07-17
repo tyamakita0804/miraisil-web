@@ -8,3 +8,5 @@ Disallow: /v3-test/
 Disallow: /drafts/
 Disallow: /signal-test/
 Disallow: /sky-test/
+Disallow: /story-restructure-test/
+Disallow: /story-4slide-test/
