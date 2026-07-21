@@ -14,9 +14,7 @@
       --accent: #7c6af7;
       --rule:   #e4e2f0;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
       background: var(--bg);
@@ -24,8 +22,6 @@
       line-height: 1.85;
       font-size: 15px;
     }
-
-    /* ── Header ── */
     header {
       background: var(--surface);
       border-bottom: 1px solid var(--rule);
@@ -48,15 +44,11 @@
       margin-left: 4px;
       letter-spacing: 0.08em;
     }
-
-    /* ── Main layout ── */
     main {
       max-width: 760px;
       margin: 56px auto 80px;
       padding: 0 24px;
     }
-
-    /* ── Page title ── */
     .page-header {
       margin-bottom: 48px;
       padding-bottom: 28px;
@@ -72,17 +64,12 @@
       font-size: 13px;
       color: var(--pale);
     }
-
-    /* ── Sections ── */
-    section {
-      margin-bottom: 44px;
-    }
+    section { margin-bottom: 44px; }
     h2 {
       font-size: 15px;
       font-weight: 700;
       color: var(--accent);
       letter-spacing: 0.06em;
-      text-transform: uppercase;
       margin-bottom: 14px;
       display: flex;
       align-items: center;
@@ -95,17 +82,25 @@
       height: 14px;
       background: var(--accent);
       border-radius: 2px;
+      flex-shrink: 0;
+    }
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 24px 0 10px;
     }
     p {
       color: var(--mid);
       margin-bottom: 12px;
     }
     p:last-child { margin-bottom: 0; }
-
-    ul {
+    strong { color: var(--ink); font-weight: 700; }
+    ul, ol {
       list-style: none;
       padding: 0;
       margin: 0 0 12px;
+      counter-reset: item;
     }
     ul li {
       color: var(--mid);
@@ -118,8 +113,45 @@
       left: 0;
       color: var(--accent);
     }
-
-    /* ── Contact box ── */
+    ol li {
+      color: var(--mid);
+      padding: 5px 0 5px 28px;
+      position: relative;
+      counter-increment: item;
+    }
+    ol li::before {
+      content: counter(item) '.';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 13px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 0 16px;
+      font-size: 14px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: left;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--rule);
+      color: var(--mid);
+      vertical-align: top;
+    }
+    th {
+      color: var(--ink);
+      font-weight: 700;
+      background: var(--bg);
+      white-space: nowrap;
+    }
+    tr:last-child th, tr:last-child td { border-bottom: none; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .contact-box {
       background: var(--surface);
       border: 1px solid var(--rule);
@@ -128,18 +160,19 @@
       padding: 20px 24px;
       margin-top: 8px;
     }
-    .contact-box p {
-      margin-bottom: 6px;
-      font-size: 14px;
-    }
-    .contact-box a {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 600;
-    }
+    .contact-box p { margin-bottom: 6px; font-size: 14px; }
+    .contact-box a { color: var(--accent); text-decoration: none; font-weight: 600; }
     .contact-box a:hover { text-decoration: underline; }
-
-    /* ── Footer ── */
+    .note {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--accent);
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin: 0 0 16px;
+    }
+    .note p { font-size: 14px; }
+    a { color: var(--accent); }
     footer {
       text-align: center;
       padding: 32px 24px;
@@ -149,96 +182,200 @@
     }
     footer a { color: var(--pale); text-decoration: none; }
     footer a:hover { color: var(--accent); }
+    footer nav { margin-bottom: 10px; }
+    footer nav a { margin: 0 10px; }
+    @media (max-width: 600px) {
+      header { padding: 16px 20px; }
+      main { margin: 36px auto 60px; padding: 0 18px; }
+      .page-header h1 { font-size: 22px; }
+      th, td { padding: 9px 12px; }
+    }
   </style>
 </head>
 <body>
-
 <header>
   <a class="logo" href="/">mirai<span>sil</span></a>
   <span class="logo-tagline">天体と、毎日を。</span>
 </header>
-
 <main>
   <div class="page-header">
     <h1>プライバシーポリシー</h1>
-    <p class="meta">制定日：2026年6月12日　／　最終更新：2026年6月12日</p>
+    <p class="meta">制定日：2026年6月12日　／　最終更新：2026年7月25日</p>
   </div>
 
   <section>
-    <h2>はじめに</h2>
-    <p>本サービス「今日の運勢」（運営：miraisil、以下「当サービス」）は、miraisilが運営するInstagramアカウント「今日の運勢 by miraisil」を通じて提供する星座別デイリー占いサービスです。本プライバシーポリシーは、当サービスがどのような情報を取り扱うかをご説明するものです。</p>
+    <p>ミライシル（代表者：山北豊一郎。以下「当方」といいます）は、当方が提供する「今日の運勢 by miraisil」および LINE 公式アカウント「今日の運勢」（AIアシスタント「ミライ」を含む。以下あわせて「本サービス」といいます）における利用者の個人情報の取扱いについて、以下のとおり定めます。</p>
   </section>
 
   <section>
-    <h2>収集する情報</h2>
-    <p>当サービスは以下の情報を取得することがあります。</p>
+    <h2>1. 事業者情報</h2>
+    <div class="table-wrap">
+      <table>
+        <tr><th>屋号</th><td>ミライシル</td></tr>
+        <tr><th>代表者</th><td>山北豊一郎</td></tr>
+        <tr><th>所在地</th><td>東京都港区南麻布二丁目9番17号</td></tr>
+        <tr><th>連絡先</th><td><a href="mailto:info@miraisil.jp">info@miraisil.jp</a></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. 取得する情報</h2>
+    <p>当方は、本サービスの提供にあたり、以下の情報を取得します。</p>
+    <h3>利用者に入力していただく情報</h3>
     <ul>
-      <li>Instagramアカウントに関する公開プロフィール情報（Instagram Graph APIを通じて取得）</li>
-      <li>Instagram上でのコンテンツ投稿に必要なアクセストークン</li>
-      <li>お問い合わせフォーム等からご連絡いただいた場合の氏名・メールアドレス等</li>
+      <li>呼び名（本サービス内での呼びかけに使用するもの。本名である必要はありません）</li>
+      <li>生年月日</li>
+      <li>出生時刻（任意）</li>
+      <li>出生地（任意）</li>
+      <li>ご職業の区分</li>
+      <li>本サービス内で利用者が記録・送信した内容（日々の振り返りの選択回答、自由記述、AIアシスタント「ミライ」との会話内容を含みます）</li>
     </ul>
-    <p>当サービスは、フォロワーの個人情報を収集・保存・販売することはありません。</p>
-  </section>
-
-  <section>
-    <h2>情報の利用目的</h2>
-    <p>取得した情報は以下の目的のみに使用します。</p>
+    <h3>自動的に取得する情報</h3>
     <ul>
-      <li>Instagram Storiesへのコンテンツ自動投稿（運勢画像の配信）</li>
-      <li>サービスの運用・改善</li>
-      <li>お問い合わせへの対応</li>
+      <li>LINE ユーザー識別子（LINE 社が発行する、当方のアカウント固有の識別子）</li>
+      <li>本サービスの利用日時、配信の開封・応答状況等の利用履歴</li>
     </ul>
-  </section>
-
-  <section>
-    <h2>Meta（Facebook）プラットフォームの利用</h2>
-    <p>当サービスはMeta社のInstagram Graph APIを利用してコンテンツを配信しています。APIを通じて取得する情報はInstagramへの投稿管理目的のみに限定して使用し、第三者への提供・販売は行いません。</p>
-    <p>Metaのデータポリシーについては、<a href="https://www.facebook.com/policy.php" target="_blank" rel="noopener">Meta Privacy Policy</a>をご参照ください。</p>
-  </section>
-
-  <section>
-    <h2>情報の第三者提供</h2>
-    <p>当サービスは、以下の場合を除き、取得した個人情報を第三者に提供しません。</p>
+    <h3>決済に関する情報</h3>
     <ul>
-      <li>ご本人の同意がある場合</li>
-      <li>法令に基づき開示が必要な場合</li>
+      <li>決済事業者が発行する顧客識別子および契約状態</li>
+    </ul>
+    <p>なお、クレジットカード番号その他の決済情報は決済事業者が直接取得し、当方は保持しません。</p>
+  </section>
+
+  <section>
+    <h2>3. 要配慮個人情報の取扱いについて</h2>
+    <p>本サービスの自由記述および AI アシスタントとの会話においては、利用者が心身の状態や健康に関する事柄を記載される場合があります。これらは個人情報保護法上の「要配慮個人情報」に該当することがあります。</p>
+    <p>当方は、利用者ご自身の意思により入力された範囲でこれらの情報を取得し、本ポリシー第4項に定める目的の範囲内でのみ取り扱います。</p>
+    <p><strong>入力は任意です。</strong>記載を望まれない事柄を入力する必要はありません。</p>
+  </section>
+
+  <section>
+    <h2>4. 利用目的</h2>
+    <p>取得した情報は、以下の目的で利用します。</p>
+    <ol>
+      <li>天体の位置に基づく運勢情報の生成および配信</li>
+      <li>利用者ごとの記録の保存、および記録に基づく個別の内容の生成</li>
+      <li>AI アシスタント「ミライ」による応答の生成</li>
+      <li>有料プランの提供および課金管理</li>
+      <li>本サービスの不具合対応、品質改善および統計的分析（個人を識別できない形に加工した上で行います）</li>
+      <li>利用者からのお問い合わせへの対応</li>
+      <li>利用規約に違反する行為への対応</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>5. 外国にある第三者への提供</h2>
+    <div class="note">
+      <p><strong>本サービスは、利用者の情報の一部を外国の事業者に送信します。</strong>本サービスをご利用いただくにあたり、以下の内容にご同意いただく必要があります。</p>
+    </div>
+
+    <h3>5-1. AI による応答および文章生成のための送信</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>提供先</th><td>Anthropic PBC</td></tr>
+        <tr><th>所在国</th><td>アメリカ合衆国</td></tr>
+        <tr><th>送信する情報</th><td>呼び名、太陽星座・月星座、ご職業の区分、利用者が記録した内容（自由記述を含む）、AIアシスタントとの直近の会話履歴</td></tr>
+        <tr><th>送信しない情報</th><td>LINE ユーザー識別子、生年月日そのもの、決済に関する情報</td></tr>
+        <tr><th>目的</th><td>応答文および運勢に関する文章の生成</td></tr>
+      </table>
+    </div>
+
+    <h3>5-2. データの保管および実行環境</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>事業者</th><th>事業者の所在国</th><th>データの保管地</th><th>用途</th></tr>
+        <tr><td>Supabase, Inc.</td><td>アメリカ合衆国</td><td>オーストラリア（シドニー）</td><td>記録データの保管</td></tr>
+        <tr><td>Render Services, Inc.</td><td>アメリカ合衆国</td><td>アメリカ合衆国</td><td>本サービスの実行環境</td></tr>
+      </table>
+    </div>
+
+    <h3>5-3. 移転先国の個人情報保護制度について</h3>
+    <p>アメリカ合衆国には、日本の個人情報保護法に相当する包括的な個人情報保護法制は存在せず、分野別および州ごとの法律により規律されています。</p>
+    <p>オーストラリアには、連邦法である1988年プライバシー法が存在し、個人情報の取扱いに関する原則が定められています。</p>
+    <p>当方は、各提供先との間で、個人情報保護法および関連するガイドラインに照らして適切な取扱いが確保されるよう措置を講じています。</p>
+    <p>移転先国の制度に関する詳細は、個人情報保護委員会が公表する外国制度に関する情報をご参照ください。</p>
+  </section>
+
+  <section>
+    <h2>6. 業務の委託</h2>
+    <p>当方は、本サービスの提供のため、以下の事業者に業務を委託しています。</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>事業者</th><th>用途</th></tr>
+        <tr><td>LINEヤフー株式会社</td><td>メッセージの配信および受信</td></tr>
+        <tr><td>ストライプジャパン株式会社</td><td>決済処理</td></tr>
+      </table>
+    </div>
+    <p>なお、決済処理においては、同社の関連会社（日本国外に所在する場合を含みます）との間で情報が共有されることがあります。詳細は同社の定めるプライバシーポリシーをご参照ください。</p>
+  </section>
+
+  <section>
+    <h2>7. 第三者への提供</h2>
+    <p>当方は、以下の場合を除き、利用者の個人データを第三者に提供しません。</p>
+    <ol>
+      <li>利用者の同意がある場合</li>
+      <li>法令に基づく場合</li>
+      <li>人の生命、身体または財産の保護のために必要があり、利用者の同意を得ることが困難である場合</li>
+      <li>第5項に定める外国にある事業者への提供、および第6項に定める業務委託に伴う提供</li>
+    </ol>
+    <p><strong>当方は、利用者の記録内容を広告その他の目的で第三者に販売しません。</strong></p>
+  </section>
+
+  <section>
+    <h2>8. 安全管理措置</h2>
+    <p>当方は、取得した個人情報について、以下の措置を講じています。</p>
+    <ul>
+      <li>通信の暗号化</li>
+      <li>データベースへのアクセス権限の制限</li>
+      <li>認証情報の適切な管理および定期的な更新</li>
+      <li>取扱いに関する記録の保持</li>
     </ul>
   </section>
 
   <section>
-    <h2>情報の管理・セキュリティ</h2>
-    <p>当サービスは、取得した情報の漏洩・紛失・改ざんを防ぐため、適切なセキュリティ対策を講じます。アクセストークン等の認証情報は暗号化して管理し、不要になった時点で速やかに削除します。</p>
+    <h2>9. 保存期間および削除</h2>
+    <h3>利用者ご自身による削除</h3>
+    <p>利用者は、本サービス内で所定の操作を行うことにより、記録内容および会話履歴の削除を求めることができます。削除の対象および方法は、本サービス内でご案内します。</p>
+    <h3>ブロック等による利用終了の場合</h3>
+    <p>LINE 公式アカウントのブロックその他により本サービスのご利用を終了された場合、当方は当該時点から30日間データを保持し、その後削除します。この期間内にご利用を再開された場合、記録は保持されます。</p>
+    <h3>削除後も残る情報</h3>
+    <p>法令に基づく保存義務がある場合、および決済に関する記録については、必要な範囲で保持することがあります。</p>
   </section>
 
   <section>
-    <h2>Cookieおよびアクセス解析</h2>
-    <p>当ウェブサイトでは、アクセス状況を把握するためGoogle Analyticsなどの解析ツールを将来的に導入する場合があります。その際は本ポリシーを更新してお知らせします。現時点では、個人を特定するCookieの収集は行っておりません。</p>
+    <h2>10. 開示、訂正、利用停止等の請求</h2>
+    <p>利用者は、当方が保有する自己の個人データについて、開示、訂正、追加、削除、利用停止、第三者提供の停止を請求することができます。</p>
+    <p>ご請求は <a href="mailto:info@miraisil.jp">info@miraisil.jp</a> までお願いします。ご本人であることを確認させていただいた上で、法令に定める範囲で対応します。</p>
   </section>
 
   <section>
-    <h2>お子様のプライバシー</h2>
-    <p>当サービスは13歳未満の方を対象としたサービスではありません。13歳未満の方の個人情報を意図的に収集することはありません。</p>
+    <h2>11. 未成年の利用について</h2>
+    <p>18歳未満の方が本サービスを利用される場合は、保護者の方の同意を得た上でご利用ください。</p>
   </section>
 
   <section>
-    <h2>プライバシーポリシーの変更</h2>
-    <p>当サービスは、必要に応じて本ポリシーを変更することがあります。変更後のポリシーは本ページに掲載した時点で効力を生じるものとします。</p>
+    <h2>12. 本ポリシーの変更</h2>
+    <p>当方は、本ポリシーを変更することがあります。重要な変更を行う場合は、本サービス内または当方のウェブサイトにて事前にお知らせします。</p>
   </section>
 
   <section>
-    <h2>お問い合わせ</h2>
-    <p>本ポリシーに関するご質問・ご意見は、以下よりお問い合わせください。</p>
+    <h2>13. お問い合わせ窓口</h2>
     <div class="contact-box">
-      <p><strong>サービス名</strong>：今日の運勢</p>
-      <p><strong>運営者</strong>：miraisil</p>
-      <p><strong>メール</strong>：<a href="mailto:info@miraisil.jp">info@miraisil.jp</a></p>
+      <p>ミライシル</p>
+      <p><a href="mailto:info@miraisil.jp">info@miraisil.jp</a></p>
     </div>
   </section>
 </main>
 
 <footer>
-  <p>&copy; 2026 <a href="/">miraisil</a>　―　<a href="/privacy-policy.html">プライバシーポリシー</a></p>
+  <nav>
+    <a href="/">ホーム</a>
+    <a href="/privacy-policy.html">プライバシーポリシー</a>
+    <a href="/terms.html">利用規約</a>
+    <a href="/tokushoho.html">特定商取引法に基づく表記</a>
+  </nav>
+  <p>&copy; 2026 miraisil</p>
 </footer>
-
 </body>
 </html>
