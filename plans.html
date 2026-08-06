@@ -141,6 +141,19 @@
       margin-bottom: 6px;
     }
 
+    /* 「初回14日間無料」表示。料金(¥980/月=32px)より小さくして、無料表記が料金より
+       大きくならないようにする（消費者庁の指針）。 */
+    .plan-trial {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(201,169,78,0.12);
+      border-radius: 6px;
+      padding: 3px 10px;
+      margin-bottom: 10px;
+    }
+
     .plan-tagline {
       font-size: 13px;
       color: var(--mid);
@@ -276,6 +289,7 @@
     <p class="plan-name">Premium</p>
     <p class="plan-price">¥980<span class="unit">/月</span></p>
     <p class="plan-price-note">1日あたり約33円</p>
+    <p class="plan-trial">初回14日間無料でお試し</p>
     <p class="plan-tagline">記録を重ねて、あなた専用に育つ</p>
     <hr class="divider">
     <ul class="feature-list">
@@ -296,8 +310,10 @@
 
 <div class="note">
   <p>
-    お支払い完了後、LINEとの連携手順が表示されます。<br>
-    月額制・いつでもキャンセル可能。<a href="/privacy-policy.html">プライバシーポリシー</a>
+    Premiumは<strong>初回14日間無料</strong>でお試しいただけます。無料期間の終了後は
+    自動でプレミアム会員（¥980/月）に切り替わり、以降も毎月自動更新されます。<br>
+    解約はいつでも可能です。LINEで「解約」とメッセージを送ると、解約手続きページをご案内します。<br>
+    <a href="/tokushoho.html">特定商取引法に基づく表記</a>　<a href="/privacy-policy.html">プライバシーポリシー</a>
   </p>
 </div>
 
