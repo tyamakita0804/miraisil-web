@@ -1,212 +1,153 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>AIミライ | 運勢は、読むものから、育てるものへ。</title>
-<meta name="description" content="今日の運勢 AIミライ。NASAが公開する天体データから実際の天体の位置を計算し、あなた専用の運勢を毎朝お届けします。">
-<meta name="theme-color" content="#06172f">
-<style>
-:root{
-  --navy:#06172f; --navy2:#0a294d; --navy3:#0d345e;
-  --ink:#0a2342; --muted:#60748b; --paper:#f5f8fc; --white:#fff;
-  --cyan:#32d5e6; --blue:#3977ff; --line:#06c755; --border:#dfe7ef;
-  --shadow:0 18px 52px rgba(10,35,66,.10);
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;overflow-x:hidden;color:var(--ink);background:#fff;font-family:"Avenir Next","Helvetica Neue","Hiragino Sans","Yu Gothic",YuGothic,"Noto Sans JP",sans-serif;-webkit-font-smoothing:antialiased}
-a{color:inherit} img{display:block;max-width:100%} button{font:inherit}
-.container{width:min(1160px,calc(100% - 48px));margin-inline:auto}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>AIミライ | 運勢は、読むものから、育てるものへ。</title>
+  <meta name="description" content="今日の運勢 AIミライ。NASAが公開する天体データから実際の天体の位置を計算し、あなた専用の運勢を毎朝お届けします。">
+  <style>
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:#fff}
+    body{margin:0;background:#fff;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:#08264e}
+    .visual{position:relative;width:100%;margin:0 auto;background:#fff;overflow:hidden}
+    .reference{display:block;width:100%;height:auto;margin:0}
+    .desktop{display:block}
+    .mobile{display:none}
 
-/* Header */
-.header{height:70px;position:sticky;top:0;z-index:100;background:rgba(255,255,255,.96);border-bottom:1px solid rgba(9,37,82,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.header-inner{height:100%;display:flex;align-items:center;justify-content:space-between;gap:22px}
-.logo{font-family:"Avenir Next","Helvetica Neue",Arial,sans-serif;font-size:29px;font-weight:700;letter-spacing:-.045em;text-decoration:none;color:#092552;line-height:1}
-.logo em{font-style:normal;color:#6a91b0;font-weight:600}
-.nav{display:flex;align-items:center;gap:25px;font-size:13px;font-weight:800}
-.nav a{text-decoration:none;white-space:nowrap}
-.nav-line{padding:11px 18px;border-radius:999px;color:#fff!important;background:var(--line);box-shadow:0 9px 24px rgba(6,199,85,.18)}
+    /* Pixel-match click areas. They are transparent so the reference image remains unchanged. */
+    .hotspot{position:absolute;display:block;z-index:5;text-decoration:none;background:transparent;border:0}
+    .desktop .nav-how{left:62.8%;top:.75%;width:6.5%;height:2.5%}
+    .desktop .nav-premium{left:69.5%;top:.75%;width:7.0%;height:2.5%}
+    .desktop .nav-faq{left:77.0%;top:.75%;width:5.0%;height:2.5%}
+    .desktop .line-header{left:82.3%;top:.45%;width:12.4%;height:3.0%}
+    .desktop .line-hero{left:7.7%;top:23.6%;width:28.4%;height:3.8%}
+    .desktop .line-premium{left:51.0%;top:68.5%;width:39.0%;height:4.0%}
+    .desktop .faq-more{left:31.3%;top:91.1%;width:37.6%;height:3.2%;cursor:pointer}
+    .desktop .anchor-how{position:absolute;top:33.3%}
+    .desktop .anchor-premium{position:absolute;top:54.4%}
+    .desktop .anchor-faq{position:absolute;top:75.4%}
 
-/* Hero */
-.hero{position:relative;overflow:hidden;color:#fff;background:radial-gradient(circle at 76% 10%,rgba(50,125,245,.20),transparent 29%),radial-gradient(circle at 12% 18%,rgba(50,213,230,.08),transparent 25%),linear-gradient(135deg,#041226 0%,#06172f 54%,#0a294d 100%)}
-.hero:before{content:"";position:absolute;inset:0;opacity:.23;pointer-events:none;background-image:radial-gradient(circle at 18% 16%,#fff 0 1px,transparent 1.5px),radial-gradient(circle at 76% 12%,#61ddff 0 1px,transparent 1.5px),radial-gradient(circle at 91% 43%,#fff 0 1px,transparent 1.5px),radial-gradient(circle at 38% 78%,#fff 0 1px,transparent 1.5px);background-size:270px 270px,320px 320px,240px 240px,370px 370px}
-.hero-layout{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr);grid-template-areas:"title visual" "content visual";column-gap:56px;row-gap:24px;align-items:center;padding:72px 0 38px}
-.hero-titleblock{grid-area:title;min-width:0;align-self:end}.hero-content{grid-area:content;min-width:0;align-self:start}.hero-visual{grid-area:visual;min-width:0;position:relative;min-height:600px;display:flex;align-items:flex-end;justify-content:center}
-.badge{display:inline-flex;align-items:center;gap:9px;margin-bottom:22px;padding:8px 12px;border:1px solid rgba(116,206,238,.25);border-radius:999px;background:rgba(10,51,92,.45);color:#dff7ff;font-size:12px;font-weight:850;letter-spacing:.04em}.badge:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 5px rgba(50,213,230,.09)}
-.hero h1{margin:0;font-size:clamp(56px,5.1vw,78px);line-height:1.09;letter-spacing:-.055em;font-weight:800}.hero h1 span{display:block;white-space:nowrap}.hero h1 .accent{color:var(--cyan);text-shadow:0 0 24px rgba(50,213,230,.12)}
-.hero-desc{max-width:650px;margin:0;color:rgba(237,247,255,.84);font-size:16px;line-height:1.95;font-weight:500}
-.hero-actions{display:flex;align-items:stretch;gap:13px;margin-top:28px}.cta{display:inline-flex;align-items:center;justify-content:center;gap:13px;min-height:58px;padding:0 25px;border-radius:15px;background:var(--line);color:#fff;text-decoration:none;font-size:16px;font-weight:850;text-align:center;box-shadow:0 14px 32px rgba(6,199,85,.22)}.cta:after{content:"→";font-size:21px}.cta:hover{filter:brightness(1.03)}.hero .cta{min-width:360px}
-.qr{display:flex;align-items:center;gap:10px;flex:0 0 auto;padding:7px 12px 7px 7px;border:1px solid rgba(255,255,255,.17);border-radius:14px;background:rgba(255,255,255,.08);text-decoration:none}.qr img{width:64px;height:64px;border-radius:7px;background:#fff}.qr b{display:block;font-size:12px}.qr small{display:block;margin-top:4px;color:#abc7d9;font-size:10px}
-.orbit{position:absolute;z-index:0;width:500px;height:500px;max-width:100%;border:1px solid rgba(73,184,240,.16);border-radius:50%;bottom:40px;left:50%;transform:translateX(-50%)}.orbit:before,.orbit:after{content:"";position:absolute;border:1px solid rgba(50,213,230,.11);border-radius:50%;inset:52px}.orbit:after{inset:120px}
-.mirai{position:relative;z-index:2;width:420px;max-width:96%;filter:drop-shadow(0 28px 36px rgba(0,0,0,.30))}.speech{position:absolute;z-index:3;right:0;top:36px;width:230px;padding:16px 18px;border:1px solid rgba(67,200,255,.70);border-radius:18px;background:rgba(4,23,46,.92);color:#67edf4;box-shadow:0 0 26px rgba(30,140,255,.18);font-size:17px;font-weight:850;line-height:1.55}.speech:after{content:"";position:absolute;left:48px;bottom:-15px;border:8px solid transparent;border-top-color:#2c9fe2}
-.hero-proofs{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:0 0 48px}.proof{display:flex;align-items:center;gap:12px;min-height:70px;padding:14px 16px;border:1px solid rgba(89,191,235,.25);border-radius:15px;background:rgba(7,46,84,.88);color:#effaff;font-size:13px;font-weight:780;line-height:1.45}.proof-icon{flex:0 0 35px;width:35px;height:35px;border:1px solid rgba(50,213,230,.35);border-radius:50%;display:grid;place-items:center;color:var(--cyan);font-size:17px}
+    .mobile .line-hero{left:5%;top:34.3%;width:90%;height:4.0%}
+    .mobile .line-premium{left:2%;top:96.2%;width:96%;height:3.5%}
 
-/* General */
-.section{padding:100px 0}.section.alt{background:var(--paper)}
-.kicker{margin-bottom:11px;color:var(--blue);font-size:11px;font-weight:900;letter-spacing:.15em}
-h2{margin:0;font-size:clamp(36px,4vw,57px);line-height:1.18;letter-spacing:-.045em}.lead{max-width:760px;margin:19px 0 0;color:var(--muted);font-size:16px;line-height:1.9}
-.section-head{margin-bottom:42px}
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.card{padding:28px;border:1px solid var(--border);border-radius:22px;background:#fff;box-shadow:var(--shadow)}
-.num{color:var(--blue);font-size:11px;font-weight:900;letter-spacing:.13em}.card h3{margin:15px 0 10px;font-size:21px}.card p{margin:0;color:var(--muted);font-size:14px;line-height:1.82}
+    /* FAQ overlay — hidden until the exact mockup's “他の質問も見る” area is clicked. */
+    .faq-dialog{position:fixed;inset:0;z-index:100;background:rgba(3,18,42,.76);display:none;padding:24px;overflow:auto}
+    .faq-dialog.open{display:block}
+    .faq-panel{max-width:840px;margin:40px auto;background:#fff;border-radius:22px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.25)}
+    .faq-panel-head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:18px}
+    .faq-panel h2{margin:0;font-size:28px;color:#08264e}
+    .close{border:0;border-radius:999px;width:42px;height:42px;background:#eef5ff;color:#08264e;font-size:22px;cursor:pointer}
+    .faq-panel details{border:1px solid #d7e3f2;border-radius:10px;margin:10px 0;padding:0 16px}
+    .faq-panel summary{cursor:pointer;padding:16px 4px;font-weight:750}
+    .faq-panel p{margin:0;padding:0 4px 18px;line-height:1.85;color:#536a85;font-size:14px}
 
-/* Fortune / personalization */
-.loop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:52px;align-items:center}.loop-panel{padding:30px;border-radius:26px;background:linear-gradient(145deg,#071b38,#0a3159);color:#fff;box-shadow:0 28px 70px rgba(9,37,82,.18)}
-.score{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.09)}.score:last-of-type{border-bottom:0}.score span{color:#cfe3f1;font-size:13px}.score b{font-size:25px;color:#77e8ef}.feedback{display:flex;gap:8px;margin-top:18px}.feedback span{flex:1;padding:11px 8px;border-radius:10px;background:rgba(255,255,255,.08);text-align:center;font-size:11px}
-.fortunes{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin-top:28px}.fortune{padding:14px 5px;border:1px solid var(--border);border-radius:14px;background:#fff;text-align:center;font-size:11px;font-weight:800}.fortune i{display:grid;place-items:center;width:34px;height:34px;margin:0 auto 8px;border-radius:10px;background:#edf4ff;color:var(--blue);font-style:normal}
+    /* Mobile continuation after the supplied phone mockup viewport. */
+    .mobile-continuation{display:none;background:#fff;padding:34px 20px 0}
+    .mobile-continuation .kicker{font-size:11px;font-weight:900;letter-spacing:.14em;color:#2479ff}
+    .mobile-continuation h2{font-size:26px;line-height:1.25;margin:8px 0 20px;color:#08264e}
+    .mobile-continuation details{border:1px solid #d9e4f0;border-radius:10px;margin:9px 0;padding:0 12px}
+    .mobile-continuation summary{padding:14px 2px;font-size:14px;font-weight:750;cursor:pointer}
+    .mobile-continuation p{padding:0 2px 15px;margin:0;color:#59708a;line-height:1.75;font-size:13px}
+    .mobile-footer{display:none;background:#062455;color:#fff;padding:30px 20px 36px;font-size:12px}
+    .mobile-footer strong{font-size:21px}
+    .mobile-footer .links{display:flex;flex-wrap:wrap;gap:15px;margin:18px 0;color:#c8d9ed}
 
-/* Premium */
-.pricing{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:45px;align-items:center}.price-card{padding:34px;border-radius:28px;background:#071c39;color:#fff;box-shadow:0 30px 80px rgba(9,37,82,.20)}
-.price-badge{display:inline-block;padding:7px 11px;border-radius:999px;background:rgba(55,212,231,.12);color:#7eeaf1;font-size:11px;font-weight:850}.price{margin:20px 0 4px;font-size:54px;font-weight:850;letter-spacing:-.05em}.price small{font-size:15px;color:#a8c4d8}.trial{color:#87eaf0;font-size:14px;font-weight:800}.price-list{list-style:none;margin:24px 0;padding:0}.price-list li{padding:12px 0;border-bottom:1px solid rgba(255,255,255,.09);color:#dcecf7;font-size:14px}.price-list li:before{content:"✓";margin-right:10px;color:#75e7ef}
-
-/* Philosophy */
-.philosophy{padding:92px 0;background:#06172f;color:#fff}.philosophy-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:65px}.philosophy p{margin:0;color:#bdd1e1;line-height:1.95}.principles{margin-top:28px}.principle{display:grid;grid-template-columns:40px minmax(0,1fr);gap:14px;padding:16px 0;border-top:1px solid rgba(255,255,255,.09)}.principle b{color:#5fdde6}.principle span{color:#d8e8f2;font-size:14px;line-height:1.72}
-
-/* FAQ */
-.faq{display:grid;gap:12px;max-width:900px}.faq details{border:1px solid var(--border);border-radius:16px;background:#fff;overflow:hidden}.faq summary{cursor:pointer;list-style:none;padding:20px 54px 20px 22px;font-weight:800;line-height:1.55;position:relative}.faq summary::-webkit-details-marker{display:none}.faq summary:after{content:"＋";position:absolute;right:20px;top:20px;color:var(--blue)}.faq details[open] summary:after{content:"−"}.faq details p{margin:0;padding:0 22px 22px;color:var(--muted);font-size:14px;line-height:1.9}.faq-extra{display:none;gap:12px}.faq-extra.open{display:grid}.faq-more{margin-top:20px;border:1px solid #cfdbe7;border-radius:999px;background:#fff;padding:13px 21px;color:#092552;font-weight:800;cursor:pointer}
-
-/* Final / footer */
-.final{padding:82px 0;background:linear-gradient(135deg,#0b2f5a,#06172f);color:#fff}.final-panel{display:flex;align-items:center;justify-content:space-between;gap:35px}.final p{color:#bfd4e2;line-height:1.8}.footer{padding:34px 0 42px;background:#fff}.footer-row{display:flex;align-items:center;justify-content:space-between;gap:24px}.footer-links{display:flex;flex-wrap:wrap;gap:18px}.footer-links a{font-size:12px;color:#66788d;text-decoration:none}.copy{margin-top:25px;color:#8a99a8;font-size:10px;line-height:1.7}
-
-/* Tablet */
-@media(max-width:980px){
-  .hero-main{grid-template-columns:1fr;gap:34px;padding:54px 0 34px}.hero-copy{max-width:760px}.hero h1{font-size:64px}.mirai-frame{width:390px}.hero-proofs{padding-bottom:40px}.loop,.pricing,.philosophy-grid{grid-template-columns:1fr}.fortunes{grid-template-columns:repeat(4,1fr)}
-}
-
-/* Mobile: intentionally simple single column; no overlapping/absolute UI */
-@media(max-width:767px){
-  .container{width:calc(100% - 30px)}
-  .header{height:62px}.logo{font-size:25px}.nav>a:not(.nav-line){display:none}.nav{gap:0}.nav-line{padding:9px 12px;font-size:11px}
-  .hero-main{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:30px 0 22px}
-  .badge{align-self:flex-start;margin-bottom:16px;font-size:10px;padding:7px 10px}
-  .hero h1{font-size:40px;line-height:1.12;letter-spacing:-.05em}.hero h1 span{white-space:normal}
-  .hero-visual{order:2;margin-top:24px}.mirai-frame{width:300px;max-width:92%;border-radius:24px}
-  .hero-desc{order:3;margin-top:24px;font-size:13.5px;line-height:1.9}
-  .hero-actions{order:4;display:grid;grid-template-columns:1fr;margin-top:20px;gap:12px}.hero .cta{width:100%;min-width:0;min-height:56px;padding:0 17px;font-size:14px;border-radius:14px}
-  .qr{width:100%;justify-content:center;padding:9px}.qr img{width:70px;height:70px}.qr b{font-size:12px}.qr small{font-size:10px}
-  .hero-proofs{grid-template-columns:1fr;gap:8px;padding:0 0 30px}.proof{min-height:58px;padding:11px 13px;font-size:12px}.proof-icon{width:31px;height:31px;flex-basis:31px}
-  .section{padding:72px 0}.section-head{margin-bottom:30px}.kicker{font-size:10px}h2{font-size:36px;line-height:1.2}.lead{font-size:14px;line-height:1.85}
-  .grid3{grid-template-columns:1fr;gap:12px}.card{padding:22px;border-radius:18px}.card h3{font-size:19px}.card p{font-size:13px}
-  .loop{gap:28px}.loop-panel{padding:22px;border-radius:20px}.feedback{flex-direction:column}.fortunes{grid-template-columns:repeat(4,1fr);gap:7px}.fortune{font-size:10px;padding:11px 3px}
-  .pricing{gap:30px}.price-card{padding:24px;border-radius:22px}.price{font-size:46px}.price-card .cta{width:100%;padding:0 15px;font-size:14px}
-  .philosophy{padding:70px 0}.philosophy-grid{gap:28px}.principle{grid-template-columns:32px minmax(0,1fr)}
-  .faq summary{padding:18px 48px 18px 18px;font-size:14px}.faq details p{padding:0 18px 18px;font-size:13px}.faq-more{width:100%}
-  .final{padding:66px 0}.final-panel{display:block}.final-panel .cta{width:100%;margin-top:22px;padding:0 16px;font-size:14px}
-  .footer-row{display:block}.footer-links{margin-top:18px;gap:12px 16px}
-}
-@media(max-width:380px){.hero h1{font-size:37px}.mirai-frame{width:280px}.nav-line{font-size:10px;padding:8px 10px}.logo{font-size:24px}}
-
-/* Hero responsive — no overlapping / no squeezed columns */
-@media(max-width:980px){
-  .hero-layout{grid-template-columns:1fr;grid-template-areas:"title" "visual" "content";gap:0;padding:52px 0 30px}.hero-titleblock{max-width:760px}.hero h1{font-size:64px}.hero-visual{min-height:500px;margin-top:20px}.mirai{width:350px}.speech{right:12%;top:20px}.hero-content{max-width:760px}.hero-proofs{padding-bottom:38px}.loop,.pricing,.philosophy-grid{grid-template-columns:1fr}.fortunes{grid-template-columns:repeat(4,1fr)}
-}
-@media(max-width:767px){
-  .container{width:calc(100% - 30px)}.header{height:62px}.logo{font-size:25px}.nav>a:not(.nav-line){display:none}.nav{gap:0}.nav-line{padding:9px 12px;font-size:11px}
-  .hero-layout{grid-template-areas:"title" "visual" "content";padding:30px 0 22px}.badge{margin-bottom:16px;font-size:10px;padding:7px 10px}.hero h1{font-size:40px;line-height:1.12;letter-spacing:-.05em}.hero h1 span{white-space:normal}
-  .hero-visual{min-height:310px;margin-top:16px;align-items:flex-end}.orbit{width:300px;height:300px;bottom:0}.orbit:before{inset:36px}.orbit:after{inset:78px}.mirai{width:218px;max-width:70%;margin-right:18px}.speech{width:158px;right:1px;top:9px;padding:10px 11px;border-radius:13px;font-size:11px;line-height:1.55}.speech:after{left:38px;bottom:-11px;border-width:6px}
-  .hero-content{margin-top:20px}.hero-desc{font-size:13.5px;line-height:1.88}.hero-actions{display:grid;grid-template-columns:1fr;gap:12px;margin-top:20px}.hero .cta{width:100%;min-width:0;min-height:56px;padding:0 16px;font-size:14px;border-radius:14px}.qr{width:100%;justify-content:center;padding:9px}.qr img{width:68px;height:68px}
-  .hero-proofs{grid-template-columns:1fr;gap:8px;padding:0 0 30px}.proof{min-height:56px;padding:10px 13px;font-size:12px}.proof-icon{width:31px;height:31px;flex-basis:31px}
-  .section{padding:72px 0}.section-head{margin-bottom:30px}.kicker{font-size:10px}h2{font-size:36px;line-height:1.2}.lead{font-size:14px;line-height:1.85}.grid3{grid-template-columns:1fr;gap:12px}.card{padding:22px;border-radius:18px}.card h3{font-size:19px}.card p{font-size:13px}.loop{gap:28px}.loop-panel{padding:22px;border-radius:20px}.feedback{flex-direction:column}.fortunes{grid-template-columns:repeat(4,1fr);gap:7px}.fortune{font-size:10px;padding:11px 3px}.pricing{gap:30px}.price-card{padding:24px;border-radius:22px}.price{font-size:46px}.price-card .cta{width:100%;padding:0 15px;font-size:14px}.philosophy{padding:70px 0}.philosophy-grid{gap:28px}.principle{grid-template-columns:32px minmax(0,1fr)}.faq summary{padding:18px 48px 18px 18px;font-size:14px}.faq details p{padding:0 18px 18px;font-size:13px}.faq-more{width:100%}.final{padding:66px 0}.final-panel{display:block}.final-panel .cta{width:100%;margin-top:22px;padding:0 16px;font-size:14px}.footer-row{display:block}.footer-links{margin-top:18px;gap:12px 16px}
-}
-@media(max-width:380px){.hero h1{font-size:37px}.mirai{width:205px}.speech{width:148px;font-size:10.5px}.nav-line{font-size:10px;padding:8px 10px}.logo{font-size:24px}}
-
-</style>
+    @media (max-width:700px){
+      .desktop{display:none}
+      .mobile{display:block}
+      .mobile-continuation,.mobile-footer{display:block}
+      .visual{max-width:none}
+      .reference{width:100%;height:auto}
+    }
+    @media (min-width:701px){
+      .visual{max-width:1280px}
+    }
+  </style>
 </head>
 <body>
-<header class="header">
-  <div class="container header-inner">
-    <a class="logo" href="#top">mirai<em>sil</em></a>
-    <nav class="nav" aria-label="メインナビゲーション">
-      <a href="#how">仕組み</a><a href="#premium">Premium</a><a href="#faq">Q&amp;A</a>
-      <a class="nav-line" href="https://lin.ee/WA0V5f4" target="_blank" rel="noopener noreferrer">LINEで無料登録</a>
-    </nav>
-  </div>
-</header>
-<main id="top">
-<section class="hero">
-  <div class="container hero-layout">
-    <div class="hero-titleblock">
-      <div class="badge">今日の運勢 AIミライ</div>
-      <h1><span>運勢は、</span><span>読むものから、</span><span class="accent">育てるものへ。</span></h1>
+  <main>
+    <div class="visual desktop" aria-label="今日の運勢 AIミライ ランディングページ">
+      <img class="reference" src="assets/lp-desktop.png" alt="今日の運勢 AIミライ ランディングページ">
+      <span id="how" class="anchor-how"></span>
+      <span id="premium" class="anchor-premium"></span>
+      <span id="faq" class="anchor-faq"></span>
+      <a class="hotspot nav-how" href="#how" aria-label="仕組みへ"></a>
+      <a class="hotspot nav-premium" href="#premium" aria-label="Premiumへ"></a>
+      <a class="hotspot nav-faq" href="#faq" aria-label="Q&Aへ"></a>
+      <a class="hotspot line-header" href="https://lin.ee/WA0V5f4" target="_blank" rel="noopener" aria-label="LINEで無料登録"></a>
+      <a class="hotspot line-hero" href="https://lin.ee/WA0V5f4" target="_blank" rel="noopener" aria-label="LINEで無料ではじめる"></a>
+      <a class="hotspot line-premium" href="https://lin.ee/WA0V5f4" target="_blank" rel="noopener" aria-label="LINEで14日間無料体験"></a>
+      <button class="hotspot faq-more" type="button" aria-label="すべての質問を見る" onclick="openFaq()"></button>
     </div>
-    <div class="hero-visual" aria-label="AIミライ">
-      <div class="orbit" aria-hidden="true"></div>
-      <div class="speech">ミライが<br>あなた専用の<br>運勢を育てます！</div>
-      <img class="mirai" src="assets/mirai-final.png" alt="AIミライ">
+
+    <div class="visual mobile" aria-label="今日の運勢 AIミライ モバイル版">
+      <img class="reference" src="assets/lp-mobile.png" alt="今日の運勢 AIミライ モバイル版">
+      <a class="hotspot line-hero" href="https://lin.ee/WA0V5f4" target="_blank" rel="noopener" aria-label="LINEで無料ではじめる"></a>
+      <a class="hotspot line-premium" href="https://lin.ee/WA0V5f4" target="_blank" rel="noopener" aria-label="LINEで14日間無料体験"></a>
     </div>
-    <div class="hero-content">
-      <p class="hero-desc">AIミライは、NASAが公開する天体データから実際の天体の位置を計算し、あなたの生年月日・出生時刻・出生地をもとに、あなただけの運勢を毎朝お届けします。<br>運勢を振り返るほど、あなたの実感に近い運勢に育っていきます。</p>
-      <div class="hero-actions">
-        <a class="cta" href="https://lin.ee/WA0V5f4" target="_blank" rel="noopener noreferrer">あなた専用の運勢はLINEで（無料）</a>
-        <a class="qr" href="https://lin.ee/WA0V5f4" target="_blank" rel="noopener noreferrer"><img src="assets/line-qr.png" alt="LINE登録QRコード"><span><b>QRでLINE登録</b><small>スマホで読み取る</small></span></a>
+
+    <section class="mobile-continuation">
+      <div class="kicker">Q&A</div>
+      <h2>よくある質問</h2>
+      <details><summary>本当に私専用の運勢になっていくのですか？</summary><p>はい。ミライは、あなたの生年月日・出生時刻・出生地から運勢を計算し、そこに「あなたが実際にどう感じたか」の記録を重ねていきます。たとえば「仕事運が高い日でも、実感はいつも少し低め」という傾向が見えてくると、ミライは同じ点数でもあなたに合わせた読み方でお伝えするようになります。同じ星座の人と、届く言葉が変わっていきます。</p></details>
+<details><summary>毎日、長い文章を入力する必要がありますか？</summary><p>いいえ。振り返りはボタンを数回タップするだけで終わります。文章を書く必要はありません。もちろん、ミライに話しかけていただければ、そこから会話が始まります。書きたいときだけ書いてください。</p></details>
+<details><summary>一般的な占いとは何が違うのですか？</summary><p>多くの占いは、あらかじめ書かれた12通り、あるいは数十通りの文章から選ばれたものが届きます。ミライは、その日の実際の天体の位置を計算し、あなたの記録を踏まえて、あなたのための言葉をつくります。そして「当たっていたか」を毎日確かめられます。当たり外れを言いっぱなしにしません。</p></details>
+<details><summary>予測どおりに行動する必要がありますか？</summary><p>ありません。ミライがお伝えするのは「今日はこう動くと流れに乗りやすい」という提案です。従わなくても構いませんし、違うと感じたらそれを記録してください。その「違う」がミライを育てます。むしろ、素直に感じたままを教えていただくほうが、あなたに合う運勢に近づきます。</p></details>
+<details><summary>無料で始められますか？</summary><p>はい。無料でも、毎日の運勢スコア、その日の天体の動き、相性ランキングをご覧いただけます。Premiumは14日間無料でお試しいただけ、その間に解約すれば料金は発生しません。無料期間終了後は月額980円、いつでも解約できます。</p></details>
+<details><summary>占いを信じていないのですが、使えますか？</summary><p>はい。ミライは「当たります」とは言いません。その日の天体の位置という事実から、7つの運勢を数値化してお届けしています。信じるかどうかではなく、毎朝「今日はこういう傾向」と目安を持つための道具としてお使いください。実際に、判断の材料として使っている方が多くいらっしゃいます。</p></details>
+<details><summary>出生時刻や出生地が分かりません。</summary><p>登録できます。分からない場合は入力を省略でき、その場合は生年月日をもとに計算します。ただし、月の位置は1日の中でも動くため、出生時刻が分かるとより細かくお届けできます。母子手帳に記載されていることが多いので、機会があればご確認ください。</p></details>
+<details><summary>記録した内容は誰かに見られますか？</summary><p>いいえ。あなたの記録と会話は、あなたのためだけに使われます。他の方に共有されることはありません。削除をご希望の場合は「データ削除」とお送りいただければ、いつでも消去できます。</p></details>
+<details><summary>毎朝の通知が多いと感じたら？</summary><p>配信は1日1通のみです。それでも多いと感じたら、リッチメニューの「今日の運勢」からご自身のタイミングで読むこともできます。</p></details>
+<details><summary>途中で解約したらどうなりますか？</summary><p>いつでも解約でき、日割りの手数料もかかりません。解約後も無料版としてご利用いただけます。ただし、記録から育ったあなた専用の読み方は、Premiumでのみお届けしています。</p></details>
+<details><summary>どのくらい使えば「育った」と感じられますか？</summary><p>初日から、あなたの生年月日にもとづく運勢が届きます。振り返りを3回ほど重ねると、ミライがあなたの傾向に触れ始めます。15回を超えるころには、はっきりとした言葉であなたの受け取り方をお伝えできるようになります。</p></details>
+    </section>
+    <footer class="mobile-footer">
+      <strong>miraisil</strong>
+      <div class="links">
+        <span>利用規約</span>
+        <span>プライバシーポリシー</span>
+        <span>特定商取引法に基づく表記</span>
+        <span>お問い合わせ</span>
       </div>
+      <div>© 2026 miraisil. All rights reserved.</div>
+    </footer>
+  </main>
+
+  <div id="faqDialog" class="faq-dialog" role="dialog" aria-modal="true" aria-label="よくある質問">
+    <div class="faq-panel">
+      <div class="faq-panel-head">
+        <h2>よくある質問</h2>
+        <button class="close" onclick="closeFaq()" aria-label="閉じる">×</button>
+      </div>
+      <details><summary>本当に私専用の運勢になっていくのですか？</summary><p>はい。ミライは、あなたの生年月日・出生時刻・出生地から運勢を計算し、そこに「あなたが実際にどう感じたか」の記録を重ねていきます。たとえば「仕事運が高い日でも、実感はいつも少し低め」という傾向が見えてくると、ミライは同じ点数でもあなたに合わせた読み方でお伝えするようになります。同じ星座の人と、届く言葉が変わっていきます。</p></details>
+<details><summary>毎日、長い文章を入力する必要がありますか？</summary><p>いいえ。振り返りはボタンを数回タップするだけで終わります。文章を書く必要はありません。もちろん、ミライに話しかけていただければ、そこから会話が始まります。書きたいときだけ書いてください。</p></details>
+<details><summary>一般的な占いとは何が違うのですか？</summary><p>多くの占いは、あらかじめ書かれた12通り、あるいは数十通りの文章から選ばれたものが届きます。ミライは、その日の実際の天体の位置を計算し、あなたの記録を踏まえて、あなたのための言葉をつくります。そして「当たっていたか」を毎日確かめられます。当たり外れを言いっぱなしにしません。</p></details>
+<details><summary>予測どおりに行動する必要がありますか？</summary><p>ありません。ミライがお伝えするのは「今日はこう動くと流れに乗りやすい」という提案です。従わなくても構いませんし、違うと感じたらそれを記録してください。その「違う」がミライを育てます。むしろ、素直に感じたままを教えていただくほうが、あなたに合う運勢に近づきます。</p></details>
+<details><summary>無料で始められますか？</summary><p>はい。無料でも、毎日の運勢スコア、その日の天体の動き、相性ランキングをご覧いただけます。Premiumは14日間無料でお試しいただけ、その間に解約すれば料金は発生しません。無料期間終了後は月額980円、いつでも解約できます。</p></details>
+<details><summary>占いを信じていないのですが、使えますか？</summary><p>はい。ミライは「当たります」とは言いません。その日の天体の位置という事実から、7つの運勢を数値化してお届けしています。信じるかどうかではなく、毎朝「今日はこういう傾向」と目安を持つための道具としてお使いください。実際に、判断の材料として使っている方が多くいらっしゃいます。</p></details>
+<details><summary>出生時刻や出生地が分かりません。</summary><p>登録できます。分からない場合は入力を省略でき、その場合は生年月日をもとに計算します。ただし、月の位置は1日の中でも動くため、出生時刻が分かるとより細かくお届けできます。母子手帳に記載されていることが多いので、機会があればご確認ください。</p></details>
+<details><summary>記録した内容は誰かに見られますか？</summary><p>いいえ。あなたの記録と会話は、あなたのためだけに使われます。他の方に共有されることはありません。削除をご希望の場合は「データ削除」とお送りいただければ、いつでも消去できます。</p></details>
+<details><summary>毎朝の通知が多いと感じたら？</summary><p>配信は1日1通のみです。それでも多いと感じたら、リッチメニューの「今日の運勢」からご自身のタイミングで読むこともできます。</p></details>
+<details><summary>途中で解約したらどうなりますか？</summary><p>いつでも解約でき、日割りの手数料もかかりません。解約後も無料版としてご利用いただけます。ただし、記録から育ったあなた専用の読み方は、Premiumでのみお届けしています。</p></details>
+<details><summary>どのくらい使えば「育った」と感じられますか？</summary><p>初日から、あなたの生年月日にもとづく運勢が届きます。振り返りを3回ほど重ねると、ミライがあなたの傾向に触れ始めます。15回を超えるころには、はっきりとした言葉であなたの受け取り方をお伝えできるようになります。</p></details>
     </div>
   </div>
-  <div class="container hero-proofs">
-    <div class="proof"><span class="proof-icon">✦</span><span>NASA公開データを利用</span></div>
-    <div class="proof"><span class="proof-icon">☀</span><span>毎朝あなた専用に配信</span></div>
-    <div class="proof"><span class="proof-icon">↻</span><span>振り返るほど自分に近づく</span></div>
-  </div>
-</section>
 
-<section id="how" class="section">
-  <div class="container">
-    <div class="section-head"><div class="kicker">HOW IT WORKS</div><h2>毎日の振り返りが、<br>あなた専用の運勢を育てる。</h2><p class="lead">一方的に読むだけではなく、実際の一日を記録することで、ミライがあなたの受け取り方や好調・不調のパターンを少しずつ学びます。</p></div>
-    <div class="grid3">
-      <article class="card"><div class="num">01 / CALCULATE</div><h3>実際の天体の位置を計算</h3><p>NASAが公開する天体データを基礎に、その日の星の配置を計算。生年月日・出生時刻・出生地を重ねます。</p></article>
-      <article class="card"><div class="num">02 / DELIVER</div><h3>7つの運勢を毎朝お届け</h3><p>総合運だけではなく、仕事・恋愛・金運など、その日に確認したい運勢をスコアとメッセージでお届けします。</p></article>
-      <article class="card"><div class="num">03 / LEARN</div><h3>振り返るほど、自分に近づく</h3><p>「実際はどうだったか」を数回タップ。あなたの傾向を学び、同じ点数でも伝える言葉があなた向けに変わっていきます。</p></article>
-    </div>
-  </div>
-</section>
-
-<section class="section alt">
-  <div class="container loop">
-    <div><div class="kicker">PERSONALIZATION LOOP</div><h2>当たり外れを、<br>言いっぱなしにしない。</h2><p class="lead">予測と実感の差を毎日確かめ、その差そのものを次の読み方へ反映。あなたの「違う」も、ミライを育てる大切なデータです。</p>
-      <div class="fortunes"><div class="fortune"><i>◎</i>総合運</div><div class="fortune"><i>W</i>仕事運</div><div class="fortune"><i>♥</i>恋愛運</div><div class="fortune"><i>¥</i>金運</div><div class="fortune"><i>人</i>対人運</div><div class="fortune"><i>体</i>健康運</div><div class="fortune"><i>学</i>勉強運</div></div>
-    </div>
-    <div class="loop-panel"><div class="kicker" style="color:#7ce7ee">TODAY'S FEEDBACK</div><div class="score"><span>今日の仕事運</span><b>82</b></div><div class="score"><span>今日の対人運</span><b>88</b></div><div class="score"><span>今日の金運</span><b>74</b></div><div class="feedback"><span>低かった</span><span>だいたい合った</span><span>高かった</span></div></div>
-  </div>
-</section>
-
-<section id="premium" class="section">
-  <div class="container pricing">
-    <div><div class="kicker">PREMIUM</div><h2>読む運勢から、<br>育つ運勢へ。</h2><p class="lead">無料版から始められます。Premiumでは、日々の記録から育った「あなた専用の読み方」をさらに深くお届けします。</p></div>
-    <div class="price-card"><span class="price-badge">14 DAYS FREE</span><div class="price">980円 <small>/ 月</small></div><div class="trial">Premiumは14日間無料</div><ul class="price-list"><li>あなたの振り返りを継続的に学習</li><li>記録から育った、あなた専用の読み方</li><li>ミライとの会話で、その日の実感を残せる</li><li>いつでも解約可能。無料版へ戻せます</li></ul><a class="cta" href="https://lin.ee/WA0V5f4" target="_blank" rel="noopener noreferrer">まずはLINEで無料ではじめる</a></div>
-  </div>
-</section>
-
-<section class="philosophy">
-  <div class="container philosophy-grid"><div><div class="kicker" style="color:#79e4ec">OUR PHILOSOPHY</div><h2>未来を決めるのではなく、<br>今日の選択を支える。</h2></div><div><p>miraisilは、運勢によって未来を断定するサービスではありません。天体の位置から導くその日の傾向と、あなた自身の振り返りを組み合わせながら、より良い選択を考えるためのヒントを届けます。</p><div class="principles"><div class="principle"><b>01</b><span>予測に行動を縛られるのではなく、自分の調子やリズムを理解するために使う。</span></div><div class="principle"><b>02</b><span>「当たった・外れた」だけでなく、実際の出来事から自分のパターンを見つける。</span></div><div class="principle"><b>03</b><span>毎日の小さな気づきを、明日の選択に役立つ言葉へ変えていく。</span></div></div></div></div>
-</section>
-
-<section id="faq" class="section alt">
-  <div class="container"><div class="section-head"><div class="kicker">FAQ</div><h2>よくある質問</h2></div>
-  <div class="faq">
-    <details><summary>本当に私専用の運勢になっていくのですか？</summary><p>はい。ミライは、あなたの生年月日・出生時刻・出生地から運勢を計算し、そこに「あなたが実際にどう感じたか」の記録を重ねていきます。たとえば「仕事運が高い日でも、実感はいつも少し低め」という傾向が見えてくると、ミライは同じ点数でもあなたに合わせた読み方でお伝えするようになります。同じ星座の人と、届く言葉が変わっていきます。</p></details>
-    <details><summary>毎日、長い文章を入力する必要がありますか？</summary><p>いいえ。振り返りはボタンを数回タップするだけで終わります。文章を書く必要はありません。もちろん、ミライに話しかけていただければ、そこから会話が始まります。書きたいときだけ書いてください。</p></details>
-    <details><summary>一般的な占いとは何が違うのですか？</summary><p>多くの占いは、あらかじめ書かれた12通り、あるいは数十通りの文章から選ばれたものが届きます。ミライは、その日の実際の天体の位置を計算し、あなたの記録を踏まえて、あなたのための言葉をつくります。そして「当たっていたか」を毎日確かめられます。当たり外れを言いっぱなしにしません。</p></details>
-    <details><summary>予測どおりに行動する必要がありますか？</summary><p>ありません。ミライがお伝えするのは「今日はこう動くと流れに乗りやすい」という提案です。従わなくても構いませんし、違うと感じたらそれを記録してください。その「違う」がミライを育てます。むしろ、素直に感じたままを教えていただくほうが、あなたに合う運勢に近づきます。</p></details>
-    <details><summary>無料で始められますか？</summary><p>はい。無料でも、毎日の運勢スコア、その日の天体の動き、相性ランキングをご覧いただけます。Premiumは14日間無料でお試しいただけ、その間に解約すれば料金は発生しません。無料期間終了後は月額980円、いつでも解約できます。</p></details>
-    <div id="faqExtra" class="faq-extra">
-      <details><summary>占いを信じていないのですが、使えますか？</summary><p>はい。ミライは「当たります」とは言いません。その日の天体の位置という事実から、7つの運勢を数値化してお届けしています。信じるかどうかではなく、毎朝「今日はこういう傾向」と目安を持つための道具としてお使いください。実際に、判断の材料として使っている方が多くいらっしゃいます。</p></details>
-      <details><summary>出生時刻や出生地が分かりません。</summary><p>登録できます。分からない場合は入力を省略でき、その場合は生年月日をもとに計算します。ただし、月の位置は1日の中でも動くため、出生時刻が分かるとより細かくお届けできます。母子手帳に記載されていることが多いので、機会があればご確認ください。</p></details>
-      <details><summary>記録した内容は誰かに見られますか？</summary><p>いいえ。あなたの記録と会話は、あなたのためだけに使われます。他の方に共有されることはありません。削除をご希望の場合は「データ削除」とお送りいただければ、いつでも消去できます。</p></details>
-      <details><summary>毎朝の通知が多いと感じたら？</summary><p>配信は1日1通のみです。それでも多いと感じたら、リッチメニューの「今日の運勢」からご自身のタイミングで読むこともできます。</p></details>
-      <details><summary>途中で解約したらどうなりますか？</summary><p>いつでも解約でき、日割りの手数料もかかりません。解約後も無料版としてご利用いただけます。ただし、記録から育ったあなた専用の読み方は、Premiumでのみお届けしています。</p></details>
-      <details><summary>どのくらい使えば「育った」と感じられますか？</summary><p>初日から、あなたの生年月日にもとづく運勢が届きます。振り返りを3回ほど重ねると、ミライがあなたの傾向に触れ始めます。15回を超えるころには、はっきりとした言葉であなたの受け取り方をお伝えできるようになります。</p></details>
-    </div>
-    <button id="faqMore" class="faq-more" type="button" aria-expanded="false">その他の質問を見る（6件）</button>
-  </div></div>
-</section>
-
-<section class="final"><div class="container final-panel"><div><div class="kicker" style="color:#76e7ef">START WITH MIRAI</div><h2>今日から、<br>あなただけの運勢を育てよう。</h2><p>読むだけだった運勢を、あなたの毎日に役立つ予測へ。LINE登録から無料で始められます。</p></div><a class="cta" href="https://lin.ee/WA0V5f4" target="_blank" rel="noopener noreferrer">あなた専用の運勢はLINEで（無料）</a></div></section>
-</main>
-<footer class="footer"><div class="container"><div class="footer-row"><a class="logo" href="#top">mirai<em>sil</em></a><div class="footer-links"><a href="../terms.html">利用規約</a><a href="../privacy-policy.html">プライバシーポリシー</a><a href="../tokushouho.html">特定商取引法に基づく表記</a><a href="../feedback.html">お問い合わせ</a></div></div><div class="copy">※ 今日の運勢 AIミライが提供する運勢・予測・助言は、未来や結果を保証するものではありません。重要な医療・法律・金融その他の判断は、適切な専門家へご相談ください。<br>© <span id="year"></span> miraisil</div></div></footer>
-<script>
-document.getElementById('year').textContent=new Date().getFullYear();
-const more=document.getElementById('faqMore'),extra=document.getElementById('faqExtra');
-more.addEventListener('click',()=>{const open=extra.classList.toggle('open');more.setAttribute('aria-expanded',String(open));more.textContent=open?'質問を閉じる':'その他の質問を見る（6件）';});
-</script>
+  <script>
+    function openFaq() {
+      document.getElementById('faqDialog').classList.add('open');
+      document.body.style.overflow='hidden';
+    }
+    function closeFaq() {
+      document.getElementById('faqDialog').classList.remove('open');
+      document.body.style.overflow='';
+    }
+    document.getElementById('faqDialog').addEventListener('click', function(e){
+      if(e.target === this) closeFaq();
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape') closeFaq();
+    });
+  </script>
 </body>
 </html>
