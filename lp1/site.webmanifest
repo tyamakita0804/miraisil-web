@@ -1,9 +1,11 @@
 {
   "name": "今日の運勢 AIミライ",
   "short_name": "AIミライ",
+  "start_url": "/lp1/",
+  "scope": "/lp1/",
   "icons": [
     {
-      "src": "/site-icon.png",
+      "src": "/lp1/site-icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
