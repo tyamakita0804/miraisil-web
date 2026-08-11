@@ -1,0 +1,14 @@
+{
+  "name": "今日の運勢 AIミライ",
+  "short_name": "AIミライ",
+  "icons": [
+    {
+      "src": "/site-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#071F46",
+  "background_color": "#071F46",
+  "display": "standalone"
+}
