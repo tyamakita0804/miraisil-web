@@ -5,6 +5,11 @@
   "scope": "/lp1/",
   "icons": [
     {
+      "src": "/lp1/favicon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
       "src": "/lp1/site-icon.png",
       "sizes": "512x512",
       "type": "image/png"
