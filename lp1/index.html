@@ -163,6 +163,272 @@
   }
 }
 
+
+/* === FINAL MOBILE RESPONSIVE FIX === */
+html,body{max-width:100%;overflow-x:hidden}
+body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+img,svg{max-width:100%}
+
+@media(max-width:980px){
+  .container{
+    width:calc(100% - 32px) !important;
+    max-width:760px !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+  .hero-inner{
+    grid-template-columns:1fr !important;
+    gap:20px !important;
+    align-items:start !important;
+    padding:38px 0 24px !important;
+  }
+  .hero-copy{padding-bottom:0 !important}
+  .hero-visual-latest{
+    min-height:0 !important;
+    padding-top:14px !important;
+    overflow:visible !important;
+  }
+  .hero-visual-latest img{
+    width:min(100%,520px) !important;
+    max-width:100% !important;
+    transform:none !important;
+    margin:0 auto !important;
+  }
+  .features{grid-template-columns:1fr !important}
+  .feature+.feature{
+    border-left:0 !important;
+    border-top:1px solid rgba(200,224,255,.18) !important;
+  }
+
+  .how-revised-inner{max-width:none !important}
+  .how-revised h2{max-width:none !important}
+  .how-revised-lead{max-width:none !important}
+  .how-points{max-width:none !important}
+
+  .fortunes{
+    padding:52px 0 !important;
+  }
+  .fortunes-inner{
+    grid-template-columns:1fr !important;
+    gap:30px !important;
+    align-items:start !important;
+  }
+  .fortunes h2{
+    max-width:none !important;
+    margin-bottom:14px !important;
+  }
+  .fortune-list{
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:18px 10px !important;
+    width:100% !important;
+  }
+  .fortune-item{min-width:0 !important}
+
+  .premium-grid{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:36px !important;
+    align-items:stretch !important;
+  }
+  #premium .premium-grid>div:nth-child(2){order:1}
+  #premium .phone-card{order:2}
+  #premium h2{max-width:none !important}
+  .phone-card{
+    width:100% !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    gap:18px !important;
+  }
+  .phone-card>div[style]{
+    max-width:320px !important;
+    width:100% !important;
+    text-align:center !important;
+  }
+  .app-card{
+    width:min(100%,320px) !important;
+    max-width:320px !important;
+  }
+  .price-panel{width:100% !important}
+
+  .philosophy-inner{max-width:none !important}
+  .philosophy h2{max-width:none !important}
+  .philosophy-lead{max-width:none !important}
+}
+
+@media(max-width:640px){
+  .container{
+    width:calc(100% - 28px) !important;
+    max-width:none !important;
+  }
+  .header{height:62px !important}
+  .header-inner{gap:10px !important}
+  .logo img{width:94px !important}
+  .nav{gap:8px !important}
+  .nav a:not(.header-cta){display:none !important}
+  .header-cta{
+    padding:10px 13px !important;
+    font-size:11px !important;
+    white-space:nowrap !important;
+  }
+
+  .hero-inner{padding:28px 0 20px !important}
+  .hero h1{
+    font-size:38px !important;
+    line-height:1.08 !important;
+    letter-spacing:-.04em !important;
+  }
+  .hero-lead{
+    font-size:14px !important;
+    line-height:1.82 !important;
+  }
+  .hero-actions{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:10px !important;
+    width:100% !important;
+  }
+  .line-btn{
+    width:100% !important;
+    min-height:56px !important;
+    padding:0 18px !important;
+    font-size:15px !important;
+  }
+  .qr-card{
+    width:100% !important;
+    justify-content:center !important;
+  }
+  .hero-visual-latest{
+    padding-top:8px !important;
+  }
+  .hero-visual-latest img{
+    width:min(100%,390px) !important;
+  }
+  .features{border-radius:14px !important}
+  .feature{
+    min-height:76px !important;
+    padding:16px 18px !important;
+  }
+  .feature-icon{
+    width:46px !important;
+    height:46px !important;
+    flex-basis:46px !important;
+    font-size:21px !important;
+  }
+  .feature-text{font-size:14px !important}
+
+  .section{padding:56px 0 !important}
+  .how-revised h2,
+  .fortunes h2,
+  #premium h2,
+  .philosophy h2,
+  #faq h2{
+    font-size:34px !important;
+    line-height:1.18 !important;
+    letter-spacing:-.04em !important;
+  }
+  .how-revised-lead{
+    font-size:15px !important;
+    line-height:1.85 !important;
+  }
+  .how-points{margin-top:26px !important}
+  .how-point{
+    grid-template-columns:48px minmax(0,1fr) !important;
+    gap:12px !important;
+    padding:18px 0 !important;
+  }
+  .how-point-mark{
+    width:42px !important;
+    height:42px !important;
+  }
+  .how-point-mark svg{
+    width:21px !important;
+    height:21px !important;
+  }
+  .how-point-copy h3{
+    font-size:19px !important;
+    line-height:1.42 !important;
+  }
+  .how-point-copy p{
+    font-size:14px !important;
+    line-height:1.72 !important;
+  }
+
+  .fortunes{padding:48px 0 !important}
+  .fortunes-inner{gap:26px !important}
+  .fortune-list{
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:16px 6px !important;
+  }
+  .fortune-icon{
+    width:48px !important;
+    height:48px !important;
+    margin-bottom:8px !important;
+    font-size:22px !important;
+  }
+  .fortune-item{font-size:12px !important}
+
+  .premium{padding-top:56px !important}
+  .premium-grid{gap:30px !important}
+  .price-panel{
+    padding:20px !important;
+    border-radius:16px !important;
+  }
+  .price-top{
+    gap:6px 8px !important;
+    align-items:flex-end !important;
+  }
+  .price{font-size:44px !important}
+  .price-top .label{font-size:16px !important}
+  .trial-badge{
+    margin-left:0 !important;
+    padding:7px 10px !important;
+  }
+  .check-list{
+    grid-template-columns:1fr !important;
+    gap:8px !important;
+  }
+
+  .philosophy{
+    padding:58px 0 54px !important;
+  }
+  .philosophy .kicker{font-size:12px !important}
+  .philosophy-lead{
+    font-size:15px !important;
+    line-height:1.9 !important;
+  }
+  .philosophy-points{margin-top:34px !important}
+  .philosophy-point{
+    grid-template-columns:48px minmax(0,1fr) !important;
+    gap:10px !important;
+    padding:20px 0 !important;
+  }
+  .philosophy-num{font-size:22px !important}
+  .philosophy-point p{
+    font-size:15px !important;
+    line-height:1.75 !important;
+  }
+
+  .faq-item summary{
+    padding:17px 46px 17px 16px !important;
+    font-size:14px !important;
+    line-height:1.55 !important;
+  }
+  .faq-item p{
+    padding:0 16px 18px !important;
+    font-size:14px !important;
+  }
+
+  .footer{padding:28px 0 !important}
+  .footer-inner{
+    align-items:flex-start !important;
+    gap:16px !important;
+  }
+  .footer-links{
+    width:100% !important;
+    gap:12px 16px !important;
+  }
+}
+
 </style>
 </head>
 <body>
