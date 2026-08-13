@@ -105,6 +105,8 @@
       letter-spacing: .13em;
       line-height: 1.75;
     }
+    /* 句(、)ごとに inline-block で束ね、モバイルの折り返しが句の途中で割れないようにする */
+    .hero-copy .message span { display: inline-block; }
 
     .scroll-cue {
       position: absolute;
@@ -185,16 +187,9 @@
       counter-reset: item;
     }
     .business-list li {
-      counter-increment: item;
       position: relative;
-      padding-left: 2.2em;
+      padding-left: 0;
       margin: 0 0 4px;
-    }
-    .business-list li::before {
-      content: "（" counter(item) "）";
-      position: absolute;
-      left: 0;
-      top: 0;
     }
 
     .footer-note {
@@ -256,7 +251,7 @@
         grid-template-columns: 1fr;
         gap: 8px;
       }
-      .business-list li { padding-left: 2.05em; }
+      .business-list li { padding-left: 0; }
     }
 
     @media (max-width: 390px) {
@@ -282,7 +277,7 @@
 
     <div class="hero-copy">
       <p class="lead">株式会社ミライシルは、</p>
-      <p class="message">AIのチカラを使って、ミライを楽しくする会社です。</p>
+      <p class="message"><span>AIのチカラを使って、</span><span>ミライを楽しくする会社です。</span></p>
     </div>
 
     <div class="scroll-cue" aria-hidden="true"></div>
