@@ -218,11 +218,11 @@
       }
       .hero-copy .message {
         margin-top: 5px;
-        font-size: clamp(13px, 3.35vw, 16px);
-        letter-spacing: .05em;
+        /* 2行目（AI〜会社です。）を1行に収める。幅に応じて縮小し折り返さない */
+        font-size: clamp(10px, 3.2vw, 15px);
+        letter-spacing: .02em;
         line-height: 1.85;
-        white-space: normal;
-        overflow-wrap: anywhere;
+        white-space: nowrap;
       }
 
       .company {
@@ -252,13 +252,6 @@
         gap: 8px;
       }
       .business-list li { padding-left: 0; }
-    }
-
-    @media (max-width: 390px) {
-      .hero-copy .message {
-        font-size: 13px;
-        letter-spacing: .055em;
-      }
     }
 
     @media (prefers-reduced-motion: reduce) {
