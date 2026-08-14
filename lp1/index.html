@@ -322,10 +322,14 @@ img,svg{max-width:100%}
   #premium h2,
   .philosophy h2,
   #faq h2{
-    font-size:34px !important;
-    line-height:1.18 !important;
-    letter-spacing:-.04em !important;
+    font-size:clamp(21px,6.6vw,34px) !important;
+    line-height:1.28 !important;
+    letter-spacing:-.02em !important;
+    line-break:strict !important;
+    word-break:normal !important;
+    overflow-wrap:normal !important;
   }
+  .nowrap-desktop{white-space:normal !important}
   .how-revised-lead{
     font-size:15px !important;
     line-height:1.85 !important;
