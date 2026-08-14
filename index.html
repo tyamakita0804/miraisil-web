@@ -430,43 +430,94 @@ img,svg{max-width:100%}
 }
 
 
-/* === MOBILE HEADING / OVERFLOW FIX 2026-08 === */
-@media(max-width:640px){
+/* =========================================================
+   FINAL MOBILE HEADING FIX
+   - no horizontal overflow
+   - no unintended Japanese line wrapping
+   - all section headings keep intentional line breaks only
+   ========================================================= */
+.mobile-heading-line{
+  display:block;
+}
+
+@media (max-width:640px){
+
+  html,
+  body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden !important;
+  }
+
+  .container{
+    width:calc(100% - 32px) !important;
+    max-width:none !important;
+    margin-left:16px !important;
+    margin-right:16px !important;
+  }
+
+  /* Unified mobile section heading size.
+     5.9vw keeps the 13-character Premium line inside the screen. */
   .how-revised h2,
   .fortunes h2,
   #premium h2,
   .philosophy h2,
   #faq h2{
-    font-size:clamp(23px,7.2vw,30px) !important;
-    line-height:1.22 !important;
-    letter-spacing:-.045em !important;
-    word-break:keep-all !important;
+    display:block !important;
+    width:100% !important;
+    max-width:100% !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    font-size:clamp(20px,5.9vw,25px) !important;
+    line-height:1.28 !important;
+    letter-spacing:-0.035em !important;
+    font-weight:800 !important;
+    word-break:normal !important;
     overflow-wrap:normal !important;
+  }
+
+  .mobile-heading-line{
+    display:block !important;
+    white-space:nowrap !important;
+    width:auto !important;
     max-width:100% !important;
   }
 
-  /* These lines are intentionally kept as one clean line on mobile. */
-  .fortunes h2 .nowrap-desktop,
-  #premium h2 .nowrap-desktop{
-    white-space:nowrap !important;
+  /* Remove the old desktop-only nowrap behavior from influencing mobile. */
+  .nowrap-desktop{
+    white-space:normal !important;
   }
 
-  /* Prevent text blocks from creating horizontal overflow. */
+  /* Make sure the Premium text column itself can shrink. */
+  #premium .premium-grid,
+  #premium .premium-grid > div,
+  .philosophy-inner,
+  .how-revised-inner,
+  .fortunes-inner{
+    min-width:0 !important;
+    width:100% !important;
+    max-width:100% !important;
+  }
+
   #premium .lead,
   .philosophy-lead,
   .philosophy-point p,
   .how-revised-lead,
   .how-point-copy h3,
   .how-point-copy p{
+    min-width:0 !important;
     max-width:100% !important;
     overflow-wrap:break-word !important;
   }
+}
 
-  #premium .premium-grid > div,
-  .philosophy-inner,
-  .how-revised-inner{
-    min-width:0 !important;
-    max-width:100% !important;
+@media (max-width:340px){
+  .how-revised h2,
+  .fortunes h2,
+  #premium h2,
+  .philosophy h2,
+  #faq h2{
+    font-size:19px !important;
   }
 }
 
@@ -510,7 +561,7 @@ img,svg{max-width:100%}
   <div class="container">
     <div class="how-revised-inner">
       <div class="kicker">HOW IT WORKS</div>
-      <h2>AIミライと一緒に、<br>あなただけの運勢を<br>育てていこう。</h2>
+      <h2><span class="mobile-heading-line">AIミライと一緒に、</span><span class="mobile-heading-line">あなただけの運勢を</span><span class="mobile-heading-line">育てていこう。</span></h2>
       <p class="lead how-revised-lead">一方的に読むだけでなく、実際の一日を記録することで、ミライがあなたの受け取り方や好調・不調のパターンなどを少しずつ学んで、あなただけの運勢予測を育てます。</p>
 
       <div class="how-points">
@@ -539,13 +590,13 @@ img,svg{max-width:100%}
     </div>
   </div>
 </section>
-<section class="fortunes"><div class="container fortunes-inner"><div><h2>7つの運勢で、<br><span class="nowrap-desktop">今日をもっと豊かに。</span></h2><p>総合運に加え、7つの運勢をバランスよくお届けします。</p></div><div class="fortune-list"><div class="fortune-item"><div class="fortune-icon">✨</div>総合運</div><div class="fortune-item"><div class="fortune-icon">💼</div>仕事運</div><div class="fortune-item"><div class="fortune-icon">💗</div>恋愛運</div><div class="fortune-item"><div class="fortune-icon">💰</div>金運</div><div class="fortune-item"><div class="fortune-icon">🤝</div>対人運</div><div class="fortune-item"><div class="fortune-icon">🌿</div>健康運</div><div class="fortune-item"><div class="fortune-icon">📚</div>勉強運</div></div></div></section>
-<section class="section premium" id="premium"><div class="container premium-grid"><div class="phone-card"><div class="app-card"><div class="app-top">12月8日（日）</div><div class="fortune-card"><strong>総合運</strong><div class="fortune-stars">★★★★☆</div><p>新しい出会いが、今日の大きな変化につながるかもしれません。まずは身近な一歩から。</p></div></div><div style="max-width:160px;color:var(--muted);font-size:14px;line-height:1.8">Premiumでは、より深い振り返りと分析で、あなた専用の運勢の解像度が高まります。</div></div><div><div class="kicker">PREMIUM</div><h2>Premiumで、<br><span class="nowrap-desktop">もっとあなたらしい運勢に。</span></h2><p class="lead">LINEプレミアム会員になると、あなた専用の運勢がさらに充実。過去のデータをもとにした分析や、相性・カレンダー機能も利用できます。</p><div class="price-panel"><div class="price-top"><span class="label">月額</span><span class="price">980</span><span class="label">円（税込）</span><span class="trial-badge">14日間無料</span></div><div class="price-note">無料期間中に解約すれば料金は発生しません。いつでも解約できます。</div><div class="check-list"><div class="check">過去の運勢を振り返り</div><div class="check">相性ランキング・ふたりの相性</div><div class="check">運勢カレンダー</div><div class="check">深めのパーソナル分析</div></div><a class="line-btn" href="https://miraisil.jp/plans" target="_blank" rel="noopener" style="width:100%">LINEで14日間無料体験 →</a></div></div></div></section>
+<section class="fortunes"><div class="container fortunes-inner"><div><h2><span class="mobile-heading-line">7つの運勢で、</span><span class="mobile-heading-line">今日をもっと豊かに。</span></h2><p>総合運に加え、7つの運勢をバランスよくお届けします。</p></div><div class="fortune-list"><div class="fortune-item"><div class="fortune-icon">✨</div>総合運</div><div class="fortune-item"><div class="fortune-icon">💼</div>仕事運</div><div class="fortune-item"><div class="fortune-icon">💗</div>恋愛運</div><div class="fortune-item"><div class="fortune-icon">💰</div>金運</div><div class="fortune-item"><div class="fortune-icon">🤝</div>対人運</div><div class="fortune-item"><div class="fortune-icon">🌿</div>健康運</div><div class="fortune-item"><div class="fortune-icon">📚</div>勉強運</div></div></div></section>
+<section class="section premium" id="premium"><div class="container premium-grid"><div class="phone-card"><div class="app-card"><div class="app-top">12月8日（日）</div><div class="fortune-card"><strong>総合運</strong><div class="fortune-stars">★★★★☆</div><p>新しい出会いが、今日の大きな変化につながるかもしれません。まずは身近な一歩から。</p></div></div><div style="max-width:160px;color:var(--muted);font-size:14px;line-height:1.8">Premiumでは、より深い振り返りと分析で、あなた専用の運勢の解像度が高まります。</div></div><div><div class="kicker">PREMIUM</div><h2><span class="mobile-heading-line">Premiumで、</span><span class="mobile-heading-line">もっとあなたらしい運勢に。</span></h2><p class="lead">LINEプレミアム会員になると、あなた専用の運勢がさらに充実。過去のデータをもとにした分析や、相性・カレンダー機能も利用できます。</p><div class="price-panel"><div class="price-top"><span class="label">月額</span><span class="price">980</span><span class="label">円（税込）</span><span class="trial-badge">14日間無料</span></div><div class="price-note">無料期間中に解約すれば料金は発生しません。いつでも解約できます。</div><div class="check-list"><div class="check">過去の運勢を振り返り</div><div class="check">相性ランキング・ふたりの相性</div><div class="check">運勢カレンダー</div><div class="check">深めのパーソナル分析</div></div><a class="line-btn" href="https://miraisil.jp/plans" target="_blank" rel="noopener" style="width:100%">LINEで14日間無料体験 →</a></div></div></div></section>
 
 <section class="philosophy" id="philosophy">
   <div class="container philosophy-inner">
     <div class="kicker">OUR PHILOSOPHY</div>
-    <h2>未来を決めるのではなく、<br>今日の選択を支える。</h2>
+    <h2><span class="mobile-heading-line">未来を決めるのではなく、</span><span class="mobile-heading-line">今日の選択を支える。</span></h2>
     <p class="philosophy-lead">「今日の運勢 AIミライ」は、運勢によって未来を断定するサービスではありません。天体の位置から導くその日の傾向と、あなた自身の振り返りを組み合わせながら、より良い選択を考えるためのヒントを届けます。</p>
     <div class="philosophy-points">
       <div class="philosophy-point"><div class="philosophy-num">01</div><p>予測に行動を縛られるのではなく、自分の調子やリズムを理解するために使う。</p></div>
