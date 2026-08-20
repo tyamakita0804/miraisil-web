@@ -192,9 +192,9 @@
 
 <main>
   <div class="card">
-    <span class="icon">✨</span>
-    <p class="label">Registration Complete</p>
-    <h1>ご登録<br>ありがとうございます！</h1>
+    <span class="icon" id="page-icon">✨</span>
+    <p class="label" id="page-label">Registration Complete</p>
+    <h1 id="headline">ご登録<br>ありがとうございます！</h1>
     <p class="message">お支払いが正常に完了しました。</p>
 
     <!-- Stripe決済経由（?session_id=xxx）の場合はLINE ID入力フォームを表示 -->
@@ -228,10 +228,31 @@
       </a>
     </div>
 
+    <!-- 個人鑑定（買い切り）の場合（?p=kantei）：定期購読の文言は出さない -->
+    <div id="kantei-notice" style="display:none;">
+      <div class="highlight">
+        🔮 個人鑑定のご購入が完了しました。<br><br>
+        このあとは <strong>LINEアプリ</strong> で面談を進めます。トーク画面のご案内から<br>
+        <strong>「今から始める」</strong>を押して、鑑定を始めてください。
+      </div>
+      <p class="message" style="font-size:14px;">鑑定書は面談のあと、LINEにお届けします。</p>
+      <a class="btn" href="https://line.me/R/ti/p/@768invlu">
+        LINEアプリへ戻る
+      </a>
+    </div>
+
     <script>
       var params = new URLSearchParams(location.search);
+      var product = params.get("p");
       var sessionId = params.get("session_id");
-      if (sessionId) {
+      if (product === "kantei") {
+        // 個人鑑定（買い切り）：定期購読の文面を隠し、購入完了＋面談への案内を表示
+        document.getElementById("kantei-notice").style.display = "block";
+        document.getElementById("line-notice").style.display = "none";
+        document.getElementById("page-label").textContent = "Purchase Complete";
+        document.getElementById("headline").innerHTML = "ご購入<br>ありがとうございます！";
+        document.title = "ご購入ありがとうございます | 個人鑑定";
+      } else if (sessionId) {
         document.getElementById("session-notice").style.display = "block";
         document.getElementById("line-notice").style.display = "none";
         document.getElementById("field-session-id").value = sessionId;
