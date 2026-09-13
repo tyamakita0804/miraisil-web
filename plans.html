@@ -269,12 +269,16 @@
   <div class="plan-card">
     <p class="plan-name">Free</p>
     <p class="plan-price">¥0<span class="unit">/月</span></p>
-    <p class="plan-tagline">まずは毎朝、受け取ることから</p>
+    <!-- 2026-09-14: 「毎朝7時に届く」を削除。無料プランへの定期配信は行っていない
+         （朝配信cronは --tier=premium。無料はメニューから読むプル型）。
+         提供していない機能を無料プランの提供内容として掲げていたため実態に合わせた。 -->
+    <p class="plan-tagline">まずは、その日の運勢を読むことから</p>
     <hr class="divider">
     <ul class="feature-list">
-      <li><span class="check">✓</span> 毎朝7時、今日の運勢スコアが届く</li>
+      <li><span class="check">✓</span> メニューからいつでも今日の運勢を読める</li>
       <li><span class="check">✓</span> 総合運＋好調な運の解説</li>
       <li><span class="check">✓</span> 相性ランキング1位の星座</li>
+      <li><span class="dash">—</span> 毎朝7時に自動で届く</li>
       <li><span class="dash">—</span> 7つの運すべての解説と対処法</li>
       <li><span class="dash">—</span> 相性ランキング12星座＋関わり方のヒント</li>
       <li><span class="dash">—</span> ふたりの相性（お相手5人まで登録）</li>
@@ -293,9 +297,10 @@
     <p class="plan-tagline">記録を重ねて、あなた専用に育つ</p>
     <hr class="divider">
     <ul class="feature-list">
-      <li><span class="check">✓</span> 毎朝7時、今日の運勢スコアが届く</li>
+      <li><span class="check">✓</span> メニューからいつでも今日の運勢を読める</li>
       <li><span class="check">✓</span> 総合運＋好調な運の解説</li>
       <li><span class="check">✓</span> 相性ランキング1位の星座</li>
+      <li><span class="check">✓</span> <strong>毎朝7時に自動で届く</strong></li>
       <li><span class="check">✓</span> <strong>7つの運すべての解説と対処法</strong></li>
       <li><span class="check">✓</span> <strong>相性ランキング12星座＋関わり方のヒント</strong></li>
       <li><span class="check">✓</span> <strong>ふたりの相性（お相手5人まで登録）</strong></li>
