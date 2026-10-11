@@ -105,6 +105,17 @@
   </div>
 </div>
 
+<!-- miraisil.jp/start からの LINE ログイン（2026-10-12）。?start=<token> のときだけ使う。
+     LIFF のエンドポイントがこのページなので、ログイン後の処理をここで行う。 -->
+<div id="start-box" style="display:none;position:fixed;inset:0;background:#faf6ec;color:#1f2340;overflow:auto;padding:28px 16px;font-size:19px;line-height:1.75;z-index:10">
+  <div style="max-width:480px;margin:0 auto;text-align:center">
+    <img src="/start/img/mirai.png" alt="ミライ" width="110" height="110" style="border-radius:50%;box-shadow:0 4px 18px rgba(27,37,80,.25)">
+    <h2 id="start-title" style="color:#1b2550;font-size:24px;line-height:1.5;margin:16px 0 10px">LINEと連携しています…</h2>
+    <p id="start-text" style="margin-bottom:8px"></p>
+    <div id="start-actions"></div>
+  </div>
+</div>
+
 <script>
   var LIFF_ID = "2010604081-ZArs25u8";
   var CHECKOUT_BASE = "https://miraisil-webhook.onrender.com/checkout/";
@@ -125,8 +136,72 @@
     return p;
   }
 
+  // ── miraisil.jp/start からの登録（2026-10-12）────────────────────────
+  var START_API = "https://miraisil-webhook.onrender.com/start/api/link";
+  var CHAT_URL = "https://line.me/R/oaMessage/%40768invlu/";
+  var FRIEND_URL = "https://lin.ee/WA0V5f4";
+  function getParam(name) {
+    var p = new URLSearchParams(location.search).get(name);
+    if (!p && window.liff && liff.state) p = new URLSearchParams(liff.state).get(name);
+    return p;
+  }
+  function startView(title, text, actions) {
+    document.getElementById("start-box").style.display = "block";
+    document.getElementById("start-title").textContent = title;
+    document.getElementById("start-text").textContent = text || "";
+    var box = document.getElementById("start-actions"); box.innerHTML = "";
+    (actions || []).forEach(function(a) {
+      var el = document.createElement("a");
+      el.href = a.href; el.textContent = a.label;
+      el.style.cssText = "display:block;margin-top:14px;padding:16px;border-radius:14px;font-weight:700;font-size:19px;text-decoration:none;" +
+        (a.kind === "line" ? "background:#06C755;color:#fff" : a.kind === "gold" ? "background:#c9a24a;color:#1b2550" : "border:2px solid #1b2550;color:#1b2550");
+      if (a.note) { var n = document.createElement("p"); n.textContent = a.note; n.style.cssText = "font-size:15px;color:#5b6080;margin-top:6px"; box.appendChild(el); box.appendChild(n); return; }
+      box.appendChild(el);
+    });
+  }
+  function handleStart(token) {
+    startView("LINEと連携しています…", "");
+    if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return; }
+    var at = liff.getAccessToken();
+    fetch(START_API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: token, access_token: at }) })
+      .then(function(r) { return r.json(); })
+      .then(function(j) {
+        var nn = j.nickname ? j.nickname + "さん、" : "";
+        var toChat = { href: CHAT_URL, label: "LINEのトークを開く", kind: "line" };
+        if (j.status === "created" || j.status === "completed") {
+          if (j.needs_friend) {
+            startView("あと少しです", nn + "登録ができました。最後に、ミライを友だち追加してください。友だち追加すると、今日の運勢が届きます。", [{ href: FRIEND_URL, label: "友だち追加する", kind: "line" }]);
+            return;
+          }
+          startView("登録が完了しました", nn + "LINEのトークに、今日の運勢をお送りしました。今日から14日間、Premiumを無料でお使いいただけます。", [toChat]);
+          if (liff.isInClient()) setTimeout(function() { location.href = CHAT_URL; }, 2500);
+        } else if (j.status === "existing") {
+          var acts = [toChat];
+          if (j.checkout_url) acts.push({ href: j.checkout_url, label: "Premiumを申し込む（月額490円）", kind: "ghost", note: "お申し込みの時点で月額490円（税込）をご請求し、以後は毎月自動更新されます。解約はいつでもLINEで「解約」と送ってください。" });
+          startView("すでにご登録いただいています", nn + "登録内容はそのままです。LINEのトークからご利用ください。", acts);
+        } else if (j.status === "test") {
+          startView("【テスト】送りました", "あなたのLINEに、登録直後に届くメッセージと、登録されるはずだった内容を送りました。本当の登録内容・課金状態は変えていません。", [toChat]);
+        } else if (j.status === "test_forbidden") {
+          startView("テスト用の入口です", "この入口は運営のテスト用のため、ご利用いただけません。", [{ href: "https://miraisil.jp/start/", label: "はじめからやり直す", kind: "ghost" }]);
+        } else if (j.status === "expired" || j.status === "not_found" || j.status === "used") {
+          startView("もう一度お試しください", j.status === "used" ? "この登録は、すでに別のLINEアカウントで使われています。" : "登録の有効期限（24時間）が過ぎたか、見つかりませんでした。", [{ href: "https://miraisil.jp/start/", label: "はじめからやり直す", kind: "ghost" }]);
+        } else {
+          startView("うまく連携できませんでした", "少し待ってから、もう一度お試しください。", [{ href: location.href, label: "もう一度試す", kind: "ghost" }]);
+        }
+      })
+      .catch(function() {
+        startView("うまく連携できませんでした", "通信の状態を確かめて、もう一度お試しください。", [{ href: location.href, label: "もう一度試す", kind: "ghost" }]);
+      });
+  }
+  var _early = new URLSearchParams(location.search);
+  if (_early.get("start") || (_early.get("liff.state") || "").indexOf("start=") >= 0) {
+    document.getElementById("start-box").style.display = "block";
+  }
+
   liff.init({ liffId: LIFF_ID })
     .then(function() {
+      var startToken = getParam("start");
+      if (startToken) { handleStart(startToken); return; }
       var plan = getPlan();
       if (!plan || (plan !== "light" && plan !== "premium")) {
         showError("プランが指定されていません。プランページに戻ってやり直してください。");
@@ -142,6 +217,10 @@
     })
     .catch(function(err) {
       console.error("[LIFF] init/getProfile error:", err);
+      if (document.getElementById("start-box").style.display === "block") {
+        startView("うまく連携できませんでした", "LINEとの連携に失敗しました。もう一度お試しいただくか、質問ページに表示された登録コードをお使いください。", [{ href: location.href, label: "もう一度試す", kind: "ghost" }]);
+        return;
+      }
       showError("LINEとの連携に失敗しました。もう一度お試しください。");
     });
 </script>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>今日の運勢 AIミライ | はじめる</title>
+<meta name="description" content="生年月日で読む、あなた専用の運勢を毎朝LINEで。ご登録から14日間はPremiumの全機能が無料。カード登録不要・自動で課金されません。">
+<meta name="robots" content="index,follow">
+<meta property="og:title" content="今日の運勢 AIミライ">
+<meta property="og:description" content="あなたのための運勢を、毎朝LINEで。">
+<meta property="og:image" content="https://miraisil.jp/ogp.png">
+<link rel="icon" href="/favicon-32x32.png">
+<style>
+  :root{
+    --navy:#1b2550; --navy-2:#2a3670; --gold:#c9a24a; --gold-soft:#e8d39c;
+    --ivory:#faf6ec; --paper:#fffdf7; --ink:#1f2340; --muted:#5b6080; --line:#e6dcc4;
+    --green:#06C755;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{background:var(--ivory);color:var(--ink);font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;font-size:19px;line-height:1.75;min-height:100vh}
+  button{font-family:inherit;font-size:inherit;color:inherit}
+  a{color:var(--navy)}
+  .wrap{max-width:520px;margin:0 auto;padding:0 16px 40px}
+
+  /* 上部：章の進み具合とメーター */
+  .top{position:sticky;top:0;z-index:5;background:var(--navy);color:#fff;padding:10px 16px 12px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+  .top-inner{max-width:520px;margin:0 auto}
+  .toprow{display:flex;align-items:center;gap:10px;min-height:40px}
+  .back{background:transparent;border:1.5px solid rgba(255,255,255,.55);border-radius:10px;color:#fff;font-size:16px;padding:6px 12px;min-height:40px;cursor:pointer}
+  .back.off{visibility:hidden}
+  .chapters{flex:1;display:flex;gap:6px}
+  .ch{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.22);overflow:hidden}
+  .ch i{display:block;height:100%;width:0;background:var(--gold);transition:width .35s}
+  .chlabel{font-size:14px;opacity:.85;white-space:nowrap}
+  .meter{margin-top:8px}
+  .meter-head{display:flex;justify-content:space-between;font-size:15px}
+  .meter-head b{color:var(--gold-soft);font-size:17px}
+  .bar{position:relative;height:14px;border-radius:7px;background:rgba(255,255,255,.18);margin-top:4px;overflow:hidden}
+  .bar .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#b98d33,var(--gold),#f0d98f);border-radius:7px;transition:width .6s ease}
+  .bar .empty{position:absolute;top:0;bottom:0;right:0;border-radius:0 7px 7px 0;opacity:0;transition:opacity .4s}
+  .bar.glow .empty{opacity:1;background:rgba(255,236,170,.75);box-shadow:0 0 10px rgba(255,236,170,.9);animation:pulse 1.6s ease-in-out infinite}
+  .bar.together .empty{opacity:1;background:repeating-linear-gradient(45deg,rgba(255,255,255,.28) 0 6px,rgba(255,255,255,.12) 6px 12px)}
+  @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+  .meter-note{font-size:14px;color:var(--gold-soft);text-align:right;min-height:0;margin-top:2px}
+
+  /* 画面 */
+  .screen{display:none;padding-top:22px;animation:fade .3s ease}
+  .screen.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  h1{font-size:28px;line-height:1.4;color:var(--navy);text-align:center}
+  h2{font-size:24px;line-height:1.5;color:var(--navy);margin-bottom:14px}
+  .lead{font-size:18px;color:var(--muted);text-align:center;margin-top:6px}
+  .q{font-size:22px;font-weight:700;color:var(--navy);margin:22px 0 14px;text-align:center}
+  p.body{margin:0 0 14px}
+  .small{font-size:15px;color:var(--muted);line-height:1.7}
+  .center{text-align:center}
+  .mirai{display:block;width:120px;height:120px;max-width:none;border-radius:50%;margin:6px auto 14px;object-fit:cover;box-shadow:0 4px 18px rgba(27,37,80,.25)}
+  .badge{display:inline-block;border:1px solid var(--gold);color:#8a6a1f;border-radius:999px;padding:2px 12px;font-size:15px;background:#fff8e4}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .card{background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:10px 8px 12px;text-align:center;cursor:pointer;min-height:56px}
+  .card img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:12px;display:block}
+  .card span{display:block;font-size:20px;font-weight:700;color:var(--navy);margin-top:8px}
+  .card:active,.card.sel{border-color:var(--gold);background:#fff7df}
+
+  .opts{display:flex;flex-direction:column;gap:10px}
+  .opt{display:block;width:100%;text-align:left;background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:14px 16px;min-height:58px;font-size:19px;cursor:pointer}
+  .opt.sel{border-color:var(--gold);background:#fff7df;font-weight:700}
+  .opt.check::before{content:"";display:inline-block;width:22px;height:22px;border:2px solid #b9ae92;border-radius:6px;margin-right:12px;vertical-align:-4px;background:#fff}
+  .opt.check.sel::before{background:var(--gold);border-color:var(--gold);box-shadow:inset 0 0 0 3px #fff}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .grid3 .opt{text-align:center;padding:12px 4px}
+
+  .btn{display:block;width:100%;border:none;border-radius:14px;background:var(--navy);color:#fff;font-size:clamp(17px,5.4vw,20px);font-weight:700;padding:16px 10px;min-height:60px;margin-top:22px;cursor:pointer}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn.ghost{background:transparent;color:var(--navy);border:2px solid var(--navy)}
+  .btn.line{background:var(--green);color:#fff}
+  .btn.gold{background:var(--gold);color:var(--navy)}
+  input.text{width:100%;font-size:22px;padding:14px 16px;border:2px solid var(--line);border-radius:14px;background:#fff;min-height:60px}
+  input.text:focus,select:focus{outline:3px solid var(--gold-soft);border-color:var(--gold)}
+  .selects{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px}
+  .selects.two{grid-template-columns:1fr 1fr}
+  select{width:100%;font-size:20px;padding:12px 8px;border:2px solid var(--line);border-radius:12px;background:#fff;min-height:58px;color:var(--ink);-webkit-appearance:none;appearance:none;text-align:center;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%231b2550' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 10px center;padding-right:26px}
+  .sel-label{font-size:15px;color:var(--muted);text-align:center;margin-top:4px}
+
+  .box{background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+  .why{background:#f3efe2;border-left:5px solid var(--gold);border-radius:12px;padding:14px 16px;margin-top:18px}
+  .why b{color:var(--navy)}
+  .star{display:flex;gap:14px;align-items:flex-start;background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:12px}
+  .star .lab{flex:none;width:68px;text-align:center;background:var(--navy);color:var(--gold-soft);border-radius:12px;padding:8px 0;font-weight:700;font-size:17px}
+  .star .sign{font-size:22px;font-weight:700;color:var(--navy);line-height:1.4;word-break:keep-all}
+  .star .one{font-size:17px;color:var(--ink);margin-top:4px}
+  .highlight{background:var(--navy);color:#fff;border-radius:16px;padding:16px;margin-top:16px;text-align:center}
+  .highlight b{display:block;font-size:26px;color:var(--gold-soft);margin-top:4px}
+
+  .sample{background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:12px}
+  .sample .day{display:inline-block;background:var(--navy);color:var(--gold-soft);border-radius:999px;padding:2px 14px;font-size:16px;font-weight:700;margin-bottom:8px}
+  .sample.later{border-color:var(--gold);background:#fff8e4}
+  .arrow{text-align:center;color:var(--gold);font-size:22px;line-height:1;margin:-4px 0 8px}
+
+  .chart{background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:10px 6px 4px;margin:10px 0}
+  .chart svg{display:block;width:100%;height:auto}
+
+  .free{border:3px solid var(--gold);background:#fff;border-radius:18px;padding:18px 16px;margin:18px 0 10px}
+  .free div{font-size:clamp(18px,5.8vw,22px);font-weight:700;color:var(--navy);padding:6px 0 6px 38px;position:relative}
+  .free div::before{content:"✓";position:absolute;left:6px;top:4px;width:26px;height:26px;border-radius:50%;background:var(--gold);color:#fff;font-size:17px;line-height:26px;text-align:center}
+
+  .loading{display:flex;flex-direction:column;align-items:center;gap:12px;padding:30px 0;color:var(--muted)}
+  .spin{width:40px;height:40px;border:4px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:spin .9s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .err{background:#fdecec;border:1.5px solid #e2a5a5;color:#7a2020;border-radius:12px;padding:12px 14px;margin-top:14px;font-size:17px}
+  .testbar{background:#7a2020;color:#fff;text-align:center;font-size:14px;padding:4px}
+  .code{font-size:30px;letter-spacing:.18em;font-weight:700;color:var(--navy);text-align:center;background:#fff;border:2px dashed var(--gold);border-radius:12px;padding:10px;margin:10px 0}
+  footer{text-align:center;font-size:14px;color:var(--muted);margin-top:28px}
+  footer a{color:var(--muted);margin:0 6px}
+</style>
+</head>
+<body>
+<div id="testbar" class="testbar" hidden>テスト用の入口です（てつさんのLINEでのみ動きます。本当の登録内容は変わりません）</div>
+
+<div class="top" aria-label="進み具合">
+  <div class="top-inner">
+    <div class="toprow">
+      <button class="back off" id="back" type="button">‹ 戻る</button>
+      <div class="chapters" aria-hidden="true"><div class="ch"><i></i></div><div class="ch"><i></i></div><div class="ch"><i></i></div><div class="ch"><i></i></div></div>
+      <div class="chlabel" id="chlabel">第1章</div>
+    </div>
+    <div class="meter">
+      <div class="meter-head"><span>あなた専用度</span><b id="pct">0%</b></div>
+      <div class="bar" id="bar"><div class="fill" id="fill"></div><div class="empty" id="empty"></div></div>
+      <div class="meter-note" id="mnote"></div>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- S1 入口 -->
+  <section class="screen" data-s="1">
+    <h1>今日の運勢 AIミライ</h1>
+    <p class="lead">あなたのための運勢を、毎朝LINEで</p>
+    <p class="q">いま、いちばん気になる運は？</p>
+    <div class="cards">
+      <button class="card" type="button" data-interest="love"><img src="img/love.png" alt="" width="240" height="240"><span>恋愛運</span></button>
+      <button class="card" type="button" data-interest="work"><img src="img/work.png" alt="" width="240" height="240"><span>仕事運</span></button>
+      <button class="card" type="button" data-interest="money"><img src="img/money.png" alt="" width="240" height="240"><span>金運</span></button>
+      <button class="card" type="button" data-interest="health"><img src="img/health.png" alt="" width="240" height="240"><span>健康運</span></button>
+    </div>
+    <p class="small center" style="margin-top:16px">選んで進むと、<a href="/terms.html" target="_blank" rel="noopener">利用規約</a>と<a href="/privacy-policy.html" target="_blank" rel="noopener">プライバシーポリシー</a>に同意したことになります。</p>
+    <p class="small center" style="margin-top:6px">ミライとの会話の内容は、応答を作るために海外の事業者（米国 Anthropic PBC）に送信されます。</p>
+  </section>
+
+  <!-- S2 問いかけ -->
+  <section class="screen" data-s="2">
+    <img class="mirai" src="img/mirai.png" alt="ミライ" width="120" height="120">
+    <p class="body">テレビや雑誌の星座占いは、同じ星座の人みんなに、同じことを伝えています。</p>
+    <p class="body"><b>ミライは、あなた1人のために読みます。</b></p>
+    <div class="box" id="s2line"></div>
+    <button class="btn" type="button" data-next>次へ</button>
+  </section>
+
+  <!-- S3 呼び名 -->
+  <section class="screen" data-s="3">
+    <p class="q">ミライは、あなたをなんと呼べばいいですか？</p>
+    <p class="small center" style="margin-bottom:12px">ニックネームで大丈夫です</p>
+    <input class="text" id="nickname" type="text" maxlength="20" autocomplete="nickname" placeholder="例：はなこ" enterkeyhint="next">
+    <button class="btn" type="button" id="s3next" disabled>次へ</button>
+  </section>
+
+  <!-- S4 過ごし方 -->
+  <section class="screen" data-s="4">
+    <p class="q">ふだんの過ごし方に近いものを選んでください。</p>
+    <div class="opts" id="occ"></div>
+  </section>
+
+  <!-- S5 説明 -->
+  <section class="screen" data-s="5">
+    <img class="mirai" src="img/mirai.png" alt="ミライ" width="120" height="120">
+    <p class="body"><b><span class="nn"></span>さんの毎日に合わせて、話題を選びます。</b></p>
+    <p class="body" id="s5retired" hidden>お仕事の話はせず、体調や暮らし、人との時間を中心にお伝えします。</p>
+    <button class="btn" type="button" data-next>次へ</button>
+  </section>
+
+  <!-- S6 生年月日 -->
+  <section class="screen" data-s="6">
+    <p class="q">生年月日を教えてください。</p>
+    <div class="selects">
+      <div><select id="by" aria-label="年"></select><div class="sel-label">年</div></div>
+      <div><select id="bm" aria-label="月"></select><div class="sel-label">月</div></div>
+      <div><select id="bd" aria-label="日"></select><div class="sel-label">日</div></div>
+    </div>
+    <button class="btn" type="button" id="s6next">次へ</button>
+  </section>
+
+  <!-- S7 結果① -->
+  <section class="screen" data-s="7">
+    <h2><span class="nn"></span>さんの星</h2>
+    <div id="s7body"></div>
+    <button class="btn" type="button" data-next id="s7next">次へ</button>
+  </section>
+
+  <!-- S8 生まれた時刻 -->
+  <section class="screen" data-s="8">
+    <p class="q">生まれた時刻はわかりますか？</p>
+    <div class="selects two">
+      <div><select id="th" aria-label="時"></select><div class="sel-label">時</div></div>
+      <div><select id="tm" aria-label="分"></select><div class="sel-label">分</div></div>
+    </div>
+    <button class="btn" type="button" id="s8next">この時刻で次へ</button>
+    <button class="btn ghost" type="button" id="s8skip">わからない</button>
+    <div class="why">
+      <b>なぜ聞くの？</b><br>
+      同じ誕生日でも、生まれた時刻がちがうと、運が出やすい場面（仕事、恋愛、お金など）が変わります。時刻がわかると、あなたの毎日により近い形で運勢を読めます。わからなくても大丈夫です。
+    </div>
+  </section>
+
+  <!-- S9 生まれた場所 -->
+  <section class="screen" data-s="9">
+    <p class="q">生まれた場所を教えてください。</p>
+    <p class="small center" id="s9hint" style="margin-bottom:12px">まず、地方を選んでください。</p>
+    <div class="grid2" id="regions"></div>
+    <div class="grid3" id="prefs" hidden></div>
+    <button class="btn ghost" type="button" id="s9regions" hidden>地方を選び直す</button>
+  </section>
+
+  <!-- S10 結果② -->
+  <section class="screen" data-s="10">
+    <h2><span class="nn"></span>さんの星のプロフィール</h2>
+    <div id="s10body"><div class="loading"><div class="spin"></div>星の位置を計算しています…</div></div>
+    <button class="btn" type="button" data-next id="s10next" disabled>次へ</button>
+  </section>
+
+  <!-- S11 問いかけ -->
+  <section class="screen" data-s="11">
+    <img class="mirai" src="img/mirai.png" alt="ミライ" width="120" height="120">
+    <p class="body"><b>でも、星には知らないことがあります。</b></p>
+    <p class="body"><span class="nn"></span>さんが今、どんな毎日を送っていて、何を気にかけているか。</p>
+    <p class="body center" style="color:#8a6a1f">上のメーターの、光っている部分。<br>ここは、星では埋まりません。</p>
+    <button class="btn" type="button" data-next>次へ</button>
+  </section>
+
+  <!-- S12 気になること -->
+  <section class="screen" data-s="12">
+    <p class="q">最近、気になっていることはありますか？</p>
+    <p class="small center" style="margin-bottom:12px">いくつでも選べます</p>
+    <div class="opts" id="concerns"></div>
+    <button class="btn" type="button" id="s12next" disabled>次へ</button>
+  </section>
+
+  <!-- S13 約束 -->
+  <section class="screen" data-s="13">
+    <img class="mirai" src="img/mirai.png" alt="ミライ" width="120" height="120">
+    <p class="body"><b>ミライは、これを覚えておきます。</b></p>
+    <p class="body">明日の朝の運勢から、少しずつ<span class="nn"></span>さんに合わせていきます。</p>
+    <p class="body">そして、話しかけてくれるたびに、もっと<span class="nn"></span>さんを知っていきます。</p>
+    <button class="btn" type="button" data-next>次へ</button>
+  </section>
+
+  <!-- S14 見本 -->
+  <section class="screen" data-s="14">
+    <h2>1日目と14日目</h2>
+    <div class="sample"><span class="day">1日目</span><p id="sam1">おはようございます。今日は仕事運が高めの日。午前中に、後回しにしていた連絡をひとつ片付けると、流れに乗れそうです。</p></div>
+    <div class="arrow" aria-hidden="true">▼</div>
+    <div class="sample later"><span class="day">14日目</span><p id="sam14">おはようございます。先週話してくれた企画の件、今日は進めどきです。星の流れも仕事を後押ししています。午前中に、相談をもちかけてみてください。</p></div>
+    <p class="small">※見本です。実際の内容は、あなたの星と会話から毎朝つくられます。</p>
+    <button class="btn" type="button" data-next>次へ</button>
+  </section>
+
+  <!-- S15 14日間 -->
+  <section class="screen" data-s="15">
+    <h2><span class="nn"></span>さんの、これからの14日間</h2>
+    <div id="s15body"><div class="loading"><div class="spin"></div>計算しています…</div></div>
+    <p class="small">星の動きから計算した、<span class="nn"></span>さんの総合運です。</p>
+    <button class="btn" type="button" data-next id="s15next" disabled>次へ</button>
+  </section>
+
+  <!-- S16 完成 -->
+  <section class="screen" data-s="16">
+    <img class="mirai" src="img/mirai.png" alt="ミライ" width="120" height="120">
+    <h2 class="center"><span class="nn"></span>さんのミライが、準備できました。</h2>
+    <div class="free">
+      <div>14日間すべて無料</div>
+      <div>カード登録なし</div>
+      <div>自動で課金されません</div>
+    </div>
+    <p class="small">15日目からは、続けたい方だけ<span data-price-jpy="490">月額490円</span>（税込）でお申し込みいただけます。申し込まなければ、無料版に切り替わります。</p>
+    <button class="btn line" type="button" id="toline">LINEで受け取る</button>
+    <div id="s16err"></div>
+  </section>
+
+  <!-- S17 LINE ログイン -->
+  <section class="screen" data-s="17">
+    <h2>LINEを開いています…</h2>
+    <p class="body">LINEの画面で「許可する」と「友だち追加」を押すと、登録が完了します。</p>
+    <a class="btn line" id="openline" href="#" style="text-align:center;text-decoration:none;line-height:28px">LINEを開く</a>
+    <div class="box" style="margin-top:24px">
+      <p class="body"><b>LINEが開かないときは</b></p>
+      <p class="small">Instagramなどのアプリの中では、LINEがうまく開かないことがあります。右上の「…」から「ブラウザで開く」を選ぶか、次の方法をお試しください。</p>
+      <a class="btn ghost" id="weblogin" href="#" style="text-align:center;text-decoration:none;line-height:28px">ブラウザでログインする</a>
+      <p class="small" style="margin-top:18px">または、友だち追加をしてから、この登録コードをトークに送ってください（24時間有効です）。</p>
+      <div class="code" id="code">------</div>
+      <a class="btn ghost" href="https://lin.ee/WA0V5f4" target="_blank" rel="noopener" style="text-align:center;text-decoration:none;line-height:28px">① 友だち追加する</a>
+      <a class="btn ghost" id="sendcode" href="#" style="text-align:center;text-decoration:none;line-height:28px;margin-top:10px">② 登録コードを送る</a>
+    </div>
+  </section>
+
+  <footer>
+    <a href="/terms.html">利用規約</a><a href="/privacy-policy.html">プライバシーポリシー</a><a href="/tokushoho.html">特定商取引法に基づく表記</a>
+  </footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var API = "https://miraisil-webhook.onrender.com/start/api/";
+  var LIFF_ID = "2010604081-ZArs25u8";
+  var BOT = "@768invlu";
+  var TEST = new URLSearchParams(location.search).get("test") === "1";
+  if (TEST) document.getElementById("testbar").hidden = false;
+
+  var OCC = ["会社員・公務員","経営者・役員","自営業・フリーランス","学生","主婦・主夫","パート・アルバイト","退職・年金生活","その他"];
+  var RETIRED = "退職・年金生活";
+  var REGIONS = [["hokkaido_tohoku","北海道・東北"],["kanto","関東"],["chubu","中部"],["kinki","近畿"],["chugoku","中国"],["shikoku","四国"],["kyushu_okinawa","九州・沖縄"],["overseas","海外"],["unknown","わからない"]];
+  var PREFS = {
+    hokkaido_tohoku:["北海道","青森","岩手","宮城","秋田","山形","福島"],
+    kanto:["茨城","栃木","群馬","埼玉","千葉","東京","神奈川"],
+    chubu:["新潟","富山","石川","福井","山梨","長野","岐阜","静岡","愛知"],
+    kinki:["三重","滋賀","京都","大阪","兵庫","奈良","和歌山"],
+    chugoku:["鳥取","島根","岡山","広島","山口"],
+    shikoku:["徳島","香川","愛媛","高知"],
+    kyushu_okinawa:["福岡","佐賀","長崎","熊本","大分","宮崎","鹿児島","沖縄"]
+  };
+  var CONCERNS = [["work","仕事のこと"],["people","人間関係"],["love","恋愛・パートナー"],["family","家族"],["money","お金"],["health","体調"],["future","これからのこと"],["none","特にない"]];
+  var S2LINE = {
+    love:"恋愛の流れを、あなたの星から毎朝読みます。",
+    work:"仕事の流れを、あなたの星から毎朝読みます。",
+    money:"お金の流れを、あなたの星から毎朝読みます。",
+    health:"体調の波を、あなたの星から毎朝読みます。"
+  };
+  // 画面ごとの章とメーター（質問では満タンにしない。70%で止める）
+  var CH = {1:1,2:1,3:1,4:1,5:1,6:2,7:2,8:2,9:2,10:2,11:3,12:3,13:3,14:3,15:4,16:4,17:4};
+  var METER = {1:4,2:10,3:14,4:20,5:24,6:30,7:38,8:44,9:50,10:58,11:58,12:64,13:68,14:70,15:70,16:70,17:70};
+  var CH_FIRST = {1:1,2:6,3:11,4:15};
+  var CH_LAST = {1:5,2:10,3:14,4:17};
+
+  var st = {s:1, a:{concerns:[]}, hist:[], signs:null, profile:null, session:null};
+  try { var saved = JSON.parse(sessionStorage.getItem("mirai_start") || "null"); if (saved && saved.a) { st.a = saved.a; st.s = saved.s || 1; st.hist = saved.hist || []; st.session = saved.session || null; } } catch(e){}
+  function save(){ try { sessionStorage.setItem("mirai_start", JSON.stringify({a:st.a, s:st.s, hist:st.hist, session:st.session})); } catch(e){} }
+
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
+
+  function api(path, body){
+    return fetch(API + path, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)})
+      .then(function(r){ return r.json().then(function(j){ if (!r.ok) { var e = new Error(j.error || ("HTTP " + r.status)); e.data = j; throw e; } return j; }); });
+  }
+
+  function show(n, push){
+    if (push !== false && st.s !== n) st.hist.push(st.s);
+    st.s = n; save();
+    var list = document.querySelectorAll(".screen");
+    for (var i=0;i<list.length;i++) list[i].classList.toggle("on", +list[i].getAttribute("data-s") === n);
+    $("back").classList.toggle("off", n === 1 || st.hist.length === 0);
+    var nn = document.querySelectorAll(".nn");
+    for (var k=0;k<nn.length;k++) nn[k].textContent = st.a.nickname || "あなた";
+    // 章
+    var ch = CH[n], bars = document.querySelectorAll(".ch i");
+    for (var c=1;c<=4;c++){
+      var w = c < ch ? 100 : c > ch ? 0 : Math.round(100 * (n - CH_FIRST[c] + 1) / (CH_LAST[c] - CH_FIRST[c] + 1));
+      bars[c-1].style.width = w + "%";
+    }
+    $("chlabel").textContent = "第" + ch + "章";
+    // メーター
+    var p = METER[n];
+    $("fill").style.width = p + "%";
+    $("empty").style.width = (100 - p) + "%";
+    $("pct").textContent = p + "%";
+    var bar = $("bar");
+    bar.classList.toggle("glow", n === 11 || n === 12);
+    bar.classList.toggle("together", n >= 16);
+    $("mnote").textContent = (n === 11 || n === 12) ? "ここは、星では埋まりません" : (n >= 16 ? "ここから先は、ミライと一緒に" : "");
+    window.scrollTo(0,0);
+    enter(n);
+  }
+  function next(){ show(st.s + 1); }
+  $("back").addEventListener("click", function(){ if (!st.hist.length) return; var p = st.hist.pop(); show(p, false); });
+  var nexts = document.querySelectorAll("[data-next]");
+  for (var i=0;i<nexts.length;i++) nexts[i].addEventListener("click", next);
+
+  // S1
+  var cards = document.querySelectorAll("[data-interest]");
+  for (var i1=0;i1<cards.length;i1++) cards[i1].addEventListener("click", function(){
+    st.a.interest = this.getAttribute("data-interest"); save(); show(2);
+  });
+  // S3
+  var nick = $("nickname");
+  nick.addEventListener("input", function(){ $("s3next").disabled = !nick.value.trim(); });
+  nick.addEventListener("keydown", function(e){ if (e.key === "Enter" && nick.value.trim()) { e.preventDefault(); $("s3next").click(); } });
+  $("s3next").addEventListener("click", function(){ st.a.nickname = nick.value.trim().slice(0,20); save(); show(4); });
+  // S4
+  OCC.forEach(function(o){
+    var b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.textContent = o;
+    b.addEventListener("click", function(){
+      st.a.occupation = o;
+      if (o === RETIRED) st.a.concerns = (st.a.concerns || []).filter(function(c){ return c !== "work"; });
+      st.profile = null; save(); show(5);
+    });
+    $("occ").appendChild(b);
+  });
+  // S6 生年月日
+  var nowY = new Date().getFullYear();
+  function opt(sel, v, label){ var o = document.createElement("option"); o.value = v; o.textContent = label; sel.appendChild(o); }
+  for (var y=nowY; y>=1924; y--) opt($("by"), y, y);
+  for (var m=1; m<=12; m++) opt($("bm"), m, m);
+  function fillDays(){
+    var y = +$("by").value, m = +$("bm").value, keep = +$("bd").value || 1;
+    var last = new Date(y, m, 0).getDate(); $("bd").innerHTML = "";
+    for (var d=1; d<=last; d++) opt($("bd"), d, d);
+    $("bd").value = Math.min(keep, last);
+  }
+  $("by").addEventListener("change", fillDays); $("bm").addEventListener("change", fillDays);
+  $("by").value = 1970; $("bm").value = 1; fillDays();
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+  $("s6next").addEventListener("click", function(){
+    var iso = $("by").value + "-" + pad(+$("bm").value) + "-" + pad(+$("bd").value);
+    var today = new Date(); var t = today.getFullYear() + "-" + pad(today.getMonth()+1) + "-" + pad(today.getDate());
+    if (iso > t) { alertBox("s6next", "今日より後の日付は選べません。"); return; }
+    if (st.a.birthdate !== iso) { st.signs = null; st.profile = null; }
+    st.a.birthdate = iso; save(); show(7);
+  });
+  function alertBox(afterId, msg){
+    var el = $(afterId).nextElementSibling;
+    if (!el || !el.classList || !el.classList.contains("err")) { el = document.createElement("div"); el.className = "err"; $(afterId).parentNode.insertBefore(el, $(afterId).nextSibling); }
+    el.textContent = msg;
+  }
+  // S8 時刻
+  for (var h=0; h<24; h++) opt($("th"), h, h);
+  for (var mi=0; mi<60; mi++) opt($("tm"), mi, pad(mi));
+  $("th").value = 12;
+  $("s8next").addEventListener("click", function(){ st.a.birth_time = pad(+$("th").value) + ":" + pad(+$("tm").value); st.profile = null; save(); show(9); });
+  $("s8skip").addEventListener("click", function(){ st.a.birth_time = null; st.profile = null; save(); show(9); });
+  // S9 場所
+  function regionsView(){
+    $("regions").hidden = false; $("prefs").hidden = true; $("s9regions").hidden = true;
+    $("s9hint").textContent = "まず、地方を選んでください。";
+  }
+  REGIONS.forEach(function(r){
+    var b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.textContent = r[1]; b.style.textAlign = "center";
+    b.addEventListener("click", function(){
+      if (r[0] === "unknown" || r[0] === "overseas") { st.a.birth_place = r[0] === "unknown" ? "わからない" : "海外"; st.profile = null; save(); show(10); return; }
+      $("prefs").innerHTML = "";
+      PREFS[r[0]].forEach(function(p){
+        var pb = document.createElement("button"); pb.type = "button"; pb.className = "opt"; pb.textContent = p;
+        pb.addEventListener("click", function(){ st.a.birth_place = p; st.profile = null; save(); show(10); });
+        $("prefs").appendChild(pb);
+      });
+      $("regions").hidden = true; $("prefs").hidden = false; $("s9regions").hidden = false;
+      $("s9hint").textContent = "都道府県を選んでください。";
+    });
+    $("regions").appendChild(b);
+  });
+  $("s9regions").addEventListener("click", regionsView);
+  // S12
+  CONCERNS.forEach(function(c){
+    var b = document.createElement("button"); b.type = "button"; b.className = "opt check"; b.textContent = c[1]; b.setAttribute("data-c", c[0]);
+    b.addEventListener("click", function(){
+      var cs = st.a.concerns || [];
+      if (c[0] === "none") cs = (cs.indexOf("none") >= 0) ? [] : ["none"];
+      else { cs = cs.filter(function(x){ return x !== "none"; }); var i = cs.indexOf(c[0]); if (i >= 0) cs.splice(i,1); else cs.push(c[0]); }
+      st.a.concerns = cs; save(); paintConcerns();
+    });
+    $("concerns").appendChild(b);
+  });
+  function paintConcerns(){
+    var cs = st.a.concerns || [], btns = $("concerns").children;
+    for (var i=0;i<btns.length;i++){
+      var k = btns[i].getAttribute("data-c");
+      btns[i].hidden = (k === "work" && st.a.occupation === RETIRED);
+      btns[i].classList.toggle("sel", cs.indexOf(k) >= 0);
+      btns[i].setAttribute("aria-pressed", cs.indexOf(k) >= 0 ? "true" : "false");
+    }
+    $("s12next").disabled = cs.length === 0;
+  }
+  $("s12next").addEventListener("click", function(){ show(13); });
+
+  // 画面に入ったとき
+  function starRow(lab, sign, one){
+    return '<div class="star"><div class="lab">' + esc(lab) + '</div><div><div class="sign">' + esc(sign) + '</div>' + (one ? '<div class="one">' + esc(one) + '</div>' : '') + '</div></div>';
+  }
+  function loadSigns(){
+    if (st.signs && st.signs._bd === st.a.birthdate) return Promise.resolve(st.signs);
+    return api("signs", {birthdate: st.a.birthdate}).then(function(j){ j._bd = st.a.birthdate; st.signs = j; return j; });
+  }
+  function profileReq(){
+    return {birthdate: st.a.birthdate, birth_time: st.a.birth_time || null, birth_place: st.a.birth_place || null, occupation: st.a.occupation};
+  }
+  var profileKey = "";
+  function loadProfile(){
+    var key = JSON.stringify(profileReq());
+    if (st.profile && profileKey === key) return Promise.resolve(st.profile);
+    return api("profile", profileReq()).then(function(j){ st.profile = j; profileKey = key; return j; });
+  }
+  function catJa(c){ return {work:"仕事運",love:"恋愛運",money:"金運",health:"健康運",interpersonal:"対人運",study:"勉強運"}[c] || c; }
+
+  function enter(n){
+    if (n === 2) $("s2line").textContent = S2LINE[st.a.interest] || "";
+    if (n === 3) { nick.value = st.a.nickname || ""; $("s3next").disabled = !nick.value.trim(); setTimeout(function(){ try{ nick.focus(); }catch(e){} }, 300); }
+    if (n === 4) { var bs = $("occ").children; for (var i=0;i<bs.length;i++) bs[i].classList.toggle("sel", bs[i].textContent === st.a.occupation); }
+    if (n === 5) $("s5retired").hidden = st.a.occupation !== RETIRED;
+    if (n === 6 && st.a.birthdate) { var p = st.a.birthdate.split("-"); $("by").value = +p[0]; $("bm").value = +p[1]; fillDays(); $("bd").value = +p[2]; }
+    if (n === 7) {
+      $("s7body").innerHTML = '<div class="loading"><div class="spin"></div>星の位置を計算しています…</div>';
+      $("s7next").disabled = true;
+      loadSigns().then(function(j){
+        var moon = j.moon.pending ? starRow("月", j.moon.candidates.join(" か "), "生まれた時刻で決まります。次の質問のあとで確かめます。") : starRow("月", j.moon.ja, j.moon.line);
+        $("s7body").innerHTML = starRow("太陽", j.sun.ja, j.sun.line) + moon +
+          '<p class="small">生まれた日の空を計算しました。太陽は外に見せる顔、月は心の動きをあらわします。</p>';
+        $("s7next").disabled = false;
+      }).catch(function(){ $("s7body").innerHTML = '<div class="err">計算できませんでした。通信の状態を確かめて、「戻る」からもう一度お試しください。</div>'; $("s7next").disabled = false; });
+    }
+    if (n === 8 && st.a.birth_time) { var t = st.a.birth_time.split(":"); $("th").value = +t[0]; $("tm").value = +t[1]; }
+    if (n === 9) regionsView();
+    if (n === 10) {
+      $("s10next").disabled = true;
+      $("s10body").innerHTML = '<div class="loading"><div class="spin"></div>星の位置を計算しています…</div>';
+      loadProfile().then(function(j){
+        var html = starRow("太陽", j.sun.ja, j.sun.line);
+        html += j.moon.pending ? starRow("月", j.moon.candidates.join(" か "), "生まれた時刻がわかると決まります。") : starRow("月", j.moon.ja, j.moon.line);
+        if (j.ascendant) html += starRow("上昇宮", j.ascendant.ja, "まわりの人から見えるあなたの印象をあらわします。");
+        html += '<div class="highlight">これからの14日間で、いちばん運が出やすいのは<b>' + esc(j.forecast.best_category_ja) + '</b></div>';
+        $("s10body").innerHTML = html;
+        $("s10next").disabled = false;
+      }).catch(function(){ $("s10body").innerHTML = '<div class="err">計算できませんでした。少し待ってから、「戻る」からもう一度お試しください。</div>'; });
+    }
+    if (n === 12) paintConcerns();
+    if (n === 14) {
+      // 退職・年金生活の人には、S5 で「お仕事の話はしない」と伝えているので、見本も暮らしの話にする
+      var r = st.a.occupation === RETIRED;
+      $("sam1").textContent = r ? "おはようございます。今日は健康運が高めの日。午前中に、少し遠回りして散歩をすると、気持ちよく過ごせそうです。"
+                               : "おはようございます。今日は仕事運が高めの日。午前中に、後回しにしていた連絡をひとつ片付けると、流れに乗れそうです。";
+      $("sam14").textContent = r ? "おはようございます。先週話してくれたお孫さんとのお出かけ、今日は良い日和です。星の流れも人との時間を後押ししています。午前中に、連絡をしてみてください。"
+                                : "おはようございます。先週話してくれた企画の件、今日は進めどきです。星の流れも仕事を後押ししています。午前中に、相談をもちかけてみてください。";
+    }
+    if (n === 15) {
+      $("s15next").disabled = true;
+      loadProfile().then(function(j){ $("s15body").innerHTML = chart(j.forecast); $("s15next").disabled = false; })
+        .catch(function(){ $("s15body").innerHTML = '<div class="err">計算できませんでした。「戻る」からもう一度お試しください。</div>'; });
+    }
+    if (n === 17 && st.session) paintLogin();
+  }
+
+  // S15 折れ線（SVG）
+  function chart(f){
+    var W = 340, H = 210, L = 30, R = 12, T = 34, B = 34, days = f.days;
+    var lo = 50, hi = 100;
+    function x(i){ return L + (W - L - R) * i / (days.length - 1); }
+    function y(v){ return T + (H - T - B) * (hi - v) / (hi - lo); }
+    var pts = days.map(function(d,i){ return x(i).toFixed(1) + "," + y(d.overall).toFixed(1); }).join(" ");
+    var bi = 0; days.forEach(function(d,i){ if (d.date === f.best_day) bi = i; });
+    var g = '';
+    [60,80,100].forEach(function(v){ g += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#e6dcc4" stroke-width="1"/><text x="'+(L-6)+'" y="'+(y(v)+4)+'" font-size="12" fill="#5b6080" text-anchor="end">'+v+'</text>'; });
+    var labels = '';
+    days.forEach(function(d,i){
+      var last = days.length - 1; if (i % 3 === 0 || (i === last && last % 3 >= 2)) { var dt = d.date.split("-"); labels += '<text x="'+x(i)+'" y="'+(H-12)+'" font-size="13" fill="#5b6080" text-anchor="middle">'+(+dt[1])+'/'+(+dt[2])+'</text>'; }
+    });
+    var dots = days.map(function(d,i){ return '<circle cx="'+x(i)+'" cy="'+y(d.overall)+'" r="'+(i===bi?7:3.5)+'" fill="'+(i===bi?'#c9a24a':'#1b2550')+'" stroke="#fff" stroke-width="'+(i===bi?2:1)+'"/>'; }).join("");
+    var bx = Math.min(Math.max(x(bi), L + 34), W - R - 34);
+    var tag = '<rect x="'+(bx-34)+'" y="4" width="68" height="22" rx="11" fill="#1b2550"/><text x="'+bx+'" y="20" font-size="13" fill="#e8d39c" text-anchor="middle" font-weight="700">いちばん</text>';
+    var svg = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="これからの14日間の総合運">' + g +
+      '<polyline points="'+pts+'" fill="none" stroke="#1b2550" stroke-width="2.5" stroke-linejoin="round"/>' + dots + tag + labels + '</svg>';
+    return '<div class="chart">' + svg + '</div><p class="body"><b>' + esc(f.best_day_ja) + '</b>が、この2週間でいちばんの好調日です。</p>';
+  }
+
+  // S16 → S17
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  var inApp = /Instagram|FBAN|FBAV|Line\//i.test(navigator.userAgent);
+  function loginUrls(tok){
+    var q = "?start=" + encodeURIComponent(tok);
+    return { app: "https://line.me/R/app/" + LIFF_ID + q, web: "https://liff.line.me/" + LIFF_ID + q };
+  }
+  function paintLogin(){
+    var u = loginUrls(st.session.token);
+    $("openline").href = isMobile ? u.app : u.web;
+    $("weblogin").href = u.web;
+    $("code").textContent = st.session.code;
+    $("sendcode").href = "https://line.me/R/oaMessage/" + encodeURIComponent(BOT) + "/?" + encodeURIComponent("登録コード " + st.session.code);
+  }
+  $("toline").addEventListener("click", function(){
+    var btn = this; btn.disabled = true; btn.textContent = "準備しています…"; $("s16err").innerHTML = "";
+    var answers = {interest: st.a.interest, nickname: st.a.nickname, occupation: st.a.occupation, birthdate: st.a.birthdate,
+                   birth_time: st.a.birth_time || null, birth_place: st.a.birth_place || null,
+                   concerns: (st.a.concerns || []).filter(function(c){ return c !== "none"; })};
+    api("session", {answers: answers, test: TEST}).then(function(j){
+      st.session = j; save(); show(17);
+      location.href = $("openline").href;
+    }).catch(function(e){
+      btn.disabled = false; btn.textContent = "LINEで受け取る";
+      $("s16err").innerHTML = '<div class="err">うまく準備できませんでした。' + (e && e.data && e.data.field ? "入力に足りないところがあります。「戻る」で確かめてください。" : "少し待ってから、もう一度お試しください。") + '</div>';
+    });
+  });
+
+  show(st.s || 1, false);
+})();
+</script>
+</body>
+</html>
