@@ -78,6 +78,8 @@
   .btn:disabled{opacity:.4;cursor:default}
   .btn.ghost{background:transparent;color:var(--navy);border:2px solid var(--navy)}
   .btn.line{background:var(--green);color:#fff}
+  .btn.premium{margin-top:14px;font-size:clamp(15px,4.6vw,17px);min-height:54px;padding:12px 10px;line-height:1.5}
+  .prem-note{margin:8px 2px 0;font-size:13px;line-height:1.7}
   .btn.gold{background:var(--gold);color:var(--navy)}
   input.text{width:100%;font-size:22px;padding:14px 16px;border:2px solid var(--line);border-radius:14px;background:#fff;min-height:60px}
   input.text:focus,select:focus{outline:3px solid var(--gold-soft);border-color:var(--gold)}
@@ -303,14 +305,16 @@
   <!-- S16 完成 -->
   <section class="screen" data-s="16">
     <img class="mirai" src="img/mirai.png" alt="ミライ" width="120" height="120">
-    <h2 class="center"><span class="nn"></span>さんのミライが、準備できました。</h2>
+    <h2 class="center"><span class="ib"><span class="nn"></span>さん専用AI</span><span class="ib">ミライの準備が</span><span class="ib">整いました。</span></h2>
     <div class="free">
       <div>14日間すべて無料</div>
       <div>カード登録なし</div>
       <div>自動で課金されません</div>
     </div>
     <p class="small">15日目からは、続けたい方だけ<span data-price-jpy="330">月額330円</span>（税込）でお申し込みいただけます。申し込まなければ、無料版に切り替わります。</p>
-    <button class="btn line" type="button" id="toline">LINEで受け取る</button>
+    <button class="btn line" type="button" id="toline">LINEで運勢を受け取る</button>
+    <button class="btn ghost premium" type="button" id="topremium"><span class="ib">今すぐPremiumを始める</span><span class="ib">（<span data-price-jpy="330">月額330円</span>・税込）</span></button>
+    <p class="small prem-note">お申し込みの時点で初回のご請求となり、以後毎月自動で更新されます。解約は LINE で「解約」と送るだけです。</p>
     <div id="s16err"></div>
   </section>
 
@@ -318,6 +322,7 @@
   <section class="screen" data-s="17">
     <h2>LINEを開いています…</h2>
     <p class="body">LINEの画面で「許可する」と「友だち追加」を押すと、登録が完了します。</p>
+    <p class="body" id="s17prem" hidden>登録が終わると、そのままPremiumのお申し込み画面に進みます。</p>
     <a class="btn line" id="openline" href="#" style="text-align:center;text-decoration:none;line-height:28px">LINEを開く</a>
     <div class="box" style="margin-top:24px">
       <p class="body"><b>LINEが開かないときは</b></p>
@@ -564,6 +569,7 @@
     if (n === 3) { nick.value = st.a.nickname || ""; $("s3next").disabled = !nick.value.trim(); setTimeout(function(){ try{ nick.focus(); }catch(e){} }, 300); }
     if (n === 4) { var bs = $("occ").children; for (var i=0;i<bs.length;i++) bs[i].classList.toggle("sel", bs[i].textContent === st.a.occupation); }
     if (n === 5) paintS5();
+    if (n === 17) $("s17prem").hidden = !st.a._premium;
     if (n === 11) {
       var nn11 = st.a.nickname || "";
       $("s11first").innerHTML = '<span class="ib">' + (st.a.birth_time ? "生年月日と生まれた時刻で、" : "生年月日で、") + "</span>" +
@@ -655,19 +661,25 @@
     $("code").textContent = st.session.code;
     $("sendcode").href = "https://line.me/R/oaMessage/" + encodeURIComponent(BOT) + "/?" + encodeURIComponent("登録コード " + st.session.code);
   }
-  $("toline").addEventListener("click", function(){
-    var btn = this; btn.disabled = true; btn.textContent = "準備しています…"; $("s16err").innerHTML = "";
+  // S16 の2つのボタン。どちらも LINE ログイン → 登録。premium は登録のあと Stripe の申し込みへ進む（2026-10-13）
+  function toLine(btn, premium){
+    var label = btn.innerHTML, other = btn.id === "toline" ? $("topremium") : $("toline");
+    btn.disabled = true; other.disabled = true; btn.textContent = "準備しています…"; $("s16err").innerHTML = "";
     var answers = {interest: st.a.interest, nickname: st.a.nickname, occupation: st.a.occupation, birthdate: st.a.birthdate,
                    birth_time: st.a.birth_time || null, birth_place: st.a.birth_place || null,
                    concerns: (st.a.concerns || []).filter(function(c){ return c !== "none"; })};
-    api("session", {answers: answers, test: TEST}).then(function(j){
+    st.a._premium = !!premium;
+    api("session", {answers: answers, test: TEST, premium: !!premium}).then(function(j){
       st.session = j; save(); show(17);
+      btn.disabled = false; other.disabled = false; btn.innerHTML = label;
       location.href = $("openline").href;
     }).catch(function(e){
-      btn.disabled = false; btn.textContent = "LINEで受け取る";
+      btn.disabled = false; other.disabled = false; btn.innerHTML = label;
       $("s16err").innerHTML = '<div class="err">うまく準備できませんでした。' + (e && e.data && e.data.field ? "入力に足りないところがあります。「戻る」で確かめてください。" : "少し待ってから、もう一度お試しください。") + '</div>';
     });
-  });
+  }
+  $("toline").addEventListener("click", function(){ toLine(this, false); });
+  $("topremium").addEventListener("click", function(){ toLine(this, true); });
 
   show(st.s || 1, false);
 })();

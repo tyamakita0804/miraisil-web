@@ -168,6 +168,19 @@
       .then(function(j) {
         var nn = j.nickname ? j.nickname + "さん、" : "";
         var toChat = { href: CHAT_URL, label: "LINEのトークを開く", kind: "line" };
+        // S16「今すぐPremiumを始める」から来た人：登録のあと Stripe の申し込みへ（2026-10-13）
+        var toPay = j.go_checkout && j.checkout_url ? { href: j.checkout_url, label: "Premiumのお申し込みへ進む", kind: "line",
+          note: "月額330円（税込）。お申し込みの時点で初回のご請求となり、以後毎月自動で更新されます。解約は LINE で「解約」と送るだけです。" } : null;
+        if (toPay && (j.status === "created" || j.status === "completed" || j.status === "test")) {
+          var head = j.status === "test" ? "【テスト】" : "";
+          if (j.needs_friend) {
+            startView("あと少しです", nn + "登録ができました。ミライを友だち追加してから、Premiumのお申し込みへお進みください。", [{ href: FRIEND_URL, label: "友だち追加する", kind: "line" }, { href: toPay.href, label: toPay.label, kind: "ghost", note: toPay.note }]);
+            return;
+          }
+          startView(head + "登録が完了しました", nn + "続けて、Premiumのお申し込み画面に進みます。", [toPay, toChat]);
+          setTimeout(function() { location.href = toPay.href; }, 1800);
+          return;
+        }
         if (j.status === "created" || j.status === "completed") {
           if (j.needs_friend) {
             startView("あと少しです", nn + "登録ができました。最後に、ミライを友だち追加してください。友だち追加すると、今日の運勢が届きます。", [{ href: FRIEND_URL, label: "友だち追加する", kind: "line" }]);
@@ -180,7 +193,7 @@
           if (j.checkout_url) acts.push({ href: j.checkout_url, label: "Premiumを申し込む（月額330円）", kind: "ghost", note: "お申し込みの時点で月額330円（税込）をご請求し、以後は毎月自動更新されます。解約はいつでもLINEで「解約」と送ってください。" });
           startView("すでにご登録いただいています", nn + "登録内容はそのままです。LINEのトークからご利用ください。", acts);
         } else if (j.status === "test") {
-          startView("【テスト】送りました", "あなたのLINEに、登録直後に届くメッセージと、登録されるはずだった内容を送りました。本当の登録内容・課金状態は変えていません。", [toChat]);
+          startView("【テスト】送りました", "あなたのLINEに、登録直後に届くメッセージ（あいさつ → 今日の運勢）を送りました。本当の登録内容・課金状態は変えていません。", [toChat]);
         } else if (j.status === "test_forbidden") {
           startView("テスト用の入口です", "この入口は運営のテスト用のため、ご利用いただけません。", [{ href: "https://miraisil.jp/start/", label: "はじめからやり直す", kind: "ghost" }]);
         } else if (j.status === "expired" || j.status === "not_found" || j.status === "used") {
