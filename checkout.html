@@ -82,6 +82,9 @@
       cursor: pointer;
     }
   </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -107,10 +110,10 @@
 
 <!-- miraisil.jp/start からの LINE ログイン（2026-10-12）。?start=<token> のときだけ使う。
      LIFF のエンドポイントがこのページなので、ログイン後の処理をここで行う。 -->
-<div id="start-box" style="display:none;position:fixed;inset:0;background:#faf6ec;color:#1f2340;overflow:auto;padding:28px 16px;font-size:19px;line-height:1.75;z-index:10">
+<div id="start-box" style="display:none;position:fixed;inset:0;background:#fff8f4;color:#3f3a55;font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN','Hiragino Sans',sans-serif;font-weight:500;overflow:auto;padding:28px 16px;font-size:19px;line-height:1.75;z-index:10">
   <div style="max-width:480px;margin:0 auto;text-align:center">
     <img src="/start/img/mirai.png" alt="ミライ" width="110" height="110" style="border-radius:50%;box-shadow:0 4px 18px rgba(27,37,80,.25)">
-    <h2 id="start-title" style="color:#1b2550;font-size:24px;line-height:1.5;margin:16px 0 10px">LINEと連携しています…</h2>
+    <h2 id="start-title" style="color:#4b3f72;font-weight:700;font-size:24px;line-height:1.5;margin:16px 0 10px">LINEと連携しています…</h2>
     <p id="start-text" style="margin-bottom:8px"></p>
     <div id="start-actions"></div>
   </div>
@@ -153,9 +156,9 @@
     (actions || []).forEach(function(a) {
       var el = document.createElement("a");
       el.href = a.href; el.textContent = a.label;
-      el.style.cssText = "display:block;margin-top:14px;padding:16px;border-radius:14px;font-weight:700;font-size:19px;text-decoration:none;" +
-        (a.kind === "line" ? "background:#06C755;color:#fff" : a.kind === "gold" ? "background:#c9a24a;color:#1b2550" : "border:2px solid #1b2550;color:#1b2550");
-      if (a.note) { var n = document.createElement("p"); n.textContent = a.note; n.style.cssText = "font-size:15px;color:#5b6080;margin-top:6px"; box.appendChild(el); box.appendChild(n); return; }
+      el.style.cssText = "display:block;margin-top:14px;padding:16px;border-radius:999px;font-weight:700;font-size:19px;text-decoration:none;text-align:center;" +
+        (a.kind === "line" ? "background:#06C755;color:#fff;box-shadow:0 8px 20px rgba(6,199,85,.25)" : a.kind === "gold" ? "background:linear-gradient(120deg,#7462cc,#9358b8);color:#fff" : "background:#fff;border:2px solid #cbbfe8;color:#6a5aa8");
+      if (a.note) { var n = document.createElement("p"); n.textContent = a.note; n.style.cssText = "font-size:14px;color:#6c6684;margin:8px 4px 0;line-height:1.7"; box.appendChild(el); box.appendChild(n); return; }
       box.appendChild(el);
     });
   }
