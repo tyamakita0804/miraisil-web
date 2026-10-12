@@ -19,7 +19,7 @@
 
 ■ 使い方
     python3 check_price.py            … ページ間の不一致だけを見る
-    python3 check_price.py 490        … 490円であることも確かめる
+    python3 check_price.py 330        … 330円であることも確かめる
 不一致があれば終了コード1。値上げのときは、書き換えたあとに必ず実行すること。
 金額の正はコード側の stripe_checkout.PREMIUM_PRICE_JPY（LINEの文言もそこを見る）。
 Stripe上の実際の請求額はさらに別（Priceが持つ）ので、そちらも忘れず確認する。

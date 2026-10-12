@@ -177,7 +177,7 @@
           if (liff.isInClient()) setTimeout(function() { location.href = CHAT_URL; }, 2500);
         } else if (j.status === "existing") {
           var acts = [toChat];
-          if (j.checkout_url) acts.push({ href: j.checkout_url, label: "Premiumを申し込む（月額490円）", kind: "ghost", note: "お申し込みの時点で月額490円（税込）をご請求し、以後は毎月自動更新されます。解約はいつでもLINEで「解約」と送ってください。" });
+          if (j.checkout_url) acts.push({ href: j.checkout_url, label: "Premiumを申し込む（月額330円）", kind: "ghost", note: "お申し込みの時点で月額330円（税込）をご請求し、以後は毎月自動更新されます。解約はいつでもLINEで「解約」と送ってください。" });
           startView("すでにご登録いただいています", nn + "登録内容はそのままです。LINEのトークからご利用ください。", acts);
         } else if (j.status === "test") {
           startView("【テスト】送りました", "あなたのLINEに、登録直後に届くメッセージと、登録されるはずだった内容を送りました。本当の登録内容・課金状態は変えていません。", [toChat]);
