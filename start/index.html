@@ -10,143 +10,143 @@
 <meta property="og:description" content="あなたのための運勢を、毎朝LINEで。">
 <meta property="og:image" content="https://miraisil.jp/ogp.png">
 <link rel="icon" href="/favicon-32x32.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
 <style>
-  /* 2026-10-13 やわらかい配色に作り直し（淡いラベンダー・パステルピンク・クリーム）。
-     変数名は以前のまま（--navy＝濃い文字色・主色、--gold＝アクセント）にして、中身だけ差し替えている。 */
+  /* 2026-10-13 配色の再調整：男女どちらにも。クリーム地に、やわらかいインディゴと控えめな金。
+     最初の紺・金ほど重くせず、パステルほど甘くしない。変数名は以前のまま（--navy＝濃い文字色・主色）。 */
   :root{
-    --navy:#4b3f72;      /* 見出し・本文の濃い色（クリーム地でコントラスト約9:1） */
-    --navy-2:#6a5aa8;
-    --gold:#ee8fb0;      /* アクセント（ピンク）。塗り・枠・バー */
-    --gold-soft:#ffdbe7;
-    --rose:#b2456f;      /* 文字に使うアクセント（クリーム地で約5.5:1） */
-    --lav:#7462cc;       /* 主ボタン（白文字で4.8:1） */
-    --lav-soft:#efeaff;
-    --ivory:#fff8f4; --paper:#ffffff; --ink:#3f3a55; --muted:#6c6684; --line:#ebe2f6;
-    --pink-tint:#fff0f5;
-    --shadow:0 8px 24px rgba(143,127,224,.14);
+    --navy:#2f3768;      /* 見出し・濃い文字（クリーム地で10.6:1） */
+    --navy-2:#3f4a8f;    /* 主色インディゴ（白文字で8.1:1） */
+    --indigo-2:#5662a8;
+    --gold:#c4a462;      /* 控えめな金。枠・印・バーの先 */
+    --gold-soft:#ecdfbf;
+    --gold-text:#7d5f1e; /* 金の文字（クリーム地・淡紺地とも4.5:1以上） */
+    --tint:#eef0f8;      /* 淡いインディゴ */
+    --cream-tint:#fbf3e2;/* 選択中など */
+    --ivory:#fbf8f1; --paper:#ffffff; --ink:#34374d; --muted:#666a80; --line:#e4e2ec;
+    --shadow:0 6px 20px rgba(47,55,104,.08);
     --green:#06C755;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   [hidden]{display:none!important}
   html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-  body{background:linear-gradient(180deg,#f8f3ff 0%,var(--ivory) 260px,var(--ivory) 100%);color:var(--ink);font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif;font-weight:500;font-size:19px;line-height:1.75;min-height:100vh}
-  button{font-family:inherit;font-size:inherit;color:inherit;font-weight:inherit}
-  b,strong{font-weight:700}
+  body{background:linear-gradient(180deg,#f3f3f9 0%,var(--ivory) 240px,var(--ivory) 100%);color:var(--ink);font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;font-size:19px;line-height:1.75;min-height:100vh}
+  button{font-family:inherit;font-size:inherit;color:inherit}
   a{color:var(--navy-2)}
   .wrap{max-width:520px;margin:0 auto;padding:0 16px 40px}
 
   /* 上部：章の進み具合とメーター */
-  .top{position:sticky;top:0;z-index:5;background:linear-gradient(120deg,#efe8ff,#ffe9f2);color:var(--navy);padding:10px 16px 12px;box-shadow:0 4px 16px rgba(143,127,224,.15);border-radius:0 0 22px 22px}
+  .top{position:sticky;top:0;z-index:5;background:linear-gradient(120deg,#e9ebf6,#f6f1e4);color:var(--navy);padding:10px 16px 12px;box-shadow:0 3px 14px rgba(47,55,104,.10);border-radius:0 0 18px 18px}
   .top-inner{max-width:520px;margin:0 auto}
   .toprow{display:flex;align-items:center;gap:10px;min-height:40px}
-  .back{background:rgba(255,255,255,.8);border:1.5px solid #d9cff3;border-radius:999px;color:var(--navy);font-size:16px;padding:6px 14px;min-height:40px;cursor:pointer}
+  .back{background:rgba(255,255,255,.85);border:1.5px solid #cfd2e6;border-radius:999px;color:var(--navy);font-size:16px;padding:6px 14px;min-height:40px;cursor:pointer}
   .back.off{visibility:hidden}
   .chapters{flex:1;display:flex;gap:6px}
-  .ch{flex:1;height:8px;border-radius:999px;background:rgba(255,255,255,.85);overflow:hidden}
-  .ch i{display:block;height:100%;width:0;background:linear-gradient(90deg,#b8a9f5,var(--gold));transition:width .35s}
+  .ch{flex:1;height:8px;border-radius:999px;background:rgba(255,255,255,.9);overflow:hidden}
+  .ch i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--navy-2),var(--indigo-2));transition:width .35s}
   .chlabel{font-size:14px;white-space:nowrap;color:var(--muted)}
   .meter{margin-top:8px}
   .meter-head{display:flex;justify-content:space-between;font-size:15px;gap:8px}
-  .meter-head b{color:var(--rose);font-size:17px}
-  .bar{position:relative;height:14px;border-radius:999px;background:rgba(255,255,255,.9);margin-top:4px;overflow:hidden}
-  .bar .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#b8a9f5,var(--gold),#ffc4d6);border-radius:999px;transition:width .6s ease}
+  .meter-head b{color:var(--gold-text);font-size:17px}
+  .bar{position:relative;height:14px;border-radius:999px;background:rgba(255,255,255,.95);margin-top:4px;overflow:hidden}
+  .bar .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--navy-2),#6d78b8 85%,var(--gold));border-radius:999px;transition:width .6s ease}
   .bar .empty{position:absolute;top:0;bottom:0;right:0;border-radius:0 999px 999px 0;opacity:0;transition:opacity .4s}
-  .bar.glow .empty{opacity:1;background:rgba(255,196,214,.8);box-shadow:0 0 10px rgba(238,143,176,.8);animation:pulse 1.6s ease-in-out infinite}
-  .bar.together .empty{opacity:1;background:repeating-linear-gradient(45deg,rgba(184,169,245,.35) 0 6px,rgba(255,255,255,.6) 6px 12px)}
+  .bar.glow .empty{opacity:1;background:rgba(236,223,191,.9);box-shadow:0 0 10px rgba(196,164,98,.7);animation:pulse 1.6s ease-in-out infinite}
+  .bar.together .empty{opacity:1;background:repeating-linear-gradient(45deg,rgba(86,98,168,.22) 0 6px,rgba(255,255,255,.7) 6px 12px)}
   @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
-  .meter-note{font-size:clamp(12px,3.8vw,14px);color:var(--rose);text-align:right;min-height:0;margin-top:2px}
+  .meter-note{font-size:clamp(12px,3.8vw,14px);color:var(--gold-text);text-align:right;min-height:0;margin-top:2px}
 
   /* 画面 */
   .screen{display:none;padding-top:22px;animation:fade .3s ease}
   .screen.on{display:block}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  h1{font-size:28px;line-height:1.4;color:var(--navy);text-align:center;font-weight:700}
-  h2{font-size:24px;line-height:1.5;color:var(--navy);margin-bottom:14px;font-weight:700}
+  h1{font-size:28px;line-height:1.4;color:var(--navy);text-align:center}
+  h2{font-size:24px;line-height:1.5;color:var(--navy);margin-bottom:14px}
   .lead{font-size:18px;color:var(--muted);text-align:center;margin-top:6px}
   .q{font-size:22px;font-weight:700;color:var(--navy);margin:22px 0 14px;text-align:center}
   p.body{margin:0 0 14px}
   .small{font-size:15px;color:var(--muted);line-height:1.7}
   .center{text-align:center}
-  .mirai{display:block;width:120px;height:120px;max-width:none;border-radius:50%;margin:6px auto 14px;object-fit:cover;box-shadow:0 8px 24px rgba(143,127,224,.3);border:4px solid #fff}
-  .badge{display:inline-block;border:1px solid var(--gold);color:var(--rose);border-radius:999px;padding:2px 12px;font-size:15px;background:var(--pink-tint)}
+  .mirai{display:block;width:120px;height:120px;max-width:none;border-radius:50%;margin:6px auto 14px;object-fit:cover;box-shadow:0 6px 20px rgba(47,55,104,.22);border:3px solid #fff}
+  .badge{display:inline-block;border:1px solid var(--gold);color:var(--gold-text);border-radius:999px;padding:2px 12px;font-size:15px;background:var(--cream-tint)}
 
   .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .card{background:var(--paper);border:2px solid var(--line);border-radius:24px;padding:10px 8px 12px;text-align:center;cursor:pointer;min-height:56px;box-shadow:var(--shadow)}
-  .card img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:18px;display:block}
+  .card{background:var(--paper);border:2px solid var(--line);border-radius:20px;padding:10px 8px 12px;text-align:center;cursor:pointer;min-height:56px;box-shadow:var(--shadow)}
+  .card img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:14px;display:block}
   .card span{display:block;font-size:20px;font-weight:700;color:var(--navy);margin-top:8px}
-  .card:active,.card.sel{border-color:var(--gold);background:var(--pink-tint)}
+  .card:active,.card.sel{border-color:var(--gold);background:var(--cream-tint)}
 
   .opts{display:flex;flex-direction:column;gap:10px}
-  .opt{display:block;width:100%;text-align:left;background:var(--paper);border:2px solid var(--line);border-radius:20px;padding:14px 18px;min-height:58px;font-size:19px;cursor:pointer;box-shadow:0 4px 14px rgba(143,127,224,.08)}
-  .opt.sel{border-color:var(--gold);background:var(--pink-tint);font-weight:700;color:var(--navy)}
-  .opt.check::before{content:"";display:inline-block;width:22px;height:22px;border:2px solid #cbbfe8;border-radius:8px;margin-right:12px;vertical-align:-4px;background:#fff}
-  .opt.check.sel::before{background:var(--gold);border-color:var(--gold);box-shadow:inset 0 0 0 3px #fff}
+  .opt{display:block;width:100%;text-align:left;background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:14px 18px;min-height:58px;font-size:19px;cursor:pointer;box-shadow:0 3px 10px rgba(47,55,104,.05)}
+  .opt.sel{border-color:var(--gold);background:var(--cream-tint);font-weight:700;color:var(--navy)}
+  .opt.check::before{content:"";display:inline-block;width:22px;height:22px;border:2px solid #c3c6db;border-radius:7px;margin-right:12px;vertical-align:-4px;background:#fff}
+  .opt.check.sel::before{background:var(--navy-2);border-color:var(--navy-2);box-shadow:inset 0 0 0 3px #fff}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
   .grid3 .opt{text-align:center;padding:12px 4px;font-size:clamp(15px,4.8vw,18px)}
-  /* 丸ゴシックは字幅が広く、行末に1文字だけ残りやすい。対応ブラウザでは整えて折り返す */
-  p,li,.q,.boxh,.small,.star .one{text-wrap:pretty}
-  h1,h2{text-wrap:balance}
 
-  .btn{display:block;width:100%;border:none;border-radius:999px;background:linear-gradient(120deg,#7462cc,#9358b8);color:#fff;font-size:clamp(17px,5.4vw,20px);font-weight:700;padding:16px 14px;min-height:60px;margin-top:22px;cursor:pointer;box-shadow:0 8px 20px rgba(143,127,224,.32)}
+  .btn{display:block;width:100%;border:none;border-radius:999px;background:linear-gradient(120deg,var(--navy-2),var(--indigo-2));color:#fff;font-size:clamp(17px,5.4vw,20px);font-weight:700;padding:16px 14px;min-height:60px;margin-top:22px;cursor:pointer;box-shadow:0 6px 18px rgba(63,74,143,.25)}
   .btn:disabled{opacity:.45;cursor:default;box-shadow:none}
-  .btn.ghost{background:#fff;color:var(--navy-2);border:2px solid #cbbfe8;box-shadow:none}
-  .btn.line{background:var(--green);color:#fff;box-shadow:0 8px 20px rgba(6,199,85,.25)}
-  .btn.premium{margin-top:14px;font-size:clamp(15px,4.6vw,17px);min-height:54px;padding:12px 12px;line-height:1.5}
+  .btn.ghost{background:#fff;color:var(--navy-2);border:2px solid #c3c6db;box-shadow:none}
+  .btn.line{background:var(--green);color:#fff;box-shadow:0 6px 18px rgba(6,199,85,.22)}
+  .btn.premium{margin-top:14px;font-size:clamp(15px,4.6vw,17px);min-height:54px;padding:12px 14px;line-height:1.5}
   .prem-note{margin:8px 4px 0;font-size:13px;line-height:1.7}
-  .btn.gold{background:var(--gold);color:#fff}
-  input.text{width:100%;font-family:inherit;font-size:22px;padding:14px 18px;border:2px solid var(--line);border-radius:20px;background:#fff;min-height:60px;color:var(--ink)}
+  .btn.gold{background:var(--gold);color:var(--navy)}
+  input.text{width:100%;font-family:inherit;font-size:22px;padding:14px 18px;border:2px solid var(--line);border-radius:16px;background:#fff;min-height:60px;color:var(--ink)}
   input.text:focus,select:focus{outline:3px solid var(--gold-soft);border-color:var(--gold)}
   .selects{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px}
   .selects.two{grid-template-columns:1fr 1fr}
-  select{width:100%;font-family:inherit;font-size:20px;padding:12px 8px;border:2px solid var(--line);border-radius:18px;background:#fff;min-height:58px;color:var(--ink);-webkit-appearance:none;appearance:none;text-align:center;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234b3f72' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 10px center;padding-right:26px}
+  select{width:100%;font-family:inherit;font-size:20px;padding:12px 8px;border:2px solid var(--line);border-radius:14px;background:#fff;min-height:58px;color:var(--ink);-webkit-appearance:none;appearance:none;text-align:center;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%232f3768' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 10px center;padding-right:26px}
   .sel-label{font-size:15px;color:var(--muted);text-align:center;margin-top:4px}
 
-  .box{background:var(--paper);border:1.5px solid var(--line);border-radius:22px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow)}
+  .box{background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow)}
   .boxh{margin:0 0 10px;font-weight:700;line-height:1.6;color:var(--navy)}
   .days{margin:0;padding:0;list-style:none}
-  .days li{position:relative;padding:0 0 0 1.1em;margin:0 0 8px;line-height:1.6;word-break:auto-phrase}
-  .ib{display:inline-block}
-  .bubbles{margin:4px 0 18px}
-  .bubble{position:relative;display:block;width:fit-content;max-width:100%;margin:0 0 12px;padding:10px 14px;background:var(--lav-soft);border:none;border-radius:20px 20px 20px 6px;font-weight:700;font-size:clamp(15px,4.6vw,17px);color:var(--navy);line-height:1.6}
-  .bubble:nth-child(2){margin-left:auto;background:var(--pink-tint);border-radius:20px 20px 6px 20px}
-  .goldline{color:var(--rose)}
-  .nw{white-space:nowrap}
+  .days li{position:relative;padding:0 0 0 1.3em;margin:0 0 8px;line-height:1.6}
   .days li:last-child{margin-bottom:0}
-  .days li::before{content:"♡";position:absolute;left:0;top:0;color:var(--gold);font-size:.9em}
-  .why{background:var(--lav-soft);border-left:none;border-radius:20px;padding:14px 18px;margin-top:18px}
+  .days li::before{content:"✦";position:absolute;left:0;top:0;color:var(--gold);font-size:.9em}
+  .bubbles{margin:4px 0 18px}
+  .bubble{position:relative;display:block;width:fit-content;max-width:100%;margin:0 0 12px;padding:10px 14px;background:var(--tint);border:none;border-radius:18px 18px 18px 6px;font-weight:700;font-size:clamp(15px,4.6vw,17px);color:var(--navy);line-height:1.6}
+  .bubble:nth-child(2){margin-left:auto;background:var(--cream-tint);border-radius:18px 18px 6px 18px}
+  .goldline{color:var(--gold-text)}
+  .why{background:var(--tint);border-left:4px solid var(--gold);border-radius:16px;padding:14px 18px;margin-top:18px}
   .why b{color:var(--navy)}
-  .star{display:flex;gap:14px;align-items:flex-start;background:var(--paper);border:1.5px solid var(--line);border-radius:22px;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
-  .star .lab{flex:none;width:68px;text-align:center;background:var(--lav-soft);color:var(--navy);border-radius:16px;padding:8px 0;font-weight:700;font-size:17px}
-  .star .sign{font-size:22px;font-weight:700;color:var(--navy);line-height:1.4;word-break:keep-all}
+  .star{display:flex;gap:14px;align-items:flex-start;background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .star .lab{flex:none;width:68px;text-align:center;background:var(--tint);color:var(--navy);border-radius:12px;padding:8px 0;font-weight:700;font-size:17px}
+  .star .sign{font-size:22px;font-weight:700;color:var(--navy);line-height:1.4}
   .star .one{font-size:17px;color:var(--ink);margin-top:4px}
-  .highlight{background:linear-gradient(120deg,#efe8ff,#ffe6ef);color:var(--navy);border-radius:22px;padding:16px;margin-top:16px;text-align:center}
-  .highlight b{display:block;font-size:26px;color:var(--rose);margin-top:4px}
+  .highlight{background:linear-gradient(120deg,#e9ebf6,#f6f1e4);color:var(--navy);border-radius:18px;padding:16px;margin-top:16px;text-align:center}
+  .highlight b{display:block;font-size:26px;color:var(--gold-text);margin-top:4px}
 
-  .sample{background:var(--paper);border:1.5px solid var(--line);border-radius:22px;padding:14px 18px;margin-bottom:12px;box-shadow:var(--shadow)}
-  .sample .day{display:inline-block;background:var(--lav-soft);color:var(--navy);border-radius:999px;padding:2px 14px;font-size:16px;font-weight:700;margin-bottom:8px}
-  .sample.later{border-color:var(--gold-soft);background:var(--pink-tint)}
-  .sample.later .day{background:#fff;color:var(--rose)}
+  .sample{background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:14px 18px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .sample .day{display:inline-block;background:var(--tint);color:var(--navy);border-radius:999px;padding:2px 14px;font-size:16px;font-weight:700;margin-bottom:8px}
+  .sample.later{border-color:var(--gold-soft);background:var(--cream-tint)}
+  .sample.later .day{background:#fff;color:var(--gold-text)}
   .arrow{text-align:center;color:var(--gold);font-size:22px;line-height:1;margin:-4px 0 8px}
 
-  .chart{background:var(--paper);border:1.5px solid var(--line);border-radius:22px;padding:10px 6px 4px;margin:10px 0;box-shadow:var(--shadow)}
+  .chart{background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:10px 6px 4px;margin:10px 0;box-shadow:var(--shadow)}
   .chart svg{display:block;width:100%;height:auto}
 
-  .free{border:2px solid var(--gold-soft);background:#fff;border-radius:24px;padding:18px 16px;margin:18px 0 10px;box-shadow:var(--shadow)}
+  .free{border:2px solid var(--gold-soft);background:#fff;border-radius:20px;padding:18px 16px;margin:18px 0 10px;box-shadow:var(--shadow)}
   .free div{font-size:clamp(18px,5.8vw,22px);font-weight:700;color:var(--navy);padding:6px 0 6px 38px;position:relative}
-  .free div::before{content:"✓";position:absolute;left:6px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;background:var(--gold);color:#fff;font-size:17px;line-height:26px;text-align:center}
+  .free div::before{content:"✓";position:absolute;left:6px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;background:var(--navy-2);color:#fff;font-size:17px;line-height:26px;text-align:center}
 
   .loading{display:flex;flex-direction:column;align-items:center;gap:12px;padding:30px 0;color:var(--muted)}
-  .spin{width:40px;height:40px;border:4px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:spin .9s linear infinite}
+  .spin{width:40px;height:40px;border:4px solid var(--line);border-top-color:var(--navy-2);border-radius:50%;animation:spin .9s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .err{background:#fff0f2;border:1.5px solid #f2b3c0;color:#9b2c45;border-radius:18px;padding:12px 16px;margin-top:14px;font-size:17px}
-  .testbar{background:#9b2c45;color:#fff;text-align:center;font-size:14px;padding:4px}
-  .code{font-size:30px;letter-spacing:.18em;font-weight:700;color:var(--navy);text-align:center;background:#fff;border:2px dashed var(--gold);border-radius:18px;padding:10px;margin:10px 0}
+  .err{background:#fdf0f0;border:1.5px solid #e6b3b3;color:#8a2a2a;border-radius:14px;padding:12px 16px;margin-top:14px;font-size:17px}
+  .testbar{background:#8a2a2a;color:#fff;text-align:center;font-size:14px;padding:4px}
+  .code{font-size:30px;letter-spacing:.18em;font-weight:700;color:var(--navy);text-align:center;background:#fff;border:2px dashed var(--gold);border-radius:14px;padding:10px;margin:10px 0}
   footer{text-align:center;font-size:14px;color:var(--muted);margin-top:28px}
-  footer a{color:var(--muted);margin:0 6px}
+  footer a{color:var(--muted);margin:0 6px;display:inline-block}
+
+  /* 改行（2026-10-13）：言葉の途中では折り返さない。
+     BudouX が文節の切れ目に <wbr> を入れ、その印として body に .bx を付ける。
+     読み込めなかったとき（.bx が無い）は、ブラウザ標準の折り返しのまま（文字が切れて消えることはない）。 */
+  body.bx .wrap{word-break:keep-all;overflow-wrap:anywhere}
+  /* 呼び名は1つのまとまり。途中で切らない（10文字を超えるときだけ折り返しを許す） */
+  body.nn-short .nn{white-space:nowrap}
+  p,li,.q,.boxh,.small,.star .one{text-wrap:pretty}
+  h1,h2{text-wrap:balance}
 </style>
 </head>
 <body>
@@ -210,7 +210,7 @@
   <!-- S5 説明 -->
   <section class="screen" data-s="5">
     <img class="mirai" src="img/mirai.png" alt="ミライ" width="120" height="120">
-    <p class="body"><b><span class="ib"><span class="nn"></span>さんの毎日に、</span><span class="ib">ぴったりの運勢を。</span></b></p>
+    <p class="body"><b><span class="nn"></span>さんの毎日に、ぴったりの運勢を。</b></p>
     <p class="body" id="s5lead"></p>
     <p class="body">ミライは、<span class="nn"></span>さんの過ごし方に合わせて、今日いちばん役に立つことを選んでお届けします。</p>
     <div class="box">
@@ -276,12 +276,12 @@
   <!-- S11 問いかけ -->
   <section class="screen" data-s="11">
     <img class="mirai" src="img/mirai.png" alt="ミライ" width="120" height="120">
-    <p class="body"><b><span class="ib">ここから先は、</span><span class="ib">ミライと一緒に</span><span class="ib">育てる運勢です。</span></b></p>
-    <p class="body"><span id="s11first"></span><br><span class="ib">でも、</span><span class="ib">星だけでは</span><span class="ib">わからないことがあります。</span></p>
+    <p class="body"><b>ここから先は、ミライと一緒に育てる運勢です。</b></p>
+    <p class="body"><span id="s11first"></span><br>でも、星だけではわからないことがあります。</p>
     <div class="bubbles"><p class="bubble" id="s11b1"></p><p class="bubble" id="s11b2"></p></div>
-    <p class="body">そんな、<span class="nn"></span>さんの<span class="nw"><b>今</b>です。</span></p>
-    <p class="body"><span class="ib">ミライに話しかけると、</span><span class="ib">ミライはそれを覚えます。</span><br><span class="ib">次の朝からは、</span><span class="ib">星の動きに、</span><span class="ib"><span class="nn"></span>さんの</span><span class="ib">今を重ねて、</span><span class="ib">運勢をお届けします。</span></p>
-    <p class="body goldline"><b><span class="ib">話すほど、</span><span class="ib">運勢は</span><span class="ib"><span class="nn"></span>さんだけの</span><span class="ib">ものになっていきます。</span></b></p>
+    <p class="body">そんな、<span class="nn"></span>さんの<b>今</b>です。</p>
+    <p class="body">ミライに話しかけると、ミライはそれを覚えます。<br>次の朝からは、星の動きに、<span class="nn"></span>さんの今を重ねて、運勢をお届けします。</p>
+    <p class="body goldline"><b>話すほど、運勢は<span class="nn"></span>さんだけのものになっていきます。</b></p>
     <button class="btn" type="button" data-next>次へ</button>
   </section>
 
@@ -323,7 +323,7 @@
   <!-- S16 完成 -->
   <section class="screen" data-s="16">
     <img class="mirai" src="img/mirai.png" alt="ミライ" width="120" height="120">
-    <h2 class="center"><span class="ib"><span class="nn"></span>さん専用AI</span><span class="ib">ミライの準備が</span><span class="ib">整いました。</span></h2>
+    <h2 class="center"><span class="nn"></span>さん専用AIミライの準備が整いました。</h2>
     <div class="free">
       <div>14日間すべて無料</div>
       <div>カード登録なし</div>
@@ -331,7 +331,7 @@
     </div>
     <p class="small">15日目からは、続けたい方だけ<span data-price-jpy="330">月額330円</span>（税込）でお申し込みいただけます。申し込まなければ、無料版に切り替わります。</p>
     <button class="btn line" type="button" id="toline">LINEで運勢を受け取る</button>
-    <button class="btn ghost premium" type="button" id="topremium"><span class="ib">今すぐPremiumを始める</span><span class="ib">（<span data-price-jpy="330">月額330円</span>・税込）</span></button>
+    <button class="btn ghost premium" type="button" id="topremium">今すぐPremiumを始める（<span data-price-jpy="330">月額330円</span>・税込）</button>
     <p class="small prem-note">お申し込みの時点で初回のご請求となり、以後毎月自動で更新されます。解約は LINE で「解約」と送るだけです。</p>
     <div id="s16err"></div>
   </section>
@@ -386,18 +386,10 @@
     $("s5lead").textContent = r
       ? "同じ「運がいい日」でも、毎日の過ごし方によって、その日の楽しみ方はちがいます。"
       : "同じ「仕事運がいい日」でも、会社員と経営者では、その日にやるべきことがちがいます。";
-    $("s5h").innerHTML = '<span class="ib">' + esc((o && o !== "その他" ? o + "の" : "") + nn + "さんには、") + "</span>" +
-      '<span class="ib">たとえばこんな朝が</span><span class="ib">届きます</span>';
+    // 折り返してよいのは「…の／」「…さんには、／」のところ（呼び名や言葉の途中では切らない）
+    $("s5h").innerHTML = esc(o && o !== "その他" ? o + "の" : "") + '<wbr><span class="nn">' + esc(nn) + "</span>さんには、<wbr>たとえばこんな朝が届きます";
     var items = S5DAYS[o] || S5DAYS["その他"];
-    // 読点のところで折り返す（「…回り出す／日」のように1文字だけ次の行に落ちないように）
-    $("s5list").innerHTML = items.map(function(t){
-      var ps = t.replace(/、/g, "、\n").split("\n");
-      return "<li>" + ps.map(function(p, i){
-        // 最後のまとまりは、終わりの3文字（「いい日」など）を離さない
-        var tail = (i === ps.length - 1 && p.length > 4) ? '<span class="nw">' + esc(p.slice(-3)) + "</span>" : "";
-        return '<span class="ib">' + esc(tail ? p.slice(0, -3) : p) + tail + "</span>";
-      }).join("") + "</li>";
-    }).join("");
+    $("s5list").innerHTML = items.map(function(t){ return "<li>" + esc(t) + "</li>"; }).join("");
     $("s5retired").hidden = !r;
   }
   var REGIONS = [["hokkaido_tohoku","北海道・東北"],["kanto","関東"],["chubu","中部"],["kinki","近畿"],["chugoku","中国"],["shikoku","四国"],["kyushu_okinawa","九州・沖縄"],["overseas","海外"],["unknown","わからない"]];
@@ -443,6 +435,8 @@
     $("back").classList.toggle("off", n === 1 || st.hist.length === 0);
     var nn = document.querySelectorAll(".nn");
     for (var k=0;k<nn.length;k++) nn[k].textContent = st.a.nickname || "あなた";
+    // 呼び名は途中で切らない。10文字を超える長い呼び名だけは、はみ出さないよう折り返しを許す
+    document.body.classList.toggle("nn-short", (st.a.nickname || "あなた").length <= 10);
     // 章
     var ch = CH[n], bars = document.querySelectorAll(".ch i");
     for (var c=1;c<=4;c++){
@@ -527,7 +521,7 @@
   REGIONS.forEach(function(r){
     var b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.style.textAlign = "center";
     // 「北海道・東北」などは「・」のところで折り返す（狭い画面で「東／北」に割れないように）
-    b.innerHTML = r[1].split("・").map(function(p, i, a){ return '<span class="ib">' + p + (i < a.length - 1 ? "・" : "") + "</span>"; }).join("");
+    b.textContent = r[1];
     b.addEventListener("click", function(){
       if (r[0] === "unknown" || r[0] === "overseas") { st.a.birth_place = r[0] === "unknown" ? "わからない" : "海外"; st.profile = null; save(); show(10); return; }
       $("prefs").innerHTML = "";
@@ -592,16 +586,11 @@
     if (n === 17) $("s17prem").hidden = !st.a._premium;
     if (n === 11) {
       var nn11 = st.a.nickname || "";
-      $("s11first").innerHTML = '<span class="ib">' + (st.a.birth_time ? "生年月日と生まれた時刻で、" : "生年月日で、") + "</span>" +
-        '<span class="ib">' + esc(nn11) + "さんの星は</span><span class=\"ib\">わかりました。</span>";
+      $("s11first").innerHTML = (st.a.birth_time ? "生年月日と生まれた時刻で、" : "生年月日で、") + '<span class="nn">' + esc(nn11) + "</span>さんの星はわかりました。";
       var bb = st.a.occupation === RETIRED ? ["来週、久しぶりに友人と会う", "最近、体の調子が気になる"]
              : st.a.occupation === "学生" ? ["来週、大事なテストがある", "最近、友だちとすれちがっている"]
              : ["来週、大事な商談がある", "最近、家族とすれちがっている"];
-      // 読点のところで折り返す（「…ある／る」のように1文字だけ落ちないように）
-      [["s11b1", bb[0]], ["s11b2", bb[1]]].forEach(function(x){
-        $(x[0]).innerHTML = ("「" + x[1] + "」").split("、").map(function(p, i, a){
-          return '<span class="ib">' + esc(p + (i < a.length - 1 ? "、" : "")) + "</span>"; }).join("");
-      });
+      $("s11b1").textContent = "「" + bb[0] + "」"; $("s11b2").textContent = "「" + bb[1] + "」";
     }
     if (n === 6 && st.a.birthdate) { var p = st.a.birthdate.split("-"); $("by").value = +p[0]; $("bm").value = +p[1]; fillDays(); $("bd").value = +p[2]; }
     if (n === 7) {
@@ -654,16 +643,16 @@
     var pts = days.map(function(d,i){ return x(i).toFixed(1) + "," + y(d.overall).toFixed(1); }).join(" ");
     var bi = 0; days.forEach(function(d,i){ if (d.date === f.best_day) bi = i; });
     var g = '';
-    [60,80,100].forEach(function(v){ g += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#ebe2f6" stroke-width="1"/><text x="'+(L-6)+'" y="'+(y(v)+4)+'" font-size="12" fill="#6c6684" text-anchor="end">'+v+'</text>'; });
+    [60,80,100].forEach(function(v){ g += '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#e4e2ec" stroke-width="1"/><text x="'+(L-6)+'" y="'+(y(v)+4)+'" font-size="12" fill="#666a80" text-anchor="end">'+v+'</text>'; });
     var labels = '';
     days.forEach(function(d,i){
-      var last = days.length - 1; if (i % 3 === 0 || (i === last && last % 3 >= 2)) { var dt = d.date.split("-"); labels += '<text x="'+x(i)+'" y="'+(H-12)+'" font-size="13" fill="#6c6684" text-anchor="middle">'+(+dt[1])+'/'+(+dt[2])+'</text>'; }
+      var last = days.length - 1; if (i % 3 === 0 || (i === last && last % 3 >= 2)) { var dt = d.date.split("-"); labels += '<text x="'+x(i)+'" y="'+(H-12)+'" font-size="13" fill="#666a80" text-anchor="middle">'+(+dt[1])+'/'+(+dt[2])+'</text>'; }
     });
-    var dots = days.map(function(d,i){ return '<circle cx="'+x(i)+'" cy="'+y(d.overall)+'" r="'+(i===bi?7:3.5)+'" fill="'+(i===bi?'#ee8fb0':'#8f7fe0')+'" stroke="#fff" stroke-width="'+(i===bi?2:1)+'"/>'; }).join("");
+    var dots = days.map(function(d,i){ return '<circle cx="'+x(i)+'" cy="'+y(d.overall)+'" r="'+(i===bi?7:3.5)+'" fill="'+(i===bi?'#c4a462':'#3f4a8f')+'" stroke="#fff" stroke-width="'+(i===bi?2:1)+'"/>'; }).join("");
     var bx = Math.min(Math.max(x(bi), L + 34), W - R - 34);
-    var tag = '<rect x="'+(bx-34)+'" y="4" width="68" height="22" rx="11" fill="#ee8fb0"/><text x="'+bx+'" y="20" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="700">いちばん</text>';
+    var tag = '<rect x="'+(bx-34)+'" y="4" width="68" height="22" rx="11" fill="#3f4a8f"/><text x="'+bx+'" y="20" font-size="13" fill="#ffffff" text-anchor="middle" font-weight="700">いちばん</text>';
     var svg = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="これからの14日間の総合運">' + g +
-      '<polyline points="'+pts+'" fill="none" stroke="#8f7fe0" stroke-width="2.5" stroke-linejoin="round"/>' + dots + tag + labels + '</svg>';
+      '<polyline points="'+pts+'" fill="none" stroke="#3f4a8f" stroke-width="2.5" stroke-linejoin="round"/>' + dots + tag + labels + '</svg>';
     return '<div class="chart">' + svg + '</div><p class="body"><b>' + esc(f.best_day_ja) + '</b>が、この2週間でいちばんの好調日です。</p>';
   }
 
@@ -703,6 +692,32 @@
 
   show(st.s || 1, false);
 })();
+</script>
+<script type="module">
+// 言葉の途中で改行しないように、文節の切れ目に <wbr> を入れる（BudouX・2026-10-13）。
+// 画面の文字はあとから差し替わる（計算結果・呼び名など）ので、変わるたびに入れ直す。
+import { loadDefaultJapaneseParser } from "https://cdn.jsdelivr.net/npm/budoux@0.9.3/+esm";
+const parser = loadDefaultJapaneseParser();
+const roots = [document.querySelector(".top-inner"), document.querySelector("main")].filter(Boolean);
+let busy = false, queued = false;
+const obs = new MutationObserver(() => { if (!busy) schedule(); });
+function schedule(){ if (queued) return; queued = true; requestAnimationFrame(run); }
+function run(){
+  queued = false; busy = true; obs.disconnect();
+  try {
+    roots.forEach(r => r.querySelectorAll("h1,h2,p,li,.q,.lead,.boxh,.why,.bubble,.btn,.opt,.card span,.star .sign,.star .one,.sample .day,.free div,.meter-head span,.meter-note,.code").forEach(el => {
+      if (el.querySelector("p,li,div,ul")) return;          // 入れ物は中身の側で処理する
+      if (el.dataset.bx === el.textContent) return;         // 同じ文字なら処理済み
+      el.normalize();
+      parser.applyToElement(el);
+      el.dataset.bx = el.textContent;
+    }));
+    document.body.classList.add("bx");
+  } catch (e) { console.warn("[budoux]", e); }
+  roots.forEach(r => obs.observe(r, {childList: true, characterData: true, subtree: true}));
+  busy = false;
+}
+run();
 </script>
 </body>
 </html>
