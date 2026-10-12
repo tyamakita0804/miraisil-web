@@ -87,6 +87,13 @@
   .sel-label{font-size:15px;color:var(--muted);text-align:center;margin-top:4px}
 
   .box{background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+  .boxh{margin:0 0 10px;font-weight:700;line-height:1.6}
+  .days{margin:0;padding:0;list-style:none}
+  .days li{position:relative;padding:0 0 0 1.1em;margin:0 0 8px;line-height:1.6;word-break:auto-phrase}
+  .ib{display:inline-block}
+  .nw{white-space:nowrap}
+  .days li:last-child{margin-bottom:0}
+  .days li::before{content:"・";position:absolute;left:0;top:0}
   .why{background:#f3efe2;border-left:5px solid var(--gold);border-radius:12px;padding:14px 16px;margin-top:18px}
   .why b{color:var(--navy)}
   .star{display:flex;gap:14px;align-items:flex-start;background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:12px}
@@ -179,8 +186,15 @@
   <!-- S5 説明 -->
   <section class="screen" data-s="5">
     <img class="mirai" src="img/mirai.png" alt="ミライ" width="120" height="120">
-    <p class="body"><b><span class="nn"></span>さんの毎日に合わせて、話題を選びます。</b></p>
-    <p class="body" id="s5retired" hidden>お仕事の話はせず、体調や暮らし、人との時間を中心にお伝えします。</p>
+    <p class="body"><b><span class="ib"><span class="nn"></span>さんの毎日に、</span><span class="ib">ぴったりの運勢を。</span></b></p>
+    <p class="body" id="s5lead"></p>
+    <p class="body">ミライは、<span class="nn"></span>さんの過ごし方に合わせて、今日いちばん役に立つことを選んでお届けします。</p>
+    <div class="box">
+      <p class="boxh" id="s5h"></p>
+      <ul class="days" id="s5list"></ul>
+    </div>
+    <p class="body" id="s5retired" hidden>お仕事の話はせず、体調や暮らし、人との時間を中心にお届けします。</p>
+    <p class="small center">毎朝7時、LINEに届きます。</p>
     <button class="btn" type="button" data-next>次へ</button>
   </section>
 
@@ -323,6 +337,37 @@
 
   var OCC = ["会社員・公務員","経営者・役員","自営業・フリーランス","学生","主婦・主夫","パート・アルバイト","退職・年金生活","その他"];
   var RETIRED = "退職・年金生活";
+  // S5「たとえばこんな朝が届きます」（2026-10-13）。キーは S4 の選択肢そのもの。
+  var S5DAYS = {
+    "経営者・役員": ["大きな決断を下すのに向いている日", "人に任せると、うまく回り出す日", "お金の出し入れに、ひと呼吸おきたい日"],
+    "会社員・公務員": ["上司や同僚に相談すると話が進む日", "新しい仕事を引き受けていい日", "会議で一歩引いたほうがいい日"],
+    "自営業・フリーランス": ["新しいお客さんに声をかけたい日", "値段の交渉に向いている日", "作業に集中して、連絡は控えめにしたい日"],
+    "学生": ["苦手な科目に手をつけるのに向いている日", "友だちと話すと気持ちが軽くなる日", "早めに休んだほうがいい日"],
+    "主婦・主夫": ["家族とゆっくり話すのに向いている日", "大きな買い物を決めていい日", "自分の時間をつくりたい日"],
+    "パート・アルバイト": ["職場の人に声をかけると、仕事がしやすくなる日", "シフトの相談をしていい日", "無理をせず、早めに体を休めたい日"],
+    "退職・年金生活": ["体を動かすのに向いている日", "家族や友人に会うといい日", "新しい趣味を始めたくなる日"],
+    "その他": ["新しいことを始めるのに向いている日", "人に会うと、気持ちが明るくなる日", "ひと休みして、体を整えたい日"]
+  };
+  function paintS5(){
+    var o = st.a.occupation, nn = st.a.nickname || "";
+    var r = o === RETIRED;
+    $("s5lead").textContent = r
+      ? "同じ「運がいい日」でも、毎日の過ごし方によって、その日の楽しみ方はちがいます。"
+      : "同じ「仕事運がいい日」でも、会社員と経営者では、その日にやるべきことがちがいます。";
+    $("s5h").innerHTML = '<span class="ib">' + esc((o && o !== "その他" ? o + "の" : "") + nn + "さんには、") + "</span>" +
+      '<span class="ib">たとえばこんな朝が</span><span class="ib">届きます</span>';
+    var items = S5DAYS[o] || S5DAYS["その他"];
+    // 読点のところで折り返す（「…回り出す／日」のように1文字だけ次の行に落ちないように）
+    $("s5list").innerHTML = items.map(function(t){
+      var ps = t.replace(/、/g, "、\n").split("\n");
+      return "<li>" + ps.map(function(p, i){
+        // 最後のまとまりは、終わりの3文字（「いい日」など）を離さない
+        var tail = (i === ps.length - 1 && p.length > 4) ? '<span class="nw">' + esc(p.slice(-3)) + "</span>" : "";
+        return '<span class="ib">' + esc(tail ? p.slice(0, -3) : p) + tail + "</span>";
+      }).join("") + "</li>";
+    }).join("");
+    $("s5retired").hidden = !r;
+  }
   var REGIONS = [["hokkaido_tohoku","北海道・東北"],["kanto","関東"],["chubu","中部"],["kinki","近畿"],["chugoku","中国"],["shikoku","四国"],["kyushu_okinawa","九州・沖縄"],["overseas","海外"],["unknown","わからない"]];
   var PREFS = {
     hokkaido_tohoku:["北海道","青森","岩手","宮城","秋田","山形","福島"],
@@ -509,7 +554,7 @@
     if (n === 2) $("s2line").textContent = S2LINE[st.a.interest] || "";
     if (n === 3) { nick.value = st.a.nickname || ""; $("s3next").disabled = !nick.value.trim(); setTimeout(function(){ try{ nick.focus(); }catch(e){} }, 300); }
     if (n === 4) { var bs = $("occ").children; for (var i=0;i<bs.length;i++) bs[i].classList.toggle("sel", bs[i].textContent === st.a.occupation); }
-    if (n === 5) $("s5retired").hidden = st.a.occupation !== RETIRED;
+    if (n === 5) paintS5();
     if (n === 6 && st.a.birthdate) { var p = st.a.birthdate.split("-"); $("by").value = +p[0]; $("bm").value = +p[1]; fillDays(); $("bd").value = +p[2]; }
     if (n === 7) {
       $("s7body").innerHTML = '<div class="loading"><div class="spin"></div>星の位置を計算しています…</div>';
