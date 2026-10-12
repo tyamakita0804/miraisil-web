@@ -43,7 +43,7 @@
   .bar.glow .empty{opacity:1;background:rgba(255,236,170,.75);box-shadow:0 0 10px rgba(255,236,170,.9);animation:pulse 1.6s ease-in-out infinite}
   .bar.together .empty{opacity:1;background:repeating-linear-gradient(45deg,rgba(255,255,255,.28) 0 6px,rgba(255,255,255,.12) 6px 12px)}
   @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
-  .meter-note{font-size:14px;color:var(--gold-soft);text-align:right;min-height:0;margin-top:2px}
+  .meter-note{font-size:clamp(12px,3.8vw,14px);color:var(--gold-soft);text-align:right;min-height:0;margin-top:2px}
 
   /* 画面 */
   .screen{display:none;padding-top:22px;animation:fade .3s ease}
@@ -91,6 +91,10 @@
   .days{margin:0;padding:0;list-style:none}
   .days li{position:relative;padding:0 0 0 1.1em;margin:0 0 8px;line-height:1.6;word-break:auto-phrase}
   .ib{display:inline-block}
+  .bubbles{margin:4px 0 18px}
+  .bubble{position:relative;display:block;width:fit-content;max-width:100%;margin:0 0 12px;padding:10px 12px;background:var(--paper);border:1.5px solid var(--gold-soft);border-radius:16px 16px 16px 4px;font-weight:700;font-size:clamp(15px,4.6vw,17px);color:var(--navy);line-height:1.6}
+  .bubble:nth-child(2){margin-left:auto;border-radius:16px 16px 4px 16px}
+  .goldline{color:#8a6a1f}
   .nw{white-space:nowrap}
   .days li:last-child{margin-bottom:0}
   .days li::before{content:"・";position:absolute;left:0;top:0}
@@ -252,9 +256,12 @@
   <!-- S11 問いかけ -->
   <section class="screen" data-s="11">
     <img class="mirai" src="img/mirai.png" alt="ミライ" width="120" height="120">
-    <p class="body"><b>でも、星には知らないことがあります。</b></p>
-    <p class="body"><span class="nn"></span>さんが今、どんな毎日を送っていて、何を気にかけているか。</p>
-    <p class="body center" style="color:#8a6a1f">上のメーターの、光っている部分。<br>ここは、星では埋まりません。</p>
+    <p class="body"><b><span class="ib">ここから先は、</span><span class="ib">ミライと一緒に</span><span class="ib">育てる運勢です。</span></b></p>
+    <p class="body"><span id="s11first"></span><br><span class="ib">でも、</span><span class="ib">星だけでは</span><span class="ib">わからないことがあります。</span></p>
+    <div class="bubbles"><p class="bubble" id="s11b1"></p><p class="bubble" id="s11b2"></p></div>
+    <p class="body">そんな、<span class="nn"></span>さんの<span class="nw"><b>今</b>です。</span></p>
+    <p class="body"><span class="ib">ミライに話しかけると、</span><span class="ib">ミライはそれを覚えます。</span><br><span class="ib">次の朝からは、</span><span class="ib">星の動きに、</span><span class="ib"><span class="nn"></span>さんの</span><span class="ib">今を重ねて、</span><span class="ib">運勢をお届けします。</span></p>
+    <p class="body goldline"><b><span class="ib">話すほど、</span><span class="ib">運勢は</span><span class="ib"><span class="nn"></span>さんだけの</span><span class="ib">ものになっていきます。</span></b></p>
     <button class="btn" type="button" data-next>次へ</button>
   </section>
 
@@ -428,7 +435,7 @@
     var bar = $("bar");
     bar.classList.toggle("glow", n === 11 || n === 12);
     bar.classList.toggle("together", n >= 16);
-    $("mnote").textContent = (n === 11 || n === 12) ? "ここは、星では埋まりません" : (n >= 16 ? "ここから先は、ミライと一緒に" : "");
+    $("mnote").textContent = (n === 11 || n === 12) ? "残りは、ミライと話すことで埋まっていきます" : (n >= 16 ? "ここから先は、ミライと一緒に" : "");
     window.scrollTo(0,0);
     enter(n);
   }
@@ -557,6 +564,19 @@
     if (n === 3) { nick.value = st.a.nickname || ""; $("s3next").disabled = !nick.value.trim(); setTimeout(function(){ try{ nick.focus(); }catch(e){} }, 300); }
     if (n === 4) { var bs = $("occ").children; for (var i=0;i<bs.length;i++) bs[i].classList.toggle("sel", bs[i].textContent === st.a.occupation); }
     if (n === 5) paintS5();
+    if (n === 11) {
+      var nn11 = st.a.nickname || "";
+      $("s11first").innerHTML = '<span class="ib">' + (st.a.birth_time ? "生年月日と生まれた時刻で、" : "生年月日で、") + "</span>" +
+        '<span class="ib">' + esc(nn11) + "さんの星は</span><span class=\"ib\">わかりました。</span>";
+      var bb = st.a.occupation === RETIRED ? ["来週、久しぶりに友人と会う", "最近、体の調子が気になる"]
+             : st.a.occupation === "学生" ? ["来週、大事なテストがある", "最近、友だちとすれちがっている"]
+             : ["来週、大事な商談がある", "最近、家族とすれちがっている"];
+      // 読点のところで折り返す（「…ある／る」のように1文字だけ落ちないように）
+      [["s11b1", bb[0]], ["s11b2", bb[1]]].forEach(function(x){
+        $(x[0]).innerHTML = ("「" + x[1] + "」").split("、").map(function(p, i, a){
+          return '<span class="ib">' + esc(p + (i < a.length - 1 ? "、" : "")) + "</span>"; }).join("");
+      });
+    }
     if (n === 6 && st.a.birthdate) { var p = st.a.birthdate.split("-"); $("by").value = +p[0]; $("bm").value = +p[1]; fillDays(); $("bd").value = +p[2]; }
     if (n === 7) {
       $("s7body").innerHTML = '<div class="loading"><div class="spin"></div>星の位置を計算しています…</div>';
