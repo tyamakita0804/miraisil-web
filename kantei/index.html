@@ -6,6 +6,8 @@
 <title>個人鑑定 | 今日の運勢 AIミライ</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="/favicon-32x32.png">
+<!-- 「トークに戻る」でページを閉じる（liff.closeWindow は liff.init の前でも使える：LIFF SDK v2.4.0 以降） -->
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <style>
   /* 個人鑑定の面談カード（2026-10-18）。配色は /start と同じ：やわらかいインディゴと控えめな金。
      背景はミライの既存画像を強くぼかしたもの（商品ごとに画像を変える）。 */
@@ -120,6 +122,12 @@
   // AIの文の「／」は改行の印（kantei_flow の当て文の作り方）。カードでは行を分けて見せる。
   function tidy(t){ return String(t || "").replace(/／/g, "\n").replace(/\n{3,}/g, "\n\n").trim(); }
   function bx(){ if (window.__bx) window.__bx(); }
+  // トークに戻る：LINE の中ならページを閉じる。閉じられない（外のブラウザ等）ときはトークを開く。
+  function toChat(ev){
+    if (ev) ev.preventDefault();
+    try { if (window.liff && liff.isInClient && liff.isInClient()) { liff.closeWindow(); setTimeout(function(){ location.href = CHAT_URL; }, 800); return; } } catch (e) {}
+    location.href = CHAT_URL;
+  }
 
   var S = load("kantei_s") || (local ? qs.get("s") : null);
   var cur = null, busy = false, lastSend = null;
@@ -165,7 +173,7 @@
     var sh = $("sheet"); sh.innerHTML = ""; sh.className = "sheet fade";
     void sh.offsetWidth;
     if (sc.status === "done" || sc.status === "stopped" || sc.status === "none") {
-      var a = el("a", "opt link"); a.href = CHAT_URL; a.appendChild(el("span", "", "トークに戻る"));
+      var a = el("a", "opt link"); a.href = CHAT_URL; a.onclick = toChat; a.appendChild(el("span", "", "トークに戻る"));
       sh.appendChild(a);
       bx(); window.scrollTo(0, 0); return;
     }
@@ -191,7 +199,7 @@
         sh.appendChild(back);
         bx(); return;
       }
-      if (c.send.do === "close") { location.href = CHAT_URL; return; }
+      if (c.send.do === "close") { toChat(); return; }
       return;
     }
     if (btn) btn.classList.add("on");
@@ -279,7 +287,7 @@
   function fatal(title, sub){
     $("q").textContent = title; $("lead").textContent = sub || ""; $("lead").hidden = !sub;
     var sh = $("sheet"); sh.innerHTML = "";
-    var a = el("a", "opt link"); a.href = CHAT_URL; a.appendChild(el("span", "", "トークに戻る")); sh.appendChild(a);
+    var a = el("a", "opt link"); a.href = CHAT_URL; a.onclick = toChat; a.appendChild(el("span", "", "トークに戻る")); sh.appendChild(a);
   }
 
   function start(){
