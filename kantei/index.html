@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>個人鑑定 | 今日の運勢 AIミライ</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/favicon-32x32.png">
+<style>
+  /* 個人鑑定の面談カード（2026-10-18）。配色は /start と同じ：やわらかいインディゴと控えめな金。
+     背景はミライの既存画像を強くぼかしたもの（商品ごとに画像を変える）。 */
+  :root{
+    --navy:#2f3768; --navy-2:#3f4a8f; --indigo-2:#5662a8;
+    --gold:#c4a462; --gold-soft:#ecdfbf;
+    --ink-on-dark:#ffffff; --sub-on-dark:rgba(255,255,255,.82);
+    --glass:rgba(255,255,255,.13); --glass-line:rgba(255,255,255,.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:#1d2148}
+  body{min-height:100vh;min-height:100dvh;color:var(--ink-on-dark);background:#1d2148;
+       font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;font-size:19px;line-height:1.75;overflow-x:hidden}
+  button,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+
+  .bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:#23285a}
+  .bg i{position:absolute;inset:-12%;background:center/cover no-repeat;filter:blur(34px) saturate(1.15);transform:scale(1.1);opacity:.95;transition:opacity .6s}
+  .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(29,33,72,.40) 0%,rgba(29,33,72,.55) 45%,rgba(20,23,52,.78) 100%)}
+
+  .app{position:relative;z-index:1;max-width:520px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
+       padding:calc(14px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:36px}
+  .pill{border:1px solid rgba(236,223,191,.55);color:var(--gold-soft);border-radius:999px;padding:2px 12px;font-size:14px;white-space:nowrap;background:rgba(255,255,255,.06)}
+  .prog{font-size:15px;color:var(--gold-soft);letter-spacing:.06em;white-space:nowrap}
+  .test{background:#8a2a2a;color:#fff;border-radius:999px;font-size:12px;padding:2px 10px;white-space:nowrap}
+  .bar{height:4px;border-radius:999px;background:rgba(255,255,255,.16);margin-top:8px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8d97d6,var(--gold));transition:width .4s}
+
+  .body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:22px 2px 18px}
+  .lead{font-size:clamp(15px,4.4vw,17px);color:var(--sub-on-dark);margin-bottom:14px;white-space:pre-line}
+  .q{font-size:clamp(20px,6.2vw,27px);font-weight:700;line-height:1.6;white-space:pre-line;text-shadow:0 1px 14px rgba(20,23,52,.35)}
+  .q.long{font-size:clamp(17px,5vw,20px);font-weight:600;line-height:1.75}
+
+  .sheet{background:var(--glass);border:1px solid var(--glass-line);border-radius:22px;overflow:hidden;
+         -webkit-backdrop-filter:blur(20px) saturate(1.2);backdrop-filter:blur(20px) saturate(1.2);box-shadow:0 10px 30px rgba(10,12,32,.25)}
+  .opt{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:14px 18px;background:none;border:none;text-align:left;
+       color:#fff;font-size:clamp(17px,5vw,19px);line-height:1.5;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .opt + .opt{border-top:1px solid var(--glass-line)}
+  .opt span{flex:1}
+  .opt::after{content:"";flex:none;width:9px;height:9px;border-right:2px solid var(--gold);border-top:2px solid var(--gold);transform:rotate(45deg);opacity:.85}
+  .opt:active,.opt.on{background:rgba(236,223,191,.16)}
+  .opt.sub{color:var(--sub-on-dark);font-size:16px;min-height:50px}
+  .opt:disabled{opacity:.5}
+
+  .form{padding:16px 16px 18px}
+  .form + .opt{border-top:1px solid var(--glass-line)}
+  textarea{width:100%;min-height:118px;resize:vertical;background:rgba(255,255,255,.92);color:#2a2d45;border:none;border-radius:14px;padding:12px 14px;font-size:18px;line-height:1.6}
+  textarea:focus,select:focus{outline:3px solid rgba(236,223,191,.8)}
+  .count{font-size:13px;color:var(--sub-on-dark);text-align:right;margin-top:4px}
+  .selects{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:8px}
+  .selects.two{grid-template-columns:1fr 1fr}
+  select{width:100%;min-height:54px;background:rgba(255,255,255,.92) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%232f3768' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 8px center;
+         color:#2a2d45;border:none;border-radius:14px;padding:10px 22px 10px 8px;font-size:18px;text-align:center;-webkit-appearance:none;appearance:none}
+  .lab{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:8px;font-size:13px;color:var(--sub-on-dark);text-align:center;margin-top:4px}
+  .lab.two{grid-template-columns:1fr 1fr}
+  .hint{font-size:14px;color:var(--sub-on-dark);margin-top:8px}
+  .next{display:block;width:100%;margin-top:14px;min-height:56px;border:none;border-radius:999px;background:var(--gold);color:var(--navy);font-weight:700;font-size:19px;cursor:pointer;box-shadow:0 6px 18px rgba(196,164,98,.25)}
+  .next:disabled{opacity:.45;box-shadow:none}
+  .link{display:block;text-align:center;text-decoration:none}
+
+  .think{display:flex;flex-direction:column;align-items:center;gap:14px;padding:26px 16px;color:var(--sub-on-dark);font-size:17px;text-align:center}
+  .think img{width:64px;height:64px;border-radius:50%;border:2px solid rgba(236,223,191,.7);animation:breathe 1.8s ease-in-out infinite}
+  @keyframes breathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.07);opacity:1}}
+  .dots::after{content:"";animation:dots 1.4s steps(4,end) infinite}
+  @keyframes dots{0%{content:""}25%{content:"・"}50%{content:"・・"}75%{content:"・・・"}}
+  .err{padding:16px 18px;color:#fff;font-size:16px}
+  .fade{animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* 言葉の途中で改行しない（BudouX が文節の切れ目に <wbr> を入れ、body に .bx を付ける）。 */
+  body.bx .app{word-break:keep-all;overflow-wrap:break-word;line-break:strict}
+  .app{line-break:strict}
+  .q,.lead,.opt span{text-wrap:pretty}
+</style>
+</head>
+<body>
+<div class="bg"><i id="bg"></i></div>
+<div class="app">
+  <div>
+    <div class="top">
+      <span class="pill" id="label">個人鑑定</span>
+      <span class="test" id="test" hidden>テスト・支払いなし</span>
+      <span class="prog" id="prog"></span>
+    </div>
+    <div class="bar" id="bar" hidden><i id="barfill"></i></div>
+  </div>
+  <main class="body" id="body">
+    <div class="lead" id="lead"></div>
+    <div class="q" id="q"></div>
+  </main>
+  <div class="sheet fade" id="sheet">
+    <div class="think"><img src="img/mirai.png" alt=""><span class="dots">ひらいています</span></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var LIFF_URL = "https://liff.line.me/2010604081-ZArs25u8?kantei=1";
+  var CHAT_URL = "https://line.me/R/oaMessage/%40768invlu/";
+  var API = "https://miraisil-webhook.onrender.com";
+  var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var qs = new URLSearchParams(location.search);
+  if (local && qs.get("api")) API = qs.get("api");
+  var BG = { A: "img/bg_a.png", B: "img/bg_b.png", C: "img/bg_c.png" };
+
+  function $(id){ return document.getElementById(id); }
+  function store(k, v){ try { if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) {} }
+  function load(k){ try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  // AIの文の「／」は改行の印（kantei_flow の当て文の作り方）。カードでは行を分けて見せる。
+  function tidy(t){ return String(t || "").replace(/／/g, "\n").replace(/\n{3,}/g, "\n\n").trim(); }
+  function bx(){ if (window.__bx) window.__bx(); }
+
+  var S = load("kantei_s") || (local ? qs.get("s") : null);
+  var cur = null, busy = false, lastSend = null;
+
+  if (!S) {
+    // LINE ログインを経ていない（直接開いた・通行証が切れた）。LIFF を通して開き直す。1回だけ。
+    var t = +(load("kantei_redir") || 0);
+    if (Date.now() - t > 20000) { store("kantei_redir", String(Date.now())); location.replace(LIFF_URL); }
+    else fatal("LINEとの連携ができませんでした。", "トークで「面談を再開」と送ると、トークで続けることもできます。");
+    return;
+  }
+
+  function api(path, body){
+    body = body || {}; body.s = S;
+    return fetch(API + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then(function(r){
+        if (r.status === 401) { store("kantei_s", null); location.replace(LIFF_URL); throw new Error("login"); }
+        if (!r.ok) throw new Error("http " + r.status);
+        return r.json();
+      });
+  }
+
+  function setTop(sc){
+    if (sc.product && BG[sc.product]) $("bg").style.backgroundImage = "url(" + BG[sc.product] + ")";
+    $("label").textContent = sc.label || "個人鑑定";
+    $("test").hidden = !sc.test;
+    var p = sc.progress || "";
+    $("prog").textContent = p.replace(" / ", "・");
+    var m = /^(\d+) \/ (\d+)$/.exec(p);
+    $("bar").hidden = !m;
+    if (m) $("barfill").style.width = Math.min(100, Math.round(100 * (+m[1]) / (+m[2]))) + "%";
+  }
+
+  function render(sc){
+    cur = sc; busy = false;
+    setTop(sc);
+    var texts = (sc.texts || []).map(tidy).filter(Boolean);
+    $("lead").textContent = texts.join("\n\n");
+    $("lead").hidden = !texts.length;
+    var q = tidy(sc.question);
+    $("q").textContent = q;
+    $("q").className = "q" + (q.length > 90 ? " long" : "");
+    var sh = $("sheet"); sh.innerHTML = ""; sh.className = "sheet fade";
+    void sh.offsetWidth;
+    if (sc.status === "done" || sc.status === "stopped" || sc.status === "none") {
+      var a = el("a", "opt link"); a.href = CHAT_URL; a.appendChild(el("span", "", "トークに戻る"));
+      sh.appendChild(a);
+      bx(); window.scrollTo(0, 0); return;
+    }
+    var inp = sc.input || null;
+    if (inp && !inp.hidden) sh.appendChild(form(inp));
+    (sc.choices || []).forEach(function(c){
+      var b = el("button", "opt"); b.type = "button";
+      b.appendChild(el("span", "", c.label));
+      b.onclick = function(){ choose(c, b); };
+      sh.appendChild(b);
+    });
+    bx(); window.scrollTo(0, 0);
+  }
+
+  function choose(c, btn){
+    if (busy) return;
+    if (c.send.kind === "local") {
+      if (c.send.do === "write") {        // 「自分で書く」→ 同じカードの中で入力欄に切り替える
+        var sh = $("sheet"); sh.innerHTML = "";
+        sh.appendChild(form({ type: "text" }));
+        var back = el("button", "opt sub"); back.type = "button"; back.appendChild(el("span", "", "選択肢に戻る"));
+        back.onclick = function(){ render(cur); };
+        sh.appendChild(back);
+        bx(); return;
+      }
+      if (c.send.do === "close") { location.href = CHAT_URL; return; }
+      return;
+    }
+    if (btn) btn.classList.add("on");
+    send(c.send);
+  }
+
+  function opts(sel, from, to, pad, ph){
+    sel.appendChild(new Option(ph, ""));
+    for (var i = from; from <= to ? i <= to : i >= to; i += (from <= to ? 1 : -1))
+      sel.appendChild(new Option(String(i), pad ? String(i).padStart(2, "0") : String(i)));
+  }
+
+  function form(inp){
+    var f = el("div", "form");
+    var go = el("button", "next", "次へ"); go.type = "button";
+    if (inp.type === "date") {
+      var g = el("div", "selects"), y = el("select"), m = el("select"), d = el("select");
+      y.setAttribute("aria-label", "年"); m.setAttribute("aria-label", "月"); d.setAttribute("aria-label", "日");
+      var now = new Date().getFullYear();
+      opts(y, now, 1920, false, "年"); opts(m, 1, 12, true, "月"); opts(d, 1, 31, true, "日");
+      g.appendChild(y); g.appendChild(m); g.appendChild(d); f.appendChild(g);
+      var lb = el("div", "lab"); ["年", "月", "日"].forEach(function(t){ lb.appendChild(el("span", "", t)); }); f.appendChild(lb);
+      var check = function(){
+        var ok = y.value && m.value && d.value;
+        if (ok) { var last = new Date(+y.value, +m.value, 0).getDate(); ok = +d.value <= last; }
+        go.disabled = !ok;
+      };
+      [y, m, d].forEach(function(s){ s.onchange = check; }); check();
+      go.onclick = function(){ send({ kind: "text", text: y.value + m.value + d.value }); };
+    } else if (inp.type === "time") {
+      var g2 = el("div", "selects two"), h = el("select"), mi = el("select");
+      h.setAttribute("aria-label", "時"); mi.setAttribute("aria-label", "分");
+      opts(h, 0, 23, true, "時"); opts(mi, 0, 59, true, "分");
+      g2.appendChild(h); g2.appendChild(mi); f.appendChild(g2);
+      var lb2 = el("div", "lab two"); ["時（24時間）", "分"].forEach(function(t){ lb2.appendChild(el("span", "", t)); }); f.appendChild(lb2);
+      var check2 = function(){ go.disabled = !(h.value && mi.value); };
+      h.onchange = check2; mi.onchange = check2; check2();
+      go.onclick = function(){ send({ kind: "text", text: h.value + ":" + mi.value }); };
+    } else {
+      var ta = el("textarea"); ta.setAttribute("aria-label", "答えを書く");
+      var max = inp.max || 400; ta.maxLength = max;
+      var key = "kantei_draft:" + (cur && cur.sig || "");
+      ta.value = load(key) || "";
+      f.appendChild(ta);
+      var cnt = el("div", "count"); f.appendChild(cnt);
+      if (inp.empty) f.appendChild(el("div", "hint", "なければ、そのまま「次へ」で進みます。"));
+      var check3 = function(){ cnt.textContent = ta.value.length + "／" + max; go.disabled = !inp.empty && !ta.value.trim(); store(key, ta.value); };
+      ta.oninput = check3; check3();
+      go.onclick = function(){ var v = ta.value.trim() || inp.empty; if (v) send({ kind: "text", text: v }); };
+    }
+    f.appendChild(go);
+    if (inp.unknown) {
+      var u = el("button", "opt sub"); u.type = "button"; u.style.padding = "12px 4px 0"; u.appendChild(el("span", "", inp.unknown));
+      u.onclick = function(){ send({ kind: "text", text: inp.unknown }); };
+      f.appendChild(u);
+    }
+    return f;
+  }
+
+  function thinking(text){
+    var sh = $("sheet"); sh.innerHTML = "";
+    var t = el("div", "think"); var im = el("img"); im.src = "img/mirai.png"; im.alt = "";
+    t.appendChild(im); t.appendChild(el("span", "dots", text || "ミライが考えています"));
+    sh.appendChild(t);
+  }
+
+  function send(s){
+    if (busy) return; busy = true; lastSend = s;
+    thinking();
+    api("/kantei/api/answer", { sig: cur && cur.sig, send: s })
+      .then(render)
+      .catch(function(e){ if (String(e.message) !== "login") retryView(); });
+  }
+
+  function retryView(){
+    busy = false;
+    var sh = $("sheet"); sh.innerHTML = "";
+    sh.appendChild(el("div", "err", "うまくつながりませんでした。通信の状態を確かめて、もう一度お試しください。"));
+    var b = el("button", "opt"); b.type = "button"; b.appendChild(el("span", "", "もう一度"));
+    // 同じ答えを送り直しても二重には進まない（サーバーが状態の指紋で確かめる）
+    b.onclick = function(){ if (lastSend) send(lastSend); else start(); };
+    sh.appendChild(b);
+  }
+
+  function fatal(title, sub){
+    $("q").textContent = title; $("lead").textContent = sub || ""; $("lead").hidden = !sub;
+    var sh = $("sheet"); sh.innerHTML = "";
+    var a = el("a", "opt link"); a.href = CHAT_URL; a.appendChild(el("span", "", "トークに戻る")); sh.appendChild(a);
+  }
+
+  function start(){
+    thinking("ひらいています");
+    api("/kantei/api/state", {}).then(render).catch(function(e){ if (String(e.message) !== "login") retryView(); });
+  }
+  start();
+})();
+</script>
+<script type="module">
+// 言葉の途中で改行しないように、文節の切れ目に <wbr> を入れる（/start と同じ BudouX・0.9.3）。
+import { loadDefaultJapaneseParser } from "https://cdn.jsdelivr.net/npm/budoux@0.9.3/+esm";
+const parser = loadDefaultJapaneseParser();
+window.__bx = function(){
+  try {
+    document.querySelectorAll(".q,.lead,.opt span,.hint,.err,.think span").forEach(el => {
+      if (el.dataset.bx === el.textContent) return;
+      el.normalize();
+      parser.applyToElement(el);
+      el.dataset.bx = el.textContent;
+    });
+    document.body.classList.add("bx");
+  } catch (e) { console.warn("[budoux]", e); }
+};
+window.__bx();
+</script>
+</body>
+</html>
