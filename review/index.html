@@ -55,24 +55,36 @@
   /* その日の7つの運 */
   .day-title{font-size:19px;color:var(--navy);font-weight:700;margin:0 4px 4px}
   .note{font-size:14px;color:var(--muted);margin:0 4px 10px}
-  .row{border-top:1px solid var(--line);padding:12px 4px}
-  .row:first-of-type{border-top:none}
-  .rhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
-  .rname{font-size:18px;font-weight:700;color:var(--ink)}
+  /* 運を1つ選ぶ */
+  .q{font-size:18px;font-weight:700;color:var(--ink);margin:2px 4px 10px}
+  .picks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .pick{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:58px;border-radius:14px;border:1.5px solid #cfd2e6;
+        background:#fff;padding:8px 12px;text-align:left;cursor:pointer}
+  .pick .pn{font-size:17px;font-weight:700;color:var(--ink)}
+  .pick .pm{font-size:13px;color:var(--muted)}
+  .pick.done{background:var(--cream-tint);border-color:var(--gold)}
+  .pick.done .pm{color:var(--gold-text)}
+  /* 選んだ運 */
+  .back{border:none;background:none;color:var(--navy-2);font-size:15px;cursor:pointer;padding:2px 4px;margin-bottom:6px}
+  .rhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 4px}
+  .rname{font-size:20px;font-weight:700;color:var(--ink)}
   .rscore{font-size:14px;color:var(--muted);white-space:nowrap}
-  .rscore b{font-size:17px;color:var(--navy)}
-  .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
-  .opt{min-height:46px;border-radius:12px;border:1.5px solid #cfd2e6;background:#fff;font-size:16px;cursor:pointer;padding:4px 2px}
+  .rscore b{font-size:18px;color:var(--navy)}
+  .ask{font-size:16px;color:var(--ink);margin:10px 4px 0}
+  .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+  .opt{min-height:50px;border-radius:12px;border:1.5px solid #cfd2e6;background:#fff;font-size:16px;cursor:pointer;padding:4px 2px}
   .opt.on.r1{background:var(--good-bg);border-color:var(--good);color:var(--good);font-weight:700}
   .opt.on.r0{background:var(--tint);border-color:var(--navy-2);color:var(--navy-2);font-weight:700}
   .opt.on.rm1{background:var(--bad-bg);border-color:var(--bad);color:var(--bad);font-weight:700}
   .opt:disabled{opacity:.6}
-  .memo{margin-top:8px}
+  .memo{margin-top:12px}
+  .memo label{display:block;font-size:14px;color:var(--muted);margin:0 4px 4px}
   .memo textarea{width:100%;min-height:64px;border:1.5px solid var(--line);border-radius:12px;padding:8px 10px;font-size:16px;line-height:1.6;resize:vertical;background:#fdfcf9}
   .memo .mrow{display:flex;justify-content:space-between;align-items:center;margin-top:4px;font-size:13px;color:var(--muted)}
   .memo button{border:none;border-radius:999px;background:var(--navy-2);color:#fff;font-size:15px;padding:8px 16px;cursor:pointer}
   .memo button:disabled{background:#b9bdd6}
-  .memo-open{margin-top:6px;border:none;background:none;color:var(--navy-2);font-size:15px;cursor:pointer;padding:4px 0;text-decoration:underline}
+  .saved{margin:12px 4px 0;font-size:16px;color:var(--good);font-weight:700}
+  .more{display:inline-block;margin:6px 4px 0;border:none;background:none;color:var(--navy-2);font-size:14px;cursor:pointer;padding:2px 0;text-decoration:underline}
 
   .empty{font-size:16px;color:var(--muted);text-align:center;padding:18px 8px}
   .chat{display:block;text-align:center;margin:8px auto 0;max-width:320px;padding:14px;border-radius:999px;background:#06C755;color:#fff;font-weight:700;text-decoration:none;font-size:17px}
@@ -109,8 +121,7 @@
 
     <div class="card" id="daycard" hidden>
       <div class="day-title" id="daytitle"></div>
-      <p class="note" id="daynote"></p>
-      <div id="rows"></div>
+      <div id="dayview"></div>
     </div>
     <div id="none" class="card empty" hidden>まだ振り返れる日がありません。登録した次の日から振り返れます。</div>
   </div>
@@ -133,6 +144,9 @@
   var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   var qs = new URLSearchParams(location.search);
   if (local && qs.get("api")) API = qs.get("api");
+  // 日付つきで開いたとき（?d=YYYY-MM-DD）。LINE ログインへ回すときも日付を持っていく。
+  var D0 = /^\d{4}-\d{2}-\d{2}$/.test(qs.get("d") || "") ? qs.get("d") : null;
+  if (D0) LIFF_URL += "&d=" + D0;
   var LABEL = { "1": "良かった", "0": "ふつう", "-1": "よくなかった" };
   var CLS = { "1": "r1", "0": "r0", "-1": "rm1" };
   var WD = ["日", "月", "火", "水", "木", "金", "土"];
@@ -208,69 +222,94 @@
     });
   }
 
-  function openDay(d){
+  // 日付を選ぶ → 「何の運について振り返りますか？」で1つ選ぶ → その運だけを出す（2026-11-19 てつさん指示）
+  var DAY = null;
+  function openDay(d, cat){
     selDate = d; drawMonth();
-    $("daycard").hidden = false; $("rows").innerHTML = ""; $("daytitle").textContent = "読み込んでいます…"; $("daynote").textContent = "";
+    $("daycard").hidden = false; $("dayview").innerHTML = ""; $("daytitle").textContent = "読み込んでいます…";
     api("/review/api/day", { date: d }).then(function(j){
       if (selDate !== d) return;
-      $("daytitle").textContent = j.label + "の7つの運";
-      $("daynote").textContent = (j.source === "computed" ? "この日は配信の記録が無いため、生年月日から計算した予報の点数です。" :
-        j.source ? "その日の朝にお届けした予報の点数です。" : "この日の予報の点数は出せませんでした。") + "運ごとに、その日がどうだったかを選んでください。";
-      j.categories.forEach(function(c){ $("rows").appendChild(row(d, c)); });
+      DAY = j; $("daytitle").textContent = j.label;
+      var c = cat && j.categories.filter(function(x){ return x.key === cat; })[0];
+      if (c) showCat(c); else showPicker();
       $("daycard").scrollIntoView({ behavior: "smooth", block: "start" });
     }).catch(function(){ $("daytitle").textContent = "読み込めませんでした。もう一度日付を選んでください。"; });
   }
 
-  function row(d, c){
-    var r = el("div", "row"), h = el("div", "rhead");
+  function showPicker(){
+    var v = $("dayview"); v.innerHTML = "";
+    v.appendChild(el("p", "q", "何の運について振り返りますか？"));
+    var g = el("div", "picks");
+    DAY.categories.forEach(function(c){
+      var b = el("button", "pick" + (c.rating != null ? " done" : ""));
+      b.type = "button";
+      b.appendChild(el("span", "pn", c.emoji + " " + c.label));
+      b.appendChild(el("span", "pm", c.rating != null ? ("✓ 記録済み（" + LABEL[c.rating] + "）") : (c.score != null ? ("予報 " + c.score + "点") : "")));
+      b.addEventListener("click", function(){ showCat(c); });
+      g.appendChild(b);
+    });
+    v.appendChild(g);
+  }
+
+  function showCat(c){
+    var v = $("dayview"); v.innerHTML = "";
+    var back = el("button", "back", "‹ 運を選びなおす"); back.type = "button";
+    back.addEventListener("click", showPicker); v.appendChild(back);
+    var h = el("div", "rhead");
     h.appendChild(el("div", "rname", c.emoji + " " + c.label));
     var sc = el("div", "rscore");
     if (c.score != null) { sc.appendChild(document.createTextNode("予報 ")); sc.appendChild(el("b", null, String(c.score))); sc.appendChild(document.createTextNode("点")); }
-    h.appendChild(sc); r.appendChild(h);
+    h.appendChild(sc); v.appendChild(h);
+    var note = DAY.source === "computed" ? "この日は配信の記録が無いため、生年月日から計算した予報の点数です。" : "";
+    v.appendChild(el("p", "ask", "この日の" + c.label + "は、どうでしたか？" + (note ? "（" + note + "）" : "")));
 
     var opts = el("div", "opts"), btns = {};
-    [1, 0, -1].forEach(function(v){
-      var b = el("button", "opt " + CLS[v] + (c.rating === v ? " on" : ""), LABEL[v]);
-      b.type = "button"; b.setAttribute("aria-pressed", c.rating === v ? "true" : "false");
-      b.addEventListener("click", function(){ save(v); });
-      btns[v] = b; opts.appendChild(b);
+    [1, 0, -1].forEach(function(r){
+      var b = el("button", "opt " + CLS[r] + (c.rating === r ? " on" : ""), LABEL[r]);
+      b.type = "button"; b.setAttribute("aria-pressed", c.rating === r ? "true" : "false");
+      b.addEventListener("click", function(){ save(r); });
+      btns[r] = b; opts.appendChild(b);
     });
-    r.appendChild(opts);
+    v.appendChild(opts);
 
-    var memo = el("div", "memo"), ta = el("textarea"), mrow = el("div", "mrow"), left = el("span"), mb = el("button", null, "ひとことを保存");
-    ta.maxLength = 200; ta.placeholder = "ひとこと（任意）"; ta.value = c.comment || "";
-    mb.type = "button"; mb.disabled = true;
-    left.textContent = "200字まで";
-    mrow.appendChild(left); mrow.appendChild(mb); memo.appendChild(ta); memo.appendChild(mrow);
-    var open = el("button", "memo-open", "ひとことを書く");
-    open.type = "button";
-    memo.hidden = !(c.comment); open.hidden = !!c.comment;
-    open.addEventListener("click", function(){ open.hidden = true; memo.hidden = false; ta.focus(); });
-    ta.addEventListener("input", function(){ mb.disabled = c.rating == null || ta.value === (c.comment || ""); left.textContent = c.rating == null ? "先に3つから選んでください" : (ta.value.length + "/200字"); });
+    var memo = el("div", "memo"), lab = el("label", null, "ひとこと（任意）"), ta = el("textarea"), mrow = el("div", "mrow"), left = el("span"), mb = el("button", null, "ひとことを保存");
+    ta.maxLength = 200; ta.value = c.comment || ""; ta.id = "memo"; lab.htmlFor = "memo";
+    mb.type = "button"; mb.disabled = true; left.textContent = "200字まで";
+    mrow.appendChild(left); mrow.appendChild(mb);
+    memo.appendChild(lab); memo.appendChild(ta); memo.appendChild(mrow); v.appendChild(memo);
+    ta.addEventListener("input", function(){
+      mb.disabled = c.rating == null || ta.value === (c.comment || "");
+      left.textContent = c.rating == null ? "書いたあと、上の3つから選ぶと一緒に保存します" : (ta.value.length + "/200字");
+    });
     mb.addEventListener("click", function(){ save(c.rating); });
-    r.appendChild(open); r.appendChild(memo);
+    var done = el("div"); v.appendChild(done);
 
     var busy = false;
-    function save(v){
-      if (busy || v == null) return; busy = true;
+    function save(r){
+      if (busy || r == null) return; busy = true;
       Object.keys(btns).forEach(function(k){ btns[k].disabled = true; });
       mb.disabled = true;
-      api("/review/api/save", { date: d, category: c.key, rating: v, comment: ta.value }).then(function(j){
-        c.rating = v; c.comment = ta.value.trim();
-        Object.keys(btns).forEach(function(k){ var on = +k === v; btns[k].classList.toggle("on", on); btns[k].setAttribute("aria-pressed", on ? "true" : "false"); });
+      api("/review/api/save", { date: selDate, category: c.key, rating: r, comment: ta.value }).then(function(j){
+        c.rating = r; c.comment = ta.value.trim();
+        Object.keys(btns).forEach(function(k){ var on = +k === r; btns[k].classList.toggle("on", on); btns[k].setAttribute("aria-pressed", on ? "true" : "false"); });
         setCount(j.counts);
-        M.recorded[d] = (M.recorded[d] || 0) + (j.overwritten ? 0 : 1); drawMonth();
+        if (!j.overwritten) { M.recorded[selDate] = (M.recorded[selDate] || 0) + 1; drawMonth(); }
         left.textContent = "200字まで";
-        toast(j.overwritten ? (c.label + "を書き直しました。") : ("記録しました。記録は" + j.counts.records + "回目です。"));
+        done.innerHTML = "";
+        done.appendChild(el("p", "saved", j.overwritten ? "書き直しました。" : ("記録しました。記録は" + j.counts.records + "回目です。")));
+        var more = el("button", "more", "ほかの運も振り返る"); more.type = "button";
+        more.addEventListener("click", showPicker); done.appendChild(more);
       }).catch(function(e){ if (String(e.message) !== "login") toast("保存できませんでした。もう一度お試しください。"); })
         .then(function(){ busy = false; Object.keys(btns).forEach(function(k){ btns[k].disabled = false; }); });
     }
-    return r;
   }
 
   $("prev").addEventListener("click", function(){ loadMonth(ymAdd(M.month, -1)); });
   $("next").addEventListener("click", function(){ loadMonth(ymAdd(M.month, 1)); });
-  loadMonth("").catch(function(e){ if (String(e.message) !== "login") fatal("ひらけませんでした。", "少し待ってから、もう一度お試しください。"); });
+  // 朝のカードなどから日付つきで開いたとき（/review/?d=YYYY-MM-DD）は、その日を選んだ状態で始める
+  loadMonth(D0 ? D0.slice(0, 7) : "").then(function(){
+    if (D0 && M && M.start && D0 >= M.start && D0 <= M.end) openDay(D0);
+  }).catch(function(e){ if (String(e.message) !== "login") fatal("ひらけませんでした。", "少し待ってから、もう一度お試しください。"); });
 })();
 </script>
 </body>

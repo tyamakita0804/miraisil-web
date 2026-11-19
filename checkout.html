@@ -239,7 +239,8 @@
       })
       .then(function(j) {
         try { sessionStorage.setItem("review_s", j.s); sessionStorage.removeItem("review_redir"); } catch (e) {}
-        location.replace("/review/");
+        var d = getParam("d");   // 朝のカードの「昨日の運勢、どうだった？」などから日付つきで来たとき
+        location.replace("/review/" + (/^\d{4}-\d{2}-\d{2}$/.test(d || "") ? "?d=" + d : ""));
       })
       .catch(function(e) {
         if (e && e.closed) {
