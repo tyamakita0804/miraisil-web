@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>運勢の振り返り | 今日の運勢 AIミライ</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/favicon-32x32.png">
+<!-- 「トークに戻る」でページを閉じる（liff.closeWindow は liff.init の前でも使える：LIFF SDK v2.4.0 以降） -->
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<style>
+  /* 運勢の振り返り（2026-11-19）。配色は /start と同じ：クリーム地に、やわらかいインディゴと控えめな金。 */
+  :root{
+    --navy:#2f3768; --navy-2:#3f4a8f; --indigo-2:#5662a8;
+    --gold:#c4a462; --gold-soft:#ecdfbf; --gold-text:#7d5f1e;
+    --tint:#eef0f8; --cream-tint:#fbf3e2;
+    --ivory:#fbf8f1; --paper:#ffffff; --ink:#34374d; --muted:#666a80; --line:#e4e2ec;
+    --good:#3f7d5a; --good-bg:#e7f2eb; --bad:#9a4b3c; --bad-bg:#f7e9e5;
+    --shadow:0 6px 20px rgba(47,55,104,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{background:linear-gradient(180deg,#f3f3f9 0%,var(--ivory) 240px,var(--ivory) 100%);color:var(--ink);
+       font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;font-size:18px;line-height:1.7;min-height:100vh}
+  button,textarea{font-family:inherit;font-size:inherit;color:inherit}
+  .wrap{max-width:520px;margin:0 auto;padding:16px 16px calc(40px + env(safe-area-inset-bottom))}
+
+  .head{display:flex;align-items:center;gap:12px;margin:4px 0 14px}
+  .head img{width:52px;height:52px;border-radius:50%;box-shadow:0 3px 12px rgba(27,37,80,.2);flex:none}
+  .head h1{font-size:22px;color:var(--navy);line-height:1.4}
+  .head .count{font-size:14px;color:var(--gold-text);margin-top:2px}
+
+  .card{background:var(--paper);border-radius:18px;box-shadow:var(--shadow);padding:14px 12px 16px;margin-bottom:16px}
+  .lead{font-size:15px;color:var(--muted);margin:0 4px 10px}
+
+  /* カレンダー */
+  .cal-nav{display:flex;align-items:center;justify-content:space-between;margin:0 2px 8px}
+  .cal-nav b{font-size:19px;color:var(--navy)}
+  .nav-btn{width:44px;height:44px;border-radius:50%;border:1.5px solid #cfd2e6;background:#fff;color:var(--navy);font-size:20px;cursor:pointer}
+  .nav-btn:disabled{opacity:.3;cursor:default}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+  .wd{font-size:13px;color:var(--muted);padding:2px 0}
+  .wd.sun{color:#b0574a} .wd.sat{color:#4a63b0}
+  .day{position:relative;aspect-ratio:1/1;min-height:42px;border-radius:12px;border:none;background:var(--tint);
+       font-size:17px;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .day.off{background:transparent;color:#c3c4d0;cursor:default}
+  .day.blank{background:transparent;cursor:default}
+  .day.done{background:var(--cream-tint)}
+  .day.done::after{content:"";position:absolute;bottom:6px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--gold)}
+  .day.sel{outline:3px solid var(--navy-2);outline-offset:-3px;font-weight:700}
+  .legend{display:flex;gap:14px;justify-content:flex-end;font-size:13px;color:var(--muted);margin-top:8px}
+  .legend i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-right:4px;vertical-align:middle}
+
+  /* その日の7つの運 */
+  .day-title{font-size:19px;color:var(--navy);font-weight:700;margin:0 4px 4px}
+  .note{font-size:14px;color:var(--muted);margin:0 4px 10px}
+  .row{border-top:1px solid var(--line);padding:12px 4px}
+  .row:first-of-type{border-top:none}
+  .rhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .rname{font-size:18px;font-weight:700;color:var(--ink)}
+  .rscore{font-size:14px;color:var(--muted);white-space:nowrap}
+  .rscore b{font-size:17px;color:var(--navy)}
+  .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+  .opt{min-height:46px;border-radius:12px;border:1.5px solid #cfd2e6;background:#fff;font-size:16px;cursor:pointer;padding:4px 2px}
+  .opt.on.r1{background:var(--good-bg);border-color:var(--good);color:var(--good);font-weight:700}
+  .opt.on.r0{background:var(--tint);border-color:var(--navy-2);color:var(--navy-2);font-weight:700}
+  .opt.on.rm1{background:var(--bad-bg);border-color:var(--bad);color:var(--bad);font-weight:700}
+  .opt:disabled{opacity:.6}
+  .memo{margin-top:8px}
+  .memo textarea{width:100%;min-height:64px;border:1.5px solid var(--line);border-radius:12px;padding:8px 10px;font-size:16px;line-height:1.6;resize:vertical;background:#fdfcf9}
+  .memo .mrow{display:flex;justify-content:space-between;align-items:center;margin-top:4px;font-size:13px;color:var(--muted)}
+  .memo button{border:none;border-radius:999px;background:var(--navy-2);color:#fff;font-size:15px;padding:8px 16px;cursor:pointer}
+  .memo button:disabled{background:#b9bdd6}
+  .memo-open{margin-top:6px;border:none;background:none;color:var(--navy-2);font-size:15px;cursor:pointer;padding:4px 0;text-decoration:underline}
+
+  .empty{font-size:16px;color:var(--muted);text-align:center;padding:18px 8px}
+  .chat{display:block;text-align:center;margin:8px auto 0;max-width:320px;padding:14px;border-radius:999px;background:#06C755;color:#fff;font-weight:700;text-decoration:none;font-size:17px}
+
+  .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;
+         background:var(--navy);color:#fff;border-radius:14px;padding:12px 18px;font-size:16px;max-width:calc(100% - 32px);
+         box-shadow:0 8px 24px rgba(27,37,80,.3);transition:all .3s;pointer-events:none;z-index:20}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  .fatal{text-align:center;padding:40px 8px}
+  .fatal h2{color:var(--navy);font-size:21px;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="head">
+    <img src="/start/img/mirai.png" alt="ミライ">
+    <div>
+      <h1>運勢の振り返り</h1>
+      <div class="count" id="count"></div>
+    </div>
+  </div>
+
+  <div id="main" hidden>
+    <div class="card">
+      <p class="lead">振り返りたい日を選んでください。印のある日は記録済みです。</p>
+      <div class="cal-nav">
+        <button class="nav-btn" id="prev" aria-label="前の月">‹</button>
+        <b id="ym"></b>
+        <button class="nav-btn" id="next" aria-label="次の月">›</button>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="legend"><span><i></i>記録済み</span></div>
+    </div>
+
+    <div class="card" id="daycard" hidden>
+      <div class="day-title" id="daytitle"></div>
+      <p class="note" id="daynote"></p>
+      <div id="rows"></div>
+    </div>
+    <div id="none" class="card empty" hidden>まだ振り返れる日がありません。登録した次の日から振り返れます。</div>
+  </div>
+
+  <div id="fatal" class="fatal" hidden>
+    <h2 id="ftitle"></h2>
+    <p id="ftext"></p>
+  </div>
+
+  <a class="chat" id="tochat" href="https://line.me/R/oaMessage/%40768invlu/">トークに戻る</a>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var LIFF_URL = "https://liff.line.me/2010604081-ZArs25u8?review=1";
+  var CHAT_URL = "https://line.me/R/oaMessage/%40768invlu/";
+  var API = "https://miraisil-webhook.onrender.com";
+  var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var qs = new URLSearchParams(location.search);
+  if (local && qs.get("api")) API = qs.get("api");
+  var LABEL = { "1": "良かった", "0": "ふつう", "-1": "よくなかった" };
+  var CLS = { "1": "r1", "0": "r0", "-1": "rm1" };
+  var WD = ["日", "月", "火", "水", "木", "金", "土"];
+
+  function $(id){ return document.getElementById(id); }
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function store(k, v){ try { if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) {} }
+  function load(k){ try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+  function toast(t){ var x = $("toast"); x.textContent = t; x.classList.add("on"); clearTimeout(toast._t); toast._t = setTimeout(function(){ x.classList.remove("on"); }, 2600); }
+  function fatal(t, s){ $("main").hidden = true; $("fatal").hidden = false; $("ftitle").textContent = t; $("ftext").textContent = s || ""; }
+  $("tochat").addEventListener("click", function(ev){
+    ev.preventDefault();
+    try { if (window.liff && liff.isInClient && liff.isInClient()) { liff.closeWindow(); setTimeout(function(){ location.href = CHAT_URL; }, 800); return; } } catch (e) {}
+    location.href = CHAT_URL;
+  });
+
+  var S = load("review_s") || (local ? qs.get("s") : null);
+  if (!S) {
+    // LINE ログインを経ていない（直接開いた・通行証が切れた）。LIFF を通して開き直す。1回だけ。
+    var t = +(load("review_redir") || 0);
+    if (Date.now() - t > 20000) { store("review_redir", String(Date.now())); location.replace(LIFF_URL); }
+    else fatal("LINEとの連携ができませんでした。", "LINEのトークから、もう一度開いてください。");
+    return;
+  }
+
+  function api(path, body){
+    body = body || {}; body.s = S;
+    return fetch(API + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then(function(r){
+        if (r.status === 401) { store("review_s", null); location.replace(LIFF_URL); throw new Error("login"); }
+        if (!r.ok) throw new Error("http " + r.status);
+        return r.json();
+      });
+  }
+
+  var M = null, selDate = null;
+
+  function setCount(c){
+    if (!c) return;
+    $("count").textContent = c.records ? ("記録 " + c.records + "回・" + c.days + "日") : "まだ記録はありません";
+  }
+  function ymAdd(ym, n){
+    var p = ym.split("-"), y = +p[0], m = +p[1] - 1 + n;
+    y += Math.floor(m / 12); m = ((m % 12) + 12) % 12;
+    return y + "-" + (m < 9 ? "0" : "") + (m + 1);
+  }
+  function iso(y, m, d){ return y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d; }
+
+  function drawMonth(){
+    var p = M.month.split("-"), y = +p[0], m = +p[1];
+    $("ym").textContent = y + "年" + m + "月";
+    $("prev").disabled = !M.start || M.month <= M.start.slice(0, 7);
+    $("next").disabled = !M.end || M.month >= M.end.slice(0, 7);
+    var g = $("grid"); g.innerHTML = "";
+    WD.forEach(function(w, i){ g.appendChild(el("div", "wd" + (i === 0 ? " sun" : i === 6 ? " sat" : ""), w)); });
+    var first = new Date(y, m - 1, 1).getDay(), days = new Date(y, m, 0).getDate();
+    for (var i = 0; i < first; i++) g.appendChild(el("div", "day blank"));
+    for (var d = 1; d <= days; d++) {
+      var key = iso(y, m, d), ok = key >= M.start && key <= M.end;
+      var b = el("button", "day" + (ok ? "" : " off") + (M.recorded[key] ? " done" : "") + (key === selDate ? " sel" : ""), String(d));
+      b.type = "button";
+      if (ok) { b.dataset.d = key; b.setAttribute("aria-label", m + "月" + d + "日" + (M.recorded[key] ? "（記録済み）" : "")); b.addEventListener("click", function(){ openDay(this.dataset.d); }); }
+      else b.disabled = true;
+      g.appendChild(b);
+    }
+  }
+
+  function loadMonth(ym){
+    return api("/review/api/month", { month: ym || "" }).then(function(j){
+      M = j; setCount(j.counts);
+      if (!j.start) { $("main").hidden = false; $("none").hidden = false; $("prev").disabled = $("next").disabled = true; $("ym").textContent = ""; return; }
+      $("main").hidden = false; drawMonth();
+    });
+  }
+
+  function openDay(d){
+    selDate = d; drawMonth();
+    $("daycard").hidden = false; $("rows").innerHTML = ""; $("daytitle").textContent = "読み込んでいます…"; $("daynote").textContent = "";
+    api("/review/api/day", { date: d }).then(function(j){
+      if (selDate !== d) return;
+      $("daytitle").textContent = j.label + "の7つの運";
+      $("daynote").textContent = (j.source === "computed" ? "この日は配信の記録が無いため、生年月日から計算した予報の点数です。" :
+        j.source ? "その日の朝にお届けした予報の点数です。" : "この日の予報の点数は出せませんでした。") + "運ごとに、その日がどうだったかを選んでください。";
+      j.categories.forEach(function(c){ $("rows").appendChild(row(d, c)); });
+      $("daycard").scrollIntoView({ behavior: "smooth", block: "start" });
+    }).catch(function(){ $("daytitle").textContent = "読み込めませんでした。もう一度日付を選んでください。"; });
+  }
+
+  function row(d, c){
+    var r = el("div", "row"), h = el("div", "rhead");
+    h.appendChild(el("div", "rname", c.emoji + " " + c.label));
+    var sc = el("div", "rscore");
+    if (c.score != null) { sc.appendChild(document.createTextNode("予報 ")); sc.appendChild(el("b", null, String(c.score))); sc.appendChild(document.createTextNode("点")); }
+    h.appendChild(sc); r.appendChild(h);
+
+    var opts = el("div", "opts"), btns = {};
+    [1, 0, -1].forEach(function(v){
+      var b = el("button", "opt " + CLS[v] + (c.rating === v ? " on" : ""), LABEL[v]);
+      b.type = "button"; b.setAttribute("aria-pressed", c.rating === v ? "true" : "false");
+      b.addEventListener("click", function(){ save(v); });
+      btns[v] = b; opts.appendChild(b);
+    });
+    r.appendChild(opts);
+
+    var memo = el("div", "memo"), ta = el("textarea"), mrow = el("div", "mrow"), left = el("span"), mb = el("button", null, "ひとことを保存");
+    ta.maxLength = 200; ta.placeholder = "ひとこと（任意）"; ta.value = c.comment || "";
+    mb.type = "button"; mb.disabled = true;
+    left.textContent = "200字まで";
+    mrow.appendChild(left); mrow.appendChild(mb); memo.appendChild(ta); memo.appendChild(mrow);
+    var open = el("button", "memo-open", "ひとことを書く");
+    open.type = "button";
+    memo.hidden = !(c.comment); open.hidden = !!c.comment;
+    open.addEventListener("click", function(){ open.hidden = true; memo.hidden = false; ta.focus(); });
+    ta.addEventListener("input", function(){ mb.disabled = c.rating == null || ta.value === (c.comment || ""); left.textContent = c.rating == null ? "先に3つから選んでください" : (ta.value.length + "/200字"); });
+    mb.addEventListener("click", function(){ save(c.rating); });
+    r.appendChild(open); r.appendChild(memo);
+
+    var busy = false;
+    function save(v){
+      if (busy || v == null) return; busy = true;
+      Object.keys(btns).forEach(function(k){ btns[k].disabled = true; });
+      mb.disabled = true;
+      api("/review/api/save", { date: d, category: c.key, rating: v, comment: ta.value }).then(function(j){
+        c.rating = v; c.comment = ta.value.trim();
+        Object.keys(btns).forEach(function(k){ var on = +k === v; btns[k].classList.toggle("on", on); btns[k].setAttribute("aria-pressed", on ? "true" : "false"); });
+        setCount(j.counts);
+        M.recorded[d] = (M.recorded[d] || 0) + (j.overwritten ? 0 : 1); drawMonth();
+        left.textContent = "200字まで";
+        toast(j.overwritten ? (c.label + "を書き直しました。") : ("記録しました。記録は" + j.counts.records + "回目です。"));
+      }).catch(function(e){ if (String(e.message) !== "login") toast("保存できませんでした。もう一度お試しください。"); })
+        .then(function(){ busy = false; Object.keys(btns).forEach(function(k){ btns[k].disabled = false; }); });
+    }
+    return r;
+  }
+
+  $("prev").addEventListener("click", function(){ loadMonth(ymAdd(M.month, -1)); });
+  $("next").addEventListener("click", function(){ loadMonth(ymAdd(M.month, 1)); });
+  loadMonth("").catch(function(e){ if (String(e.message) !== "login") fatal("ひらけませんでした。", "少し待ってから、もう一度お試しください。"); });
+})();
+</script>
+</body>
+</html>
