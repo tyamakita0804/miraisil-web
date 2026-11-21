@@ -44,6 +44,8 @@
   .pick{min-height:52px;border-radius:14px;border:1.5px solid #cfd2e6;background:#fff;padding:6px 10px;font-size:15px;text-align:left;cursor:pointer;line-height:1.4}
   .pick.on{background:var(--cream-tint);border-color:var(--gold);color:var(--gold-text);font-weight:700}
   .pick small{display:block;font-size:12px;color:var(--muted);font-weight:400}
+  .more-kinds{display:block;width:100%;margin-top:10px;min-height:44px;border-radius:12px;border:1.5px dashed #cfd2e6;background:#fff;color:var(--navy-2);font-size:15px;cursor:pointer}
+  .gname{font-size:14px;font-weight:700;color:var(--gold-text);margin:12px 2px 6px}
   .field{margin-top:14px}
   .field label{display:block;font-size:15px;color:var(--muted);margin:0 2px 4px}
   .field input{width:100%;min-height:48px;border:1.5px solid var(--line);border-radius:12px;padding:8px 12px;font-size:17px;background:#fdfcf9}
@@ -188,6 +190,34 @@
     }).catch(function(e){ b.disabled = false; fail(e); });
   }
 
+  // 何の日かを選ぶ欄（2026-11-21 夜）：職業ごとに上に並べるもの → 記念日・誕生日・その他 → 「ほかの種類を見る」で全種類。
+  function kindPicker(F, K, cur, onPick){
+    var wrap = el("div"), all = [];
+    function mk(k){
+      var o = K.options[k]; if (!o) return null;
+      var b = el("button", "pick" + (k === cur ? " on" : ""), o.label); b.type = "button";
+      if (o.yearly) b.appendChild(el("small", null, "毎年"));
+      b.addEventListener("click", function(){ all.forEach(function(x){ x.classList.remove("on"); }); b.classList.add("on"); onPick(k); });
+      all.push(b); return b;
+    }
+    var first = el("div", "picks");
+    K.top.concat(K.fixed).forEach(function(k){ var b = mk(k); if (b) first.appendChild(b); });
+    wrap.appendChild(first);
+    var more = el("div"); more.hidden = true;
+    K.groups.forEach(function(g){
+      if (!g.keys.length) return;
+      more.appendChild(el("div", "gname", g.name));
+      var gp = el("div", "picks");
+      g.keys.forEach(function(k){ var b = mk(k); if (b) gp.appendChild(b); });
+      more.appendChild(gp);
+    });
+    var mb = el("button", "more-kinds", "ほかの種類を見る ▾"); mb.type = "button";
+    mb.addEventListener("click", function(){ more.hidden = !more.hidden; mb.textContent = more.hidden ? "ほかの種類を見る ▾" : "ほかの種類を閉じる ▴"; });
+    wrap.appendChild(mb); wrap.appendChild(more);
+    if (cur && K.top.concat(K.fixed).indexOf(cur) < 0) { more.hidden = false; mb.textContent = "ほかの種類を閉じる ▴"; }
+    F.appendChild(wrap);
+  }
+
   // ── ミライに日取りを相談する ──
   var KB = { "天赦日": "k-tensha", "一粒万倍日": "k-ichiryu", "大安": "k-red", "寅の日": "k-red", "巳の日": "k-red", "仏滅": "k-dark", "不成就日": "k-dark" };
   var CERR = { no_days: "その条件に合う日がありません。期間か曜日を変えてください。", too_far: "日付で指定できるのは90日先までです。",
@@ -217,7 +247,8 @@
     var C = ST.consult, F = $("form"); F.innerHTML = ""; F.hidden = false;
     modeRow(F, true);
     var req = { category: null, window: null, days: "any", until: "" };
-    seg(F, "何の日ですか？", C.options, null, function(k){ req.category = k; });
+    F.appendChild(el("p", "q", "何の日ですか？"));
+    kindPicker(F, C.kinds, null, function(k){ req.category = k; });
     var uf = el("div", "field"); uf.hidden = true;
     seg(F, "いつ頃までに？", C.windows, null, function(k){ req.window = k; uf.hidden = k !== "until"; });
     var ul = el("label", null, "いつまで（90日先まで）"), ui = el("input"); ui.type = "date"; ui.min = C.until_min; ui.max = C.until_max; ui.id = "f-until"; ul.htmlFor = "f-until";
@@ -291,23 +322,14 @@
     if (!it) modeRow(F, false);
     var cat = it ? it.category : null;
     F.appendChild(el("p", "q", it ? "「" + it.display + "」を変える" : "何の日ですか？"));
-    var picks = el("div", "picks"), date = el("input"), name = el("input");
-    function opt(){ return ST.options.filter(function(o){ return o.key === cat; })[0]; }
+    var date = el("input"), name = el("input");
+    function opt(){ return ST.kinds.options[cat]; }
     function setRange(){
       var o = opt(); if (!o) return;
       date.min = o.min; date.max = o.max;
       hint.textContent = o.yearly ? "毎年くり返します。過去の日付（例：結婚した日・生まれた日）も選べます。" : "1回だけの日です。過ぎた次の日に一覧から外れます。";
     }
-    ST.options.forEach(function(o){
-      if (!o.new && !(it && it.category === o.key)) return;
-      var b = el("button", "pick" + (o.key === cat ? " on" : ""), o.label); b.type = "button";
-      if (o.yearly) b.appendChild(el("small", null, "毎年"));
-      b.addEventListener("click", function(){
-        cat = o.key; Array.prototype.forEach.call(picks.children, function(x){ x.classList.remove("on"); }); b.classList.add("on"); setRange();
-      });
-      picks.appendChild(b);
-    });
-    F.appendChild(picks);
+    kindPicker(F, ST.kinds, cat, function(k){ cat = k; setRange(); });
     var f1 = el("div", "field"), l1 = el("label", null, "日付"); date.type = "date"; date.id = "f-date"; l1.htmlFor = "f-date";
     var hint = el("p", "hint", "");
     date.value = it ? it.date : "";
