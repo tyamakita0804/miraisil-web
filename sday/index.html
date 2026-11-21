@@ -54,6 +54,27 @@
          background:var(--navy);color:#fff;border-radius:14px;padding:12px 18px;font-size:16px;max-width:calc(100% - 32px);
          box-shadow:0 8px 24px rgba(27,37,80,.3);transition:all .3s;pointer-events:none;z-index:20}
   .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  /* ミライに日取りを相談する（2026-11-21） */
+  .mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+  .mode button{min-height:48px;border-radius:14px;border:1.5px solid #cfd2e6;background:#fff;font-size:15px;cursor:pointer}
+  .mode button.on{background:var(--navy-2);border-color:var(--navy-2);color:#fff;font-weight:700}
+  .seg{display:flex;flex-wrap:wrap;gap:6px}
+  .seg button{min-height:42px;border-radius:999px;border:1.5px solid #cfd2e6;background:#fff;font-size:14px;padding:4px 14px;cursor:pointer}
+  .seg button.on{background:var(--cream-tint);border-color:var(--gold);color:var(--gold-text);font-weight:700}
+  .wait{text-align:center;color:var(--navy);font-size:16px;padding:18px 4px}
+  .wait .dots::after{content:"…";animation:dots 1.2s steps(3,end) infinite}
+  @keyframes dots{0%{content:""}33%{content:"・"}66%{content:"・・"}100%{content:"・・・"}}
+  .prop{border:1.5px solid var(--gold-soft);border-radius:14px;padding:12px;margin-top:10px;background:#fffdf8}
+  .prop .no{font-size:13px;color:var(--gold-text);font-weight:700}
+  .prop .pd{font-size:18px;font-weight:700;color:var(--navy)}
+  .badges{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}
+  .kb{font-size:12px;border-radius:4px;padding:1px 7px;border:1px solid #9b9691;color:#9b9691;font-weight:700}
+  .kb.k-tensha{background:#c9a94e;border-color:#c9a94e;color:#fff}
+  .kb.k-ichiryu{border:2px solid #c9a94e;color:#c9a94e}
+  .kb.k-red{border-color:#c25b5b;color:#c25b5b}
+  .kb.k-dark{border-color:#6b6558;color:#6b6558}
+  .prop .lb{font-size:13px;color:var(--muted);margin-top:6px}
+  .prop p{font-size:15px;line-height:1.7}
   .fatal{text-align:center;padding:40px 8px}
   .fatal h2{color:var(--navy);font-size:21px;margin-bottom:8px}
 </style>
@@ -167,9 +188,107 @@
     }).catch(function(e){ b.disabled = false; fail(e); });
   }
 
+  // ── ミライに日取りを相談する ──
+  var KB = { "天赦日": "k-tensha", "一粒万倍日": "k-ichiryu", "大安": "k-red", "寅の日": "k-red", "巳の日": "k-red", "仏滅": "k-dark", "不成就日": "k-dark" };
+  var CERR = { no_days: "その条件に合う日がありません。期間か曜日を変えてください。", too_far: "日付で指定できるのは90日先までです。",
+               until: "いつまでかの日付を選んでください。", closed: "日取りの相談は、いまはお使いいただけません。",
+               text: "うまく作れませんでした。もう一度お試しください。", natal: "生年月日が登録されていないため相談できません。",
+               timeout: "時間がかかりすぎました。もう一度お試しください。", chosen: "この相談からは、もう日を選んであります。" };
+  function modeRow(F, consult){
+    if (!ST.consult || !ST.consult.ok) return;
+    var m = el("div", "mode");
+    var a = el("button", consult ? "" : "on", "日付を自分で選ぶ"), b = el("button", consult ? "on" : "", "ミライに相談する");
+    a.type = b.type = "button";
+    a.addEventListener("click", function(){ openForm(null); });
+    b.addEventListener("click", function(){ openConsult(); });
+    m.appendChild(a); m.appendChild(b); F.appendChild(m);
+  }
+  function seg(F, title, items, cur, fn){
+    F.appendChild(el("p", "q", title));
+    var g = el("div", "seg");
+    items.forEach(function(o){
+      var x = el("button", o.key === cur ? "on" : "", o.label); x.type = "button";
+      x.addEventListener("click", function(){ Array.prototype.forEach.call(g.children, function(c){ c.classList.remove("on"); }); x.classList.add("on"); fn(o.key); });
+      g.appendChild(x);
+    });
+    F.appendChild(g);
+  }
+  function openConsult(){
+    var C = ST.consult, F = $("form"); F.innerHTML = ""; F.hidden = false;
+    modeRow(F, true);
+    var req = { category: null, window: null, days: "any", until: "" };
+    seg(F, "何の日ですか？", C.options, null, function(k){ req.category = k; });
+    var uf = el("div", "field"); uf.hidden = true;
+    seg(F, "いつ頃までに？", C.windows, null, function(k){ req.window = k; uf.hidden = k !== "until"; });
+    var ul = el("label", null, "いつまで（90日先まで）"), ui = el("input"); ui.type = "date"; ui.min = C.until_min; ui.max = C.until_max; ui.id = "f-until"; ul.htmlFor = "f-until";
+    uf.appendChild(ul); uf.appendChild(ui); F.appendChild(uf);
+    seg(F, "曜日は？", C.days, "any", function(k){ req.days = k; });
+    F.appendChild(el("p", "hint", "あなたの生年月日の星の配置から、期間の中でよい日を3つ選び、理由と当日の過ごし方をお伝えします。"));
+    var row = el("div", "row");
+    row.appendChild(btn("", "やめる", function(){ F.hidden = true; F.innerHTML = ""; }));
+    row.appendChild(btn("main", "ミライに相談する", function(){
+      if (!req.category) { toast("何の日かを選んでください。"); return; }
+      if (!req.window) { toast("いつ頃までかを選んでください。"); return; }
+      req.until = ui.value;
+      if (req.window === "until" && !req.until) { toast(CERR.until); return; }
+      var b = this; b.disabled = true;
+      api("/sday/api/consult", req).then(function(j){ showConsult(j.consult); })
+        .catch(function(e){ b.disabled = false; if (String(e.message) !== "login") toast(CERR[e.code] || ERR[e.code] || "うまくいきませんでした。もう一度お試しください。"); });
+    }));
+    F.appendChild(row);
+    F.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  var POLL = null;
+  function showConsult(c){
+    var F = $("form"); F.innerHTML = ""; F.hidden = false; clearTimeout(POLL);
+    if (c.status === "generating") {
+      var w = el("div", "wait"); w.appendChild(document.createTextNode("ミライが「" + c.label + "」の日取りを見ています"));
+      w.appendChild(el("span", "dots")); F.appendChild(w);
+      F.appendChild(el("p", "hint", "20秒ほどかかります。この画面を閉じても、あとで開き直すと結果が見られます。"));
+      var n = 0;
+      (function tick(){
+        POLL = setTimeout(function(){
+          api("/sday/api/consult_status", { id: c.id }).then(function(j){
+            if (j.consult.status === "generating" && ++n < 60) tick(); else showConsult(j.consult);
+          }).catch(function(){ if (++n < 60) tick(); });
+        }, 2500);
+      })();
+      return;
+    }
+    if (c.status === "failed") {
+      F.appendChild(el("p", "q", CERR[c.error] || "うまく作れませんでした。もう一度お試しください。"));
+      var r0 = el("div", "row"); r0.appendChild(btn("main", "条件を選びなおす", openConsult)); F.appendChild(r0);
+      return;
+    }
+    F.appendChild(el("p", "q", "「" + c.label + "」によい日（" + c.window + "・" + c.days + "）"));
+    var nf = el("div", "field"), nl = el("label", null, "名前（任意・" + ST.name_max + "字まで）"), ni = el("input");
+    ni.type = "text"; ni.maxLength = ST.name_max; ni.id = "c-name"; nl.htmlFor = "c-name"; ni.placeholder = "例：第一志望の面接";
+    nf.appendChild(nl); nf.appendChild(ni); F.appendChild(nf);
+    c.proposals.forEach(function(p, i){
+      var box = el("div", "prop");
+      box.appendChild(el("div", "no", "候補" + (i + 1)));
+      box.appendChild(el("div", "pd", p.label));
+      var bg = el("div", "badges");
+      (p.koyomi || []).forEach(function(k){ bg.appendChild(el("span", "kb " + (KB[k] || ""), k)); });
+      box.appendChild(bg);
+      box.appendChild(el("div", "lb", "この日がよい理由")); box.appendChild(el("p", null, p.reason));
+      box.appendChild(el("div", "lb", "当日の過ごし方")); box.appendChild(el("p", null, p.howto));
+      var r = el("div", "row");
+      r.appendChild(btn("gold", "この日に決める", function(){
+        var b = this; b.disabled = true;
+        api("/sday/api/consult_pick", { id: c.id, date: p.date, name: ni.value }).then(function(j){
+          F.hidden = true; F.innerHTML = ""; render(j); toast(p.label + "を大切な日に登録しました。");
+        }).catch(function(e){ b.disabled = false; if (String(e.message) !== "login") toast(CERR[e.code] || ERR[e.code] || "登録できませんでした。"); });
+      }));
+      box.appendChild(r); F.appendChild(box);
+    });
+    var r2 = el("div", "row"); r2.appendChild(btn("", "条件を変えて相談する", openConsult)); F.appendChild(r2);
+  }
+
   // 追加・変更の欄。it があれば変更。
   function openForm(it){
-    var F = $("form"); F.innerHTML = ""; F.hidden = false;
+    var F = $("form"); F.innerHTML = ""; F.hidden = false; clearTimeout(POLL);
+    if (!it) modeRow(F, false);
     var cat = it ? it.category : null;
     F.appendChild(el("p", "q", it ? "「" + it.display + "」を変える" : "何の日ですか？"));
     var picks = el("div", "picks"), date = el("input"), name = el("input");
@@ -216,7 +335,10 @@
   }
 
   $("addbtn").addEventListener("click", function(){ openForm(null); });
-  api("/sday/api/state").then(render).catch(function(e){ if (String(e.message) !== "login") fatal("ひらけませんでした。", "少し待ってから、もう一度お試しください。"); });
+  api("/sday/api/state").then(function(j){
+    render(j);
+    if (j.consult && j.consult.latest) showConsult(j.consult.latest);   // 開き直したら、まだ選んでいない相談の結果を出す
+  }).catch(function(e){ if (String(e.message) !== "login") fatal("ひらけませんでした。", "少し待ってから、もう一度お試しください。"); });
 })();
 </script>
 </body>
