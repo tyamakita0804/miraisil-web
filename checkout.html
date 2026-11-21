@@ -265,7 +265,11 @@
       })
       .then(function(j) {
         try { sessionStorage.setItem("sday_s", j.s); sessionStorage.removeItem("sday_redir"); } catch (e) {}
-        location.replace("/sday/");
+        // 一覧のカード・朝のカードから来たとき：new=1（決めるから始める）・renew=ID（次の年の分の確認画面）
+        var q = [];
+        if (getParam("new")) q.push("new=1");
+        if (/^\d+$/.test(getParam("renew") || "")) q.push("renew=" + getParam("renew"));
+        location.replace("/sday/" + (q.length ? "?" + q.join("&") : ""));
       })
       .catch(function(e) {
         if (e && e.closed) {

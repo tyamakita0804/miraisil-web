@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>大切な日 | 今日の運勢 AIミライ</title>
+<title>大切な日を決める | 今日の運勢 AIミライ</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="/favicon-32x32.png">
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <style>
-  /* 大切な日（2026-11-21）。配色は振り返りの画面（/review/）と同じ。 */
+  /* 大切な日を決める（2026-11-21 夜）。1画面に1つの質問。配色は振り返りの画面と同じ紺と金。 */
   :root{
-    --navy:#2f3768; --navy-2:#3f4a8f; --gold:#c4a462; --gold-soft:#ecdfbf; --gold-text:#7d5f1e;
+    --navy:#2f3768; --navy-2:#3f4a8f; --gold:#c4a462; --gold-deep:#a8873f; --gold-soft:#ecdfbf; --gold-text:#7d5f1e;
     --tint:#eef0f8; --cream-tint:#fbf3e2; --ivory:#fbf8f1; --paper:#ffffff; --ink:#34374d; --muted:#666a80;
     --line:#e4e2ec; --bad:#9a4b3c; --bad-bg:#f7e9e5; --shadow:0 6px 20px rgba(47,55,104,.08);
   }
@@ -22,61 +22,114 @@
   button,input{font-family:inherit;font-size:inherit;color:inherit}
   .wrap{max-width:520px;margin:0 auto;padding:16px 16px calc(40px + env(safe-area-inset-bottom))}
   .head{display:flex;align-items:center;gap:12px;margin:4px 0 14px}
-  .head img{width:52px;height:52px;border-radius:50%;box-shadow:0 3px 12px rgba(27,37,80,.2);flex:none}
-  .head h1{font-size:22px;color:var(--navy);line-height:1.4}
-  .head .count{font-size:14px;color:var(--gold-text);margin-top:2px}
-  .card{background:var(--paper);border-radius:18px;box-shadow:var(--shadow);padding:14px 14px 16px;margin-bottom:14px}
+  .head img{width:48px;height:48px;border-radius:50%;box-shadow:0 3px 12px rgba(27,37,80,.2);flex:none}
+  .head h1{font-size:21px;color:var(--navy);line-height:1.4}
+  .head .sub{font-size:13px;color:var(--gold-text)}
+  .back{border:none;background:none;color:var(--navy-2);font-size:15px;cursor:pointer;padding:4px 2px;margin-bottom:6px}
+  .step{font-size:13px;color:var(--gold-text);font-weight:700;margin:0 2px 2px}
+  .q{font-size:21px;font-weight:700;color:var(--navy);margin:0 2px 14px;line-height:1.5}
+  .card{background:var(--paper);border-radius:18px;box-shadow:var(--shadow);padding:14px;margin-bottom:12px}
   .lead{font-size:15px;color:var(--muted);margin:0 2px 12px}
-  .item .nm{font-size:19px;font-weight:700;color:var(--ink);word-break:break-all}
-  .item .chip{display:inline-block;font-size:12px;color:var(--gold-text);background:var(--cream-tint);border-radius:999px;padding:1px 10px;margin-top:2px}
-  .item .when{font-size:15px;color:var(--muted);margin-top:4px}
-  .item .when b{color:var(--navy)}
-  .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-  .btn{min-height:44px;border-radius:999px;border:1.5px solid #cfd2e6;background:#fff;color:var(--navy);font-size:15px;padding:6px 16px;cursor:pointer}
-  .btn.main{background:var(--navy-2);border-color:var(--navy-2);color:#fff;font-weight:700}
-  .btn.gold{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:700}
-  .btn.danger{background:var(--bad);border-color:var(--bad);color:#fff;font-weight:700}
-  .btn:disabled{opacity:.5;cursor:default}
-  .add{display:block;width:100%;min-height:54px;border-radius:16px;border:2px dashed var(--gold);background:var(--cream-tint);color:var(--gold-text);font-size:17px;font-weight:700;cursor:pointer;margin-bottom:14px}
-  .confirm{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--bad-bg);font-size:15px;color:var(--bad)}
-  .q{font-size:17px;font-weight:700;color:var(--ink);margin:4px 2px 8px}
-  .picks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .pick{min-height:52px;border-radius:14px;border:1.5px solid #cfd2e6;background:#fff;padding:6px 10px;font-size:15px;text-align:left;cursor:pointer;line-height:1.4}
-  .pick.on{background:var(--cream-tint);border-color:var(--gold);color:var(--gold-text);font-weight:700}
-  .pick small{display:block;font-size:12px;color:var(--muted);font-weight:400}
-  .more-kinds{display:block;width:100%;margin-top:10px;min-height:44px;border-radius:12px;border:1.5px dashed #cfd2e6;background:#fff;color:var(--navy-2);font-size:15px;cursor:pointer}
-  .gname{font-size:14px;font-weight:700;color:var(--gold-text);margin:12px 2px 6px}
-  .field{margin-top:14px}
+  .hint{font-size:13px;color:var(--muted);margin:6px 2px 0}
+  .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .tile{display:flex;align-items:center;gap:8px;min-height:58px;border-radius:14px;border:1.5px solid #d6d8e8;background:#fff;
+        padding:8px 10px;text-align:left;cursor:pointer;font-size:14px;line-height:1.35}
+  .tile .ic{font-size:22px;flex:none;width:28px;text-align:center}
+  .tile small{display:block;font-size:11px;color:var(--gold-text)}
+  .tile.on{border-color:var(--gold);background:var(--cream-tint);font-weight:700}
+  .more{display:block;width:100%;margin-top:10px;min-height:46px;border-radius:12px;border:1.5px dashed #cfd2e6;background:#fff;color:var(--navy-2);font-size:15px;cursor:pointer}
+  .gname{font-size:14px;font-weight:700;color:var(--gold-text);margin:14px 2px 6px}
+  .field{margin-top:16px}
   .field label{display:block;font-size:15px;color:var(--muted);margin:0 2px 4px}
-  .field input{width:100%;min-height:48px;border:1.5px solid var(--line);border-radius:12px;padding:8px 12px;font-size:17px;background:#fdfcf9}
-  .hint{font-size:13px;color:var(--muted);margin:4px 2px 0}
+  .field input{width:100%;min-height:50px;border:1.5px solid var(--line);border-radius:12px;padding:8px 12px;font-size:17px;background:#fdfcf9}
+  .plan{display:block;width:100%;text-align:left;border-radius:18px;border:2px solid #d6d8e8;background:#fff;padding:16px;margin-bottom:12px;cursor:pointer;box-shadow:var(--shadow)}
+  .plan .pt{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .plan .pn{font-size:18px;font-weight:700;color:var(--navy)}
+  .plan .pp{font-size:20px;font-weight:700;color:var(--gold-deep);white-space:nowrap}
+  .plan ul{list-style:none;margin-top:8px}
+  .plan li{font-size:15px;color:var(--ink);margin-top:4px}
+  .plan.dark{background:linear-gradient(160deg,#2f3768,#3f4a8f);border-color:#2f3768}
+  .plan.dark .pn,.plan.dark li{color:#fff}
+  .plan.dark .pp{color:#ecd9a6}
+  .plan:disabled{opacity:.45;cursor:default}
+  .cal-nav{display:flex;align-items:center;justify-content:space-between;margin:0 2px 8px}
+  .cal-nav b{font-size:19px;color:var(--navy)}
+  .nav-btn{width:44px;height:44px;border-radius:50%;border:1.5px solid #cfd2e6;background:#fff;color:var(--navy);font-size:20px;cursor:pointer}
+  .nav-btn:disabled{opacity:.3;cursor:default}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+  .wd{font-size:13px;color:var(--muted);padding:2px 0}
+  .wd.sun{color:#b0574a} .wd.sat{color:#4a63b0}
+  .day{position:relative;aspect-ratio:1/1;min-height:42px;border-radius:12px;border:none;background:var(--tint);font-size:17px;color:var(--navy);cursor:pointer}
+  .day.off{background:transparent;color:#c3c4d0;cursor:default}
+  .day.blank{background:transparent;cursor:default}
+  .day.on{background:var(--gold);color:#fff;font-weight:700}
+  .day.on::after{content:"★";position:absolute;top:1px;right:4px;font-size:10px;color:#fff}
+  .picked{font-size:15px;color:var(--navy);margin:10px 2px 0;min-height:24px}
+  .btn{display:block;width:100%;min-height:54px;border-radius:999px;border:none;background:var(--navy-2);color:#fff;font-size:17px;font-weight:700;cursor:pointer;margin-top:14px}
+  .btn.gold{background:linear-gradient(90deg,#c4a462,#a8873f)}
+  .btn.ghost{background:#fff;color:var(--navy);border:1.5px solid #cfd2e6}
+  .btn:disabled{opacity:.45;cursor:default}
+  .sbtn{min-height:42px;border-radius:999px;border:1.5px solid #cfd2e6;background:#fff;color:var(--navy);font-size:14px;padding:4px 14px;cursor:pointer}
+  .sbtn.gold{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:700}
+  .sbtn.danger{background:var(--bad);border-color:var(--bad);color:#fff;font-weight:700}
+  .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .bill{background:#fff;border-radius:18px;border:2px solid var(--gold-soft);padding:16px;box-shadow:var(--shadow)}
+  .bill .what{font-size:15px;color:var(--muted)}
+  .bill .name{font-size:19px;font-weight:700;color:var(--navy);margin-top:2px}
+  .bill .price{font-size:30px;font-weight:800;color:var(--gold-deep);margin-top:8px}
+  .bill .price small{font-size:14px;color:var(--muted);font-weight:400}
+  .bill ul{list-style:none;margin-top:8px}
+  .bill li{font-size:15px;margin-top:4px}
+  .note{font-size:13px;color:var(--muted);margin:10px 2px 0}
+  .test{font-size:13px;color:var(--gold-text);background:var(--cream-tint);border-radius:10px;padding:8px 10px;margin-top:10px}
+  .think{text-align:center;padding:40px 8px}
+  .orb{width:120px;height:120px;margin:0 auto 18px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff7dc,#c4a462 55%,#3f4a8f);
+       box-shadow:0 0 40px rgba(196,164,98,.6);animation:pulse 1.8s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.08);opacity:1}}
+  .think p{font-size:17px;color:var(--navy)}
+  .think small{display:block;font-size:13px;color:var(--muted);margin-top:6px}
+  .best{background:linear-gradient(165deg,#2f3768,#3f4a8f);color:#fff;border-radius:20px;padding:18px;box-shadow:0 10px 28px rgba(47,55,104,.3)}
+  .best .crown{font-size:14px;color:#ecd9a6;font-weight:700}
+  .best .bd{font-size:22px;font-weight:800;margin-top:2px}
+  .best .tot{font-size:15px;color:#ecd9a6;margin-top:2px}
+  .best .tot b{font-size:26px}
+  .bars{margin-top:10px}
+  .bar{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:5px}
+  .bar span{width:52px;flex:none}
+  .bar i{flex:1;height:8px;border-radius:4px;background:rgba(255,255,255,.2);position:relative;overflow:hidden}
+  .bar i b{position:absolute;left:0;top:0;bottom:0;background:#ecd9a6;border-radius:4px}
+  .bar em{width:30px;text-align:right;font-style:normal}
+  .badges{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 2px}
+  .kb{font-size:12px;border-radius:4px;padding:1px 7px;border:1px solid #9b9691;color:#9b9691;font-weight:700;background:#fff}
+  .kb.k-tensha{background:#c9a94e;border-color:#c9a94e;color:#fff}
+  .kb.k-ichiryu{border:2px solid #c9a94e;color:#a8873f}
+  .kb.k-red{border-color:#c25b5b;color:#c25b5b}
+  .kb.k-dark{border-color:#6b6558;color:#6b6558}
+  .best .lb{font-size:13px;color:#ecd9a6;margin-top:10px}
+  .best p{font-size:15px;line-height:1.75}
+  .best .btn{background:linear-gradient(90deg,#ecd9a6,#c4a462);color:#2f3768}
+  .other{display:flex;gap:10px;align-items:flex-start;background:#fff;border-radius:14px;padding:12px;margin-top:10px;box-shadow:var(--shadow)}
+  .other .rk{font-size:15px;font-weight:800;color:var(--gold-deep);width:28px;flex:none}
+  .other .od{font-size:16px;font-weight:700;color:var(--navy)}
+  .other .os{font-size:14px;color:var(--ink);margin-top:2px}
+  .other .ot{font-size:13px;color:var(--muted)}
+  .done{text-align:center;padding:16px 4px}
+  .done img{width:140px;height:140px;border-radius:50%;box-shadow:0 8px 24px rgba(47,55,104,.25)}
+  .done h2{font-size:20px;color:var(--navy);margin-top:14px;line-height:1.6}
+  .item .top{display:flex;gap:10px;align-items:center}
+  .item .ic{font-size:26px}
+  .item .nm{font-size:18px;font-weight:700;color:var(--ink);word-break:break-all;line-height:1.4}
+  .item .lbl{font-size:12px;color:var(--gold-text)}
+  .item .left{font-size:22px;font-weight:800;color:var(--navy);margin-left:auto;white-space:nowrap}
+  .item .when{font-size:14px;color:var(--muted);margin-top:4px}
+  .item .warn{font-size:13px;color:var(--gold-text);margin-top:4px}
+  .confirm{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--bad-bg);font-size:14px;color:var(--bad)}
   .empty{font-size:16px;color:var(--muted);text-align:center;padding:18px 8px}
-  .chat{display:block;text-align:center;margin:8px auto 0;max-width:320px;padding:14px;border-radius:999px;background:#06C755;color:#fff;font-weight:700;text-decoration:none;font-size:17px}
+  .chat{display:block;text-align:center;margin:18px auto 0;max-width:320px;padding:14px;border-radius:999px;background:#06C755;color:#fff;font-weight:700;text-decoration:none;font-size:17px}
   .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;
          background:var(--navy);color:#fff;border-radius:14px;padding:12px 18px;font-size:16px;max-width:calc(100% - 32px);
          box-shadow:0 8px 24px rgba(27,37,80,.3);transition:all .3s;pointer-events:none;z-index:20}
   .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-  /* ミライに日取りを相談する（2026-11-21） */
-  .mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-  .mode button{min-height:48px;border-radius:14px;border:1.5px solid #cfd2e6;background:#fff;font-size:15px;cursor:pointer}
-  .mode button.on{background:var(--navy-2);border-color:var(--navy-2);color:#fff;font-weight:700}
-  .seg{display:flex;flex-wrap:wrap;gap:6px}
-  .seg button{min-height:42px;border-radius:999px;border:1.5px solid #cfd2e6;background:#fff;font-size:14px;padding:4px 14px;cursor:pointer}
-  .seg button.on{background:var(--cream-tint);border-color:var(--gold);color:var(--gold-text);font-weight:700}
-  .wait{text-align:center;color:var(--navy);font-size:16px;padding:18px 4px}
-  .wait .dots::after{content:"…";animation:dots 1.2s steps(3,end) infinite}
-  @keyframes dots{0%{content:""}33%{content:"・"}66%{content:"・・"}100%{content:"・・・"}}
-  .prop{border:1.5px solid var(--gold-soft);border-radius:14px;padding:12px;margin-top:10px;background:#fffdf8}
-  .prop .no{font-size:13px;color:var(--gold-text);font-weight:700}
-  .prop .pd{font-size:18px;font-weight:700;color:var(--navy)}
-  .badges{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}
-  .kb{font-size:12px;border-radius:4px;padding:1px 7px;border:1px solid #9b9691;color:#9b9691;font-weight:700}
-  .kb.k-tensha{background:#c9a94e;border-color:#c9a94e;color:#fff}
-  .kb.k-ichiryu{border:2px solid #c9a94e;color:#c9a94e}
-  .kb.k-red{border-color:#c25b5b;color:#c25b5b}
-  .kb.k-dark{border-color:#6b6558;color:#6b6558}
-  .prop .lb{font-size:13px;color:var(--muted);margin-top:6px}
-  .prop p{font-size:15px;line-height:1.7}
   .fatal{text-align:center;padding:40px 8px}
   .fatal h2{color:var(--navy);font-size:21px;margin-bottom:8px}
 </style>
@@ -85,23 +138,10 @@
 <div class="wrap">
   <div class="head">
     <img src="/start/img/mirai.png" alt="ミライ">
-    <div>
-      <h1>大切な日</h1>
-      <div class="count" id="count">読み込んでいます…</div>
-    </div>
+    <div><h1>大切な日を決める</h1><div class="sub" id="sub">読み込んでいます…</div></div>
   </div>
-
-  <div id="main" hidden>
-    <p class="lead">登録した日は、朝のカードでカウントダウンし、7日前からミライがその日に向けて語りかけます。</p>
-    <button class="add" id="addbtn" type="button">＋ 大切な日を足す</button>
-    <div class="card" id="form" hidden></div>
-    <div id="list"></div>
-  </div>
-
-  <div id="fatal" class="fatal" hidden>
-    <h2 id="ftitle"></h2>
-    <p id="ftext"></p>
-  </div>
+  <div id="view"></div>
+  <div id="fatal" class="fatal" hidden><h2 id="ftitle"></h2><p id="ftext"></p></div>
   <a class="chat" id="tochat" href="https://line.me/R/oaMessage/%40768invlu/">トークに戻る</a>
 </div>
 <div class="toast" id="toast"></div>
@@ -115,22 +155,32 @@
   var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   var qs = new URLSearchParams(location.search);
   if (local && qs.get("api")) API = qs.get("api");
+  var WD = ["日", "月", "火", "水", "木", "金", "土"];
+  var KB = { "天赦日": "k-tensha", "一粒万倍日": "k-ichiryu", "大安": "k-red", "寅の日": "k-red", "巳の日": "k-red", "仏滅": "k-dark", "不成就日": "k-dark" };
   var ERR = { full: "登録できるのは10件までです。", date: "その日付は選べません。", category: "何の日かを選んでください。",
               missing: "その日は見つかりませんでした。", fortune_range: "その日の運勢は、まだ見られません。",
-              ephemeris: "いまは運勢を作れません。少し待ってからお試しください。", rate: "少し時間をおいてからお試しください。" };
+              ephemeris: "いまは運勢を作れません。少し待ってからお試しください。", rate: "少し時間をおいてからお試しください。",
+              pay: "いまはお支払いができません。", few: "候補の日を2日以上選んでください。", many: "候補の日は10日までです。",
+              covered: "その日の分は、もう始めてあります。", chosen: "この相談からは、もう日を決めてあります。",
+              text: "うまく作れませんでした。もう一度お試しください（お支払いは不要です）。",
+              timeout: "時間がかかりすぎました。もう一度お試しください（お支払いは不要です）。",
+              natal: "生年月日が登録されていないため相談できません。" };
 
   function $(id){ return document.getElementById(id); }
   function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-  function btn(cls, text, fn){ var b = el("button", "btn " + cls, text); b.type = "button"; b.addEventListener("click", fn); return b; }
+  function btn(cls, text, fn){ var b = el("button", cls, text); b.type = "button"; b.addEventListener("click", fn); return b; }
   function store(k, v){ try { if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) {} }
   function load(k){ try { return sessionStorage.getItem(k); } catch (e) { return null; } }
   function toast(t){ var x = $("toast"); x.textContent = t; x.classList.add("on"); clearTimeout(toast._t); toast._t = setTimeout(function(){ x.classList.remove("on"); }, 3200); }
-  function fatal(t, s){ $("main").hidden = true; $("fatal").hidden = false; $("ftitle").textContent = t; $("ftext").textContent = s || ""; }
+  function fatal(t, s){ $("view").innerHTML = ""; $("fatal").hidden = false; $("ftitle").textContent = t; $("ftext").textContent = s || ""; }
   function closeToChat(){
     try { if (window.liff && liff.isInClient && liff.isInClient()) { liff.closeWindow(); setTimeout(function(){ location.href = CHAT_URL; }, 800); return; } } catch (e) {}
     location.href = CHAT_URL;
   }
   $("tochat").addEventListener("click", function(ev){ ev.preventDefault(); closeToChat(); });
+  function iso(y, m, d){ return y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d; }
+  function jdate(s){ var p = s.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2]); return (+p[1]) + "月" + (+p[2]) + "日（" + WD[d.getDay()] + "）"; }
+  function yen(n){ return n.toLocaleString("ja-JP") + "円"; }
 
   var S = load("sday_s") || (local ? qs.get("s") : null);
   if (!S) {
@@ -139,7 +189,6 @@
     else fatal("LINEとの連携ができませんでした。", "LINEのトークから、もう一度開いてください。");
     return;
   }
-
   function api(path, body){
     body = body || {}; body.s = S;
     return fetch(API + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
@@ -150,216 +199,306 @@
   }
   function fail(e){ if (String(e.message) === "login") return; toast(ERR[e.code] || "うまくいきませんでした。もう一度お試しください。"); }
 
-  var ST = null;
-  function render(j){
-    ST = j;
-    $("main").hidden = false;
-    $("count").textContent = j.items.length ? (j.items.length + "件（" + j.max + "件まで）") : "まだ登録はありません";
-    $("addbtn").hidden = j.items.length >= j.max;
-    var L = $("list"); L.innerHTML = "";
-    if (!j.items.length) { L.appendChild(el("div", "card empty", "試験や記念日など、大切な日を足してみましょう。")); return; }
-    j.items.forEach(function(it){
-      var c = el("div", "card item");
-      c.appendChild(el("div", "nm", it.display));
-      c.appendChild(el("span", "chip", it.label + (it.yearly ? "・毎年" : "")));
+  var ST = null, W = {}, POLL = null;   // W：いま決めている内容（kind・name・date・dates・day_id）
+  function screen(){ clearTimeout(POLL); var v = $("view"); v.innerHTML = ""; window.scrollTo(0, 0); return v; }
+  function setSub(){ $("sub").textContent = ST.items.length ? ("登録 " + ST.items.length + "件（" + ST.max + "件まで）") : "まだ登録はありません"; }
+  function backTo(v, fn, label){ v.appendChild(btn("back", "‹ " + (label || "もどる"), fn)); }
+
+  // ── 一覧 ──
+  function home(){
+    var v = screen(); setSub();
+    if (ST.items.length < ST.max) v.appendChild(btn("btn gold", "＋ 大切な日を決める", startNew));
+    if (!ST.items.length) {
+      var c = el("div", "card empty");
+      c.textContent = "試験や記念日など大切な日を決めると、朝のカードでカウントダウンし、ミライが毎朝その日に向けた運の使い方を伝えます。";
+      v.appendChild(c); return;
+    }
+    var h = el("p", "lead", "近い順に並んでいます。"); h.style.marginTop = "16px"; v.appendChild(h);
+    ST.items.forEach(function(it){
+      var c = el("div", "card item"), top = el("div", "top");
+      top.appendChild(el("span", "ic", it.icon));
+      var nb = el("div"); nb.appendChild(el("div", "nm", it.display)); nb.appendChild(el("div", "lbl", it.label + (it.yearly ? "・毎年" : "") + (it.plan === "consult" ? "・ミライと決めた日" : "")));
+      top.appendChild(nb);
+      top.appendChild(el("div", "left", it.days === 0 ? "今日" : ("あと" + it.days + "日")));
+      c.appendChild(top);
       c.appendChild(el("div", "when", it.when));
+      if (!it.covered) c.appendChild(el("div", "warn", "次のその日の分は、まだ始めていません（カウントダウンと毎朝のことばは止まっています）"));
       var row = el("div", "row");
-      if (it.fortune) row.appendChild(btn("gold", "この日の運勢を見る", function(){ seeFortune(it, this); }));
-      row.appendChild(btn("", "変える", function(){ openForm(it); }));
+      if (!it.covered) row.appendChild(btn("sbtn gold", yen(ST.prices.renew) + "で始める", function(){ confirmRenew(it); }));
+      if (it.covered && it.fortune) row.appendChild(btn("sbtn", "この日の運勢を見る", function(){ seeFortune(it.id, this); }));
+      row.appendChild(btn("sbtn", "日付を変える", function(){ moveDay(it); }));
       var cf = el("div", "confirm"); cf.hidden = true;
-      row.appendChild(btn("", "消す", function(){ cf.hidden = false; }));
+      row.appendChild(btn("sbtn", "消す", function(){ cf.hidden = false; }));
+      if (it.reconsult) row.appendChild(btn("sbtn gold", "ミライと相談し直す " + yen(ST.prices.reconsult), function(){ startReconsult(it); }));
       c.appendChild(row);
-      cf.appendChild(document.createTextNode("「" + it.display + "」を消しますか？消すと元に戻せません。"));
-      var crow = el("div", "row");
-      crow.appendChild(btn("", "やめる", function(){ cf.hidden = true; }));
-      crow.appendChild(btn("danger", "消す", function(){
+      cf.appendChild(document.createTextNode("「" + it.display + "」を消しますか？元に戻せません。お支払い済みの代金は返金されません。"));
+      var cr = el("div", "row");
+      cr.appendChild(btn("sbtn", "やめる", function(){ cf.hidden = true; }));
+      cr.appendChild(btn("sbtn danger", "消す", function(){
         this.disabled = true;
-        api("/sday/api/delete", { id: it.id }).then(function(j){ render(j); toast("「" + it.display + "」を消しました。"); }).catch(fail);
+        api("/sday/api/delete", { id: it.id }).then(function(j){ ST = j; home(); toast("「" + it.display + "」を消しました。"); }).catch(fail);
       }));
-      cf.appendChild(crow); c.appendChild(cf);
-      L.appendChild(c);
+      cf.appendChild(cr); c.appendChild(cf); v.appendChild(c);
     });
   }
 
-  function seeFortune(it, b){
+  function seeFortune(id, b){
     b.disabled = true;
-    api("/sday/api/fortune", { id: it.id }).then(function(j){
-      toast(j.status === "busy" ? "いま作っています。できたらトークに届きます。" :
-            j.status === "sent" ? "トークに届けました。" : "この日の運勢を作っています。1分ほどでトークに届きます。");
+    api("/sday/api/fortune", { id: id }).then(function(j){
+      toast(j.status === "busy" ? "いま作っています。できたらトークに届きます。" : j.status === "sent" ? "トークに届けました。" : "この日の運勢を作っています。1分ほどでトークに届きます。");
       setTimeout(closeToChat, 1800);
     }).catch(function(e){ b.disabled = false; fail(e); });
   }
 
-  // 何の日かを選ぶ欄（2026-11-21 夜）：職業ごとに上に並べるもの → 記念日・誕生日・その他 → 「ほかの種類を見る」で全種類。
-  function kindPicker(F, K, cur, onPick){
-    var wrap = el("div"), all = [];
-    function mk(k){
-      var o = K.options[k]; if (!o) return null;
-      var b = el("button", "pick" + (k === cur ? " on" : ""), o.label); b.type = "button";
-      if (o.yearly) b.appendChild(el("small", null, "毎年"));
+  // ── ① 何の日か ──
+  function startNew(){ W = { kind: null, name: "" }; askKind(); }
+  function tilesInto(box, keys, K, cur, onPick, all){
+    var g = el("div", "tiles");
+    keys.forEach(function(k){
+      var o = K.options[k]; if (!o) return;
+      var b = el("button", "tile" + (k === cur ? " on" : "")); b.type = "button";
+      b.appendChild(el("span", "ic", o.icon));
+      var t = el("span", null, o.label); if (o.yearly) t.appendChild(el("small", null, "毎年くり返す")); b.appendChild(t);
       b.addEventListener("click", function(){ all.forEach(function(x){ x.classList.remove("on"); }); b.classList.add("on"); onPick(k); });
-      all.push(b); return b;
-    }
-    var first = el("div", "picks");
-    K.top.concat(K.fixed).forEach(function(k){ var b = mk(k); if (b) first.appendChild(b); });
-    wrap.appendChild(first);
-    var more = el("div"); more.hidden = true;
-    K.groups.forEach(function(g){
-      if (!g.keys.length) return;
-      more.appendChild(el("div", "gname", g.name));
-      var gp = el("div", "picks");
-      g.keys.forEach(function(k){ var b = mk(k); if (b) gp.appendChild(b); });
-      more.appendChild(gp);
+      all.push(b); g.appendChild(b);
     });
-    var mb = el("button", "more-kinds", "ほかの種類を見る ▾"); mb.type = "button";
-    mb.addEventListener("click", function(){ more.hidden = !more.hidden; mb.textContent = more.hidden ? "ほかの種類を見る ▾" : "ほかの種類を閉じる ▴"; });
-    wrap.appendChild(mb); wrap.appendChild(more);
-    if (cur && K.top.concat(K.fixed).indexOf(cur) < 0) { more.hidden = false; mb.textContent = "ほかの種類を閉じる ▴"; }
-    F.appendChild(wrap);
+    box.appendChild(g);
+  }
+  function askKind(){
+    var v = screen(); backTo(v, home, "一覧へ");
+    v.appendChild(el("div", "step", "1 / 3"));
+    v.appendChild(el("p", "q", "何の日ですか？"));
+    var K = ST.kinds, all = [];
+    tilesInto(v, K.top.concat(K.fixed), K, W.kind, function(k){ W.kind = k; next.disabled = false; }, all);
+    var more = el("div"); more.hidden = true;
+    K.groups.forEach(function(g){ more.appendChild(el("div", "gname", g.name)); tilesInto(more, g.keys, K, W.kind, function(k){ W.kind = k; next.disabled = false; }, all); });
+    var mb = btn("more", "ほかの種類を見る ▾", function(){ more.hidden = !more.hidden; mb.textContent = more.hidden ? "ほかの種類を見る ▾" : "ほかの種類を閉じる ▴"; });
+    v.appendChild(mb); v.appendChild(more);
+    var f = el("div", "field"), l = el("label", null, "名前（任意・" + ST.name_max + "字まで）"), inp = el("input");
+    inp.type = "text"; inp.maxLength = ST.name_max; inp.id = "nm"; l.htmlFor = "nm"; inp.placeholder = "例：第一志望の面接"; inp.value = W.name || "";
+    inp.addEventListener("input", function(){ W.name = inp.value; });
+    f.appendChild(l); f.appendChild(inp); f.appendChild(el("p", "hint", "名前は朝のカードと一覧にだけ出ます。ミライの文章には使いません。"));
+    v.appendChild(f);
+    var next = btn("btn", "次へ", askDecided); next.disabled = !W.kind; v.appendChild(next);
   }
 
-  // ── ミライに日取りを相談する ──
-  var KB = { "天赦日": "k-tensha", "一粒万倍日": "k-ichiryu", "大安": "k-red", "寅の日": "k-red", "巳の日": "k-red", "仏滅": "k-dark", "不成就日": "k-dark" };
-  var CERR = { no_days: "その条件に合う日がありません。期間か曜日を変えてください。", too_far: "日付で指定できるのは90日先までです。",
-               until: "いつまでかの日付を選んでください。", closed: "日取りの相談は、いまはお使いいただけません。",
-               text: "うまく作れませんでした。もう一度お試しください。", natal: "生年月日が登録されていないため相談できません。",
-               timeout: "時間がかかりすぎました。もう一度お試しください。", chosen: "この相談からは、もう日を選んであります。" };
-  function modeRow(F, consult){
-    if (!ST.consult || !ST.consult.ok) return;
-    var m = el("div", "mode");
-    var a = el("button", consult ? "" : "on", "日付を自分で選ぶ"), b = el("button", consult ? "on" : "", "ミライに相談する");
-    a.type = b.type = "button";
-    a.addEventListener("click", function(){ openForm(null); });
-    b.addEventListener("click", function(){ openConsult(); });
-    m.appendChild(a); m.appendChild(b); F.appendChild(m);
+  // ── ② 日にちは決まっていますか？ ──
+  function askDecided(){
+    var v = screen(); backTo(v, askKind);
+    v.appendChild(el("div", "step", "2 / 3"));
+    v.appendChild(el("p", "q", "日にちは決まっていますか？"));
+    var o = ST.kinds.options[W.kind];
+    var a = el("button", "plan"); a.type = "button";
+    var at = el("div", "pt"); at.appendChild(el("span", "pn", "日にちは決まっている")); at.appendChild(el("span", "pp", yen(ST.prices.fixed))); a.appendChild(at);
+    var ul = el("ul"); ul.appendChild(el("li", null, "📌 当日までのカウントダウン")); ul.appendChild(el("li", null, "🌙 毎朝、準備期間の運の使い方をミライが伝える")); a.appendChild(ul);
+    a.addEventListener("click", function(){ W.mode = "fixed"; pickOne(); });
+    v.appendChild(a);
+    var b = el("button", "plan dark"); b.type = "button";
+    var bt = el("div", "pt"); bt.appendChild(el("span", "pn", "ミライと日取りから決める")); bt.appendChild(el("span", "pp", yen(ST.prices.consult))); b.appendChild(bt);
+    var ul2 = el("ul"); ul2.appendChild(el("li", null, "🔮 候補の日からベストな日を解説付きで提案")); ul2.appendChild(el("li", null, "＋ 上の内容がすべて付く")); b.appendChild(ul2);
+    b.addEventListener("click", function(){ W.mode = "consult"; pickMany(); });
+    if (!o.consult) { b.disabled = true; v.appendChild(b); v.appendChild(el("p", "hint", "「" + o.short + "」は、日取りの相談ができない種類です。")); }
+    else v.appendChild(b);
   }
-  function seg(F, title, items, cur, fn){
-    F.appendChild(el("p", "q", title));
-    var g = el("div", "seg");
-    items.forEach(function(o){
-      var x = el("button", o.key === cur ? "on" : "", o.label); x.type = "button";
-      x.addEventListener("click", function(){ Array.prototype.forEach.call(g.children, function(c){ c.classList.remove("on"); }); x.classList.add("on"); fn(o.key); });
-      g.appendChild(x);
-    });
-    F.appendChild(g);
+
+  // ── カレンダー（1日／複数）──
+  function calendar(v, opt){
+    var sel = opt.selected.slice(), cur = (sel[0] || opt.min).slice(0, 7);
+    var box = el("div", "card"), nav = el("div", "cal-nav"), prev = el("button", "nav-btn", "‹"), next = el("button", "nav-btn", "›"), ym = el("b");
+    prev.type = next.type = "button"; nav.appendChild(prev); nav.appendChild(ym); nav.appendChild(next);
+    var g = el("div", "grid"); box.appendChild(nav); box.appendChild(g); v.appendChild(box);
+    function shift(n){ var p = cur.split("-"), y = +p[0], m = +p[1] - 1 + n; y += Math.floor(m / 12); m = ((m % 12) + 12) % 12; cur = y + "-" + (m < 9 ? "0" : "") + (m + 1); draw(); }
+    prev.addEventListener("click", function(){ shift(-1); }); next.addEventListener("click", function(){ shift(1); });
+    function draw(){
+      var p = cur.split("-"), y = +p[0], m = +p[1];
+      ym.textContent = y + "年" + m + "月";
+      prev.disabled = cur <= opt.min.slice(0, 7); next.disabled = cur >= opt.max.slice(0, 7);
+      g.innerHTML = "";
+      WD.forEach(function(w, i){ g.appendChild(el("div", "wd" + (i === 0 ? " sun" : i === 6 ? " sat" : ""), w)); });
+      var first = new Date(y, m - 1, 1).getDay(), days = new Date(y, m, 0).getDate();
+      for (var i = 0; i < first; i++) g.appendChild(el("div", "day blank"));
+      for (var d = 1; d <= days; d++) {
+        var key = iso(y, m, d), ok = key >= opt.min && key <= opt.max, on = sel.indexOf(key) >= 0;
+        var b = el("button", "day" + (ok ? "" : " off") + (on ? " on" : ""), String(d)); b.type = "button";
+        if (ok) { b.dataset.d = key; b.addEventListener("click", function(){ tap(this.dataset.d); }); } else b.disabled = true;
+        g.appendChild(b);
+      }
+    }
+    function tap(k){
+      var i = sel.indexOf(k);
+      if (!opt.multi) sel = [k];
+      else if (i >= 0) sel.splice(i, 1);
+      else if (sel.length >= opt.max_n) { toast("候補の日は" + opt.max_n + "日までです。"); return; }
+      else sel.push(k);
+      sel.sort(); draw(); opt.onChange(sel.slice());
+    }
+    draw();
   }
-  function openConsult(){
-    var C = ST.consult, F = $("form"); F.innerHTML = ""; F.hidden = false;
-    modeRow(F, true);
-    var req = { category: null, window: null, days: "any", until: "" };
-    F.appendChild(el("p", "q", "何の日ですか？"));
-    kindPicker(F, C.kinds, null, function(k){ req.category = k; });
-    var uf = el("div", "field"); uf.hidden = true;
-    seg(F, "いつ頃までに？", C.windows, null, function(k){ req.window = k; uf.hidden = k !== "until"; });
-    var ul = el("label", null, "いつまで（90日先まで）"), ui = el("input"); ui.type = "date"; ui.min = C.until_min; ui.max = C.until_max; ui.id = "f-until"; ul.htmlFor = "f-until";
-    uf.appendChild(ul); uf.appendChild(ui); F.appendChild(uf);
-    seg(F, "曜日は？", C.days, "any", function(k){ req.days = k; });
-    F.appendChild(el("p", "hint", "あなたの生年月日の星の配置から、期間の中でよい日を3つ選び、理由と当日の過ごし方をお伝えします。"));
-    var row = el("div", "row");
-    row.appendChild(btn("", "やめる", function(){ F.hidden = true; F.innerHTML = ""; }));
-    row.appendChild(btn("main", "ミライに相談する", function(){
-      if (!req.category) { toast("何の日かを選んでください。"); return; }
-      if (!req.window) { toast("いつ頃までかを選んでください。"); return; }
-      req.until = ui.value;
-      if (req.window === "until" && !req.until) { toast(CERR.until); return; }
+
+  function pickOne(){
+    var v = screen(); backTo(v, askDecided);
+    v.appendChild(el("div", "step", "3 / 3"));
+    var o = ST.kinds.options[W.kind];
+    v.appendChild(el("p", "q", "その日を選んでください"));
+    if (o.yearly) v.appendChild(el("p", "lead", "毎年くり返す日です。次に来るその日を選んでください。"));
+    var shown = el("p", "picked", W.date ? jdate(W.date) : "");
+    var nx = btn("btn", "確認へ", function(){ confirmFixed(); }); nx.disabled = !W.date;
+    calendar(v, { min: o.min, max: o.max, multi: false, selected: W.date ? [W.date] : [], onChange: function(s){ W.date = s[0]; shown.textContent = jdate(W.date); nx.disabled = false; } });
+    v.appendChild(shown); v.appendChild(nx);
+  }
+
+  function pickMany(){
+    var v = screen(); backTo(v, W.day_id ? home : askDecided);
+    var C = ST.consult;
+    v.appendChild(el("div", "step", W.day_id ? "相談し直す" : "3 / 3"));
+    v.appendChild(el("p", "q", "候補の日を選んでください"));
+    v.appendChild(el("p", "lead", C.min_days + "〜" + C.max_days + "日まで選べます（今日から90日以内）。ミライがあなたの星の配置で比べて、いちばん良い日を選びます。"));
+    W.dates = W.dates || [];
+    var shown = el("p", "picked"), nx = btn("btn", "確認へ", function(){ confirmConsult(); });
+    function upd(){ shown.textContent = W.dates.length ? ("選んだ日：" + W.dates.length + "日") : ""; nx.disabled = W.dates.length < C.min_days; }
+    calendar(v, { min: C.min, max: C.max, multi: true, max_n: C.max_days, selected: W.dates, onChange: function(s){ W.dates = s; upd(); } });
+    v.appendChild(shown); v.appendChild(nx); upd();
+  }
+
+  // ── 確認画面（金額と中身）──
+  function bill(v, what, name, price, lines){
+    var b = el("div", "bill");
+    b.appendChild(el("div", "what", what)); b.appendChild(el("div", "name", name));
+    var pr = el("div", "price", yen(price)); pr.appendChild(el("small", null, "（1回だけのお支払い）")); b.appendChild(pr);
+    var ul = el("ul"); lines.forEach(function(x){ ul.appendChild(el("li", null, x)); }); b.appendChild(ul);
+    v.appendChild(b);
+    v.appendChild(el("p", "note", "日付の変更・削除・一覧を見るのは無料です。削除してもお支払いは返金されません。"));
+    if (ST.can_pay) v.appendChild(el("p", "test", "いまは試験中のため、実際の請求はありません。"));
+  }
+  function nameOf(){ var o = ST.kinds.options[W.kind]; return (W.name || "").trim() || o.short; }
+  function confirmFixed(){
+    var v = screen(); backTo(v, pickOne);
+    v.appendChild(el("p", "q", "この内容で決めますか？"));
+    var o = ST.kinds.options[W.kind];
+    bill(v, o.icon + " " + o.label + "・" + jdate(W.date), nameOf(), ST.prices.fixed,
+         ["📌 当日までのカウントダウン（朝のカード）", "🌙 毎朝、準備期間の運の使い方をミライが伝える"].concat(o.yearly ? ["🎂 毎年の日は、次のその日まで"] : []));
+    v.appendChild(btn("btn gold", yen(ST.prices.fixed) + "で決める", function(){
       var b = this; b.disabled = true;
-      api("/sday/api/consult", req).then(function(j){ showConsult(j.consult); })
-        .catch(function(e){ b.disabled = false; if (String(e.message) !== "login") toast(CERR[e.code] || ERR[e.code] || "うまくいきませんでした。もう一度お試しください。"); });
+      api("/sday/api/register", { category: W.kind, date: W.date, name: W.name || "" }).then(function(j){ ST = j.state; done(j.done); })
+        .catch(function(e){ b.disabled = false; fail(e); });
     }));
-    F.appendChild(row);
-    F.scrollIntoView({ behavior: "smooth", block: "start" });
   }
-  var POLL = null;
+  function confirmConsult(){
+    var v = screen(); backTo(v, pickMany);
+    var re = !!W.day_id, price = re ? ST.prices.reconsult : ST.prices.consult;
+    v.appendChild(el("p", "q", re ? "この候補で相談し直しますか？" : "この候補でミライと決めますか？"));
+    var o = ST.kinds.options[W.kind];
+    bill(v, o.icon + " " + o.label + "・候補 " + W.dates.length + "日", nameOf(), price,
+         ["🔮 候補の日からベストな日を解説付きで提案（順位と理由・当日の過ごし方）"].concat(
+           re ? ["🔁 選んだ日に置き換えます（カウントダウンと毎朝のことばは続きます）"]
+              : ["📌 当日までのカウントダウン（朝のカード）", "🌙 毎朝、準備期間の運の使い方をミライが伝える"]));
+    v.appendChild(btn("btn gold", yen(price) + "で相談する", function(){
+      var b = this; b.disabled = true;
+      var body = re ? { day_id: W.day_id, dates: W.dates } : { category: W.kind, dates: W.dates };
+      api("/sday/api/consult", body).then(function(j){ showConsult(j.consult); }).catch(function(e){ b.disabled = false; fail(e); });
+    }));
+  }
+  function confirmRenew(it){
+    var v = screen(); backTo(v, home, "一覧へ");
+    v.appendChild(el("p", "q", "今年も準備を始めますか？"));
+    bill(v, it.icon + " " + it.label + "・次は" + jdate(it.next), it.display, ST.prices.renew,
+         ["📌 次のその日までのカウントダウン（朝のカード）", "🌙 毎朝、準備期間の運の使い方をミライが伝える", "自動で更新されることはありません"]);
+    v.appendChild(btn("btn gold", yen(ST.prices.renew) + "で始める", function(){
+      var b = this; b.disabled = true;
+      api("/sday/api/renew", { id: it.id }).then(function(j){ ST = j.state; done(j.done); }).catch(function(e){ b.disabled = false; fail(e); });
+    }));
+  }
+
+  // ── 考えている演出 → 結果 ──
   function showConsult(c){
-    var F = $("form"); F.innerHTML = ""; F.hidden = false; clearTimeout(POLL);
+    var v = screen();
     if (c.status === "generating") {
-      var w = el("div", "wait"); w.appendChild(document.createTextNode("ミライが「" + c.label + "」の日取りを見ています"));
-      w.appendChild(el("span", "dots")); F.appendChild(w);
-      F.appendChild(el("p", "hint", "20秒ほどかかります。この画面を閉じても、あとで開き直すと結果が見られます。"));
+      var t = el("div", "think"); t.appendChild(el("div", "orb"));
+      t.appendChild(el("p", null, "ミライが星の配置を読んでいます…"));
+      t.appendChild(el("small", null, "20秒ほどかかります。閉じても、あとで開き直すと結果が見られます。"));
+      v.appendChild(t);
       var n = 0;
-      (function tick(){
-        POLL = setTimeout(function(){
-          api("/sday/api/consult_status", { id: c.id }).then(function(j){
-            if (j.consult.status === "generating" && ++n < 60) tick(); else showConsult(j.consult);
-          }).catch(function(){ if (++n < 60) tick(); });
-        }, 2500);
-      })();
+      (function tick(){ POLL = setTimeout(function(){
+        api("/sday/api/consult_status", { id: c.id }).then(function(j){ if (j.consult.status === "generating" && ++n < 60) tick(); else showConsult(j.consult); })
+          .catch(function(){ if (++n < 60) tick(); });
+      }, 2500); })();
       return;
     }
     if (c.status === "failed") {
-      F.appendChild(el("p", "q", CERR[c.error] || "うまく作れませんでした。もう一度お試しください。"));
-      var r0 = el("div", "row"); r0.appendChild(btn("main", "条件を選びなおす", openConsult)); F.appendChild(r0);
+      v.appendChild(el("p", "q", ERR[c.error] || ERR.text));
+      v.appendChild(btn("btn", "候補を選びなおす", function(){ W.kind = c.category; W.day_id = c.day_id || null; pickMany(); }));
+      v.appendChild(btn("btn ghost", "一覧へ", home));
       return;
     }
-    F.appendChild(el("p", "q", "「" + c.label + "」によい日（" + c.window + "・" + c.days + "）"));
-    var nf = el("div", "field"), nl = el("label", null, "名前（任意・" + ST.name_max + "字まで）"), ni = el("input");
-    ni.type = "text"; ni.maxLength = ST.name_max; ni.id = "c-name"; nl.htmlFor = "c-name"; ni.placeholder = "例：第一志望の面接";
-    nf.appendChild(nl); nf.appendChild(ni); F.appendChild(nf);
-    c.proposals.forEach(function(p, i){
-      var box = el("div", "prop");
-      box.appendChild(el("div", "no", "候補" + (i + 1)));
-      box.appendChild(el("div", "pd", p.label));
-      var bg = el("div", "badges");
-      (p.koyomi || []).forEach(function(k){ bg.appendChild(el("span", "kb " + (KB[k] || ""), k)); });
-      box.appendChild(bg);
-      box.appendChild(el("div", "lb", "この日がよい理由")); box.appendChild(el("p", null, p.reason));
-      box.appendChild(el("div", "lb", "当日の過ごし方")); box.appendChild(el("p", null, p.howto));
-      var r = el("div", "row");
-      r.appendChild(btn("gold", "この日に決める", function(){
-        var b = this; b.disabled = true;
-        api("/sday/api/consult_pick", { id: c.id, date: p.date, name: ni.value }).then(function(j){
-          F.hidden = true; F.innerHTML = ""; render(j); toast(p.label + "を大切な日に登録しました。");
-        }).catch(function(e){ b.disabled = false; if (String(e.message) !== "login") toast(CERR[e.code] || ERR[e.code] || "登録できませんでした。"); });
-      }));
-      box.appendChild(r); F.appendChild(box);
+    v.appendChild(el("p", "q", "「" + c.label + "」に、いちばん良い日は"));
+    var P = c.proposals, b0 = P[0], best = el("div", "best");
+    best.appendChild(el("div", "crown", "👑 ベストな日"));
+    best.appendChild(el("div", "bd", b0.label));
+    var tot = el("div", "tot"); tot.appendChild(document.createTextNode("総合点 ")); tot.appendChild(el("b", null, String(b0.total))); best.appendChild(tot);
+    best.appendChild(badges(b0.koyomi)); best.appendChild(bars(b0.bars));
+    best.appendChild(el("div", "lb", "この日が良い理由")); best.appendChild(el("p", null, b0.reason));
+    best.appendChild(el("div", "lb", "当日の過ごし方")); best.appendChild(el("p", null, b0.howto));
+    best.appendChild(btn("btn", "この日に決める", function(){ pick(c, b0, this); }));
+    v.appendChild(best);
+    if (P.length > 1) { var h = el("p", "lead", "ほかの候補"); h.style.marginTop = "18px"; v.appendChild(h); }
+    P.slice(1).forEach(function(p){
+      var o = el("div", "other"); o.appendChild(el("div", "rk", p.rank + "位"));
+      var bx = el("div"); bx.style.flex = "1";
+      bx.appendChild(el("div", "od", p.label)); bx.appendChild(el("div", "ot", "総合点 " + p.total));
+      bx.appendChild(badges(p.koyomi)); bx.appendChild(el("div", "os", p.short));
+      var r = el("div", "row"); r.appendChild(btn("sbtn", "この日に決める", function(){ pick(c, p, this); })); bx.appendChild(r);
+      o.appendChild(bx); v.appendChild(o);
     });
-    var r2 = el("div", "row"); r2.appendChild(btn("", "条件を変えて相談する", openConsult)); F.appendChild(r2);
+  }
+  function badges(list){ var g = el("div", "badges"); (list || []).forEach(function(k){ g.appendChild(el("span", "kb " + (KB[k] || ""), k)); }); return g; }
+  function bars(list){
+    var g = el("div", "bars");
+    (list || []).forEach(function(b){ var r = el("div", "bar"), i = el("i"), f = el("b"); f.style.width = Math.max(0, Math.min(100, b.score || 0)) + "%"; i.appendChild(f);
+      r.appendChild(el("span", null, b.label)); r.appendChild(i); r.appendChild(el("em", null, String(b.score))); g.appendChild(r); });
+    return g;
+  }
+  function pick(c, p, b){
+    b.disabled = true;
+    api("/sday/api/consult_pick", { id: c.id, date: p.date, name: W.name || "" }).then(function(j){ ST = j.state; done(j.done); })
+      .catch(function(e){ b.disabled = false; fail(e); });
   }
 
-  // 追加・変更の欄。it があれば変更。
-  function openForm(it){
-    var F = $("form"); F.innerHTML = ""; F.hidden = false; clearTimeout(POLL);
-    if (!it) modeRow(F, false);
-    var cat = it ? it.category : null;
-    F.appendChild(el("p", "q", it ? "「" + it.display + "」を変える" : "何の日ですか？"));
-    var date = el("input"), name = el("input");
-    function opt(){ return ST.kinds.options[cat]; }
-    function setRange(){
-      var o = opt(); if (!o) return;
-      date.min = o.min; date.max = o.max;
-      hint.textContent = o.yearly ? "毎年くり返します。過去の日付（例：結婚した日・生まれた日）も選べます。" : "1回だけの日です。過ぎた次の日に一覧から外れます。";
-    }
-    kindPicker(F, ST.kinds, cat, function(k){ cat = k; setRange(); });
-    var f1 = el("div", "field"), l1 = el("label", null, "日付"); date.type = "date"; date.id = "f-date"; l1.htmlFor = "f-date";
-    var hint = el("p", "hint", "");
-    date.value = it ? it.date : "";
-    f1.appendChild(l1); f1.appendChild(date); f1.appendChild(hint); F.appendChild(f1);
-    var f2 = el("div", "field"), l2 = el("label", null, "名前（任意・" + ST.name_max + "字まで）");
-    name.type = "text"; name.maxLength = ST.name_max; name.id = "f-name"; l2.htmlFor = "f-name";
-    name.placeholder = "例：第一志望の面接"; name.value = it ? it.name : "";
-    f2.appendChild(l2); f2.appendChild(name);
-    f2.appendChild(el("p", "hint", "名前は朝のカードと一覧にだけ出ます。ミライの文章には使いません。"));
-    F.appendChild(f2);
-    var row = el("div", "row");
-    row.appendChild(btn("", "やめる", function(){ F.hidden = true; F.innerHTML = ""; }));
-    row.appendChild(btn("main", it ? "保存する" : "登録する", function(){
-      if (!cat) { toast(ERR.category); return; }
-      if (!date.value) { toast("日付を選んでください。"); return; }
+  // ── ④ 登録完了 ──
+  function done(d){
+    var v = screen(); setSub(); W = {};
+    var box = el("div", "done");
+    var img = el("img"); img.src = "/start/img/mirai.png"; img.alt = "ミライ"; box.appendChild(img);
+    box.appendChild(el("h2", null, d.text));
+    v.appendChild(box);
+    if (d.fortune) v.appendChild(btn("btn gold", "この日の運勢を見る", function(){ seeFortune(d.id, this); }));
+    v.appendChild(btn("btn ghost", "一覧を見る", home));
+  }
+
+  // ── 日付を変える（無料）・相談し直す ──
+  function moveDay(it){
+    var v = screen(); backTo(v, home, "一覧へ");
+    v.appendChild(el("p", "q", "「" + it.display + "」の日付を変える"));
+    v.appendChild(el("p", "lead", "日付の変更は無料です。"));
+    var o = ST.kinds.options[it.category], sel = it.next;
+    var shown = el("p", "picked", jdate(sel)), ok = btn("btn", "この日に変える", function(){
       var b = this; b.disabled = true;
-      var body = { category: cat, date: date.value, name: name.value };
-      if (it) body.id = it.id;
-      api("/sday/api/save", body).then(function(j){ F.hidden = true; F.innerHTML = ""; render(j); toast(it ? "変えました。" : "登録しました。"); })
+      api("/sday/api/move", { id: it.id, date: sel }).then(function(j){ ST = j; home(); toast("「" + it.display + "」を" + jdate(sel) + "に変えました。"); })
         .catch(function(e){ b.disabled = false; fail(e); });
-    }));
-    F.appendChild(row);
-    setRange();
-    F.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    calendar(v, { min: o.min, max: o.max, multi: false, selected: [sel], onChange: function(s){ sel = s[0]; shown.textContent = jdate(sel); } });
+    v.appendChild(shown); v.appendChild(ok);
   }
+  function startReconsult(it){ W = { kind: it.category, name: it.name, day_id: it.id, dates: [] }; pickMany(); }
 
-  $("addbtn").addEventListener("click", function(){ openForm(null); });
+  // ── はじめ ──
   api("/sday/api/state").then(function(j){
-    render(j);
-    if (j.consult && j.consult.latest) showConsult(j.consult.latest);   // 開き直したら、まだ選んでいない相談の結果を出す
+    ST = j; setSub();
+    var L = j.consult && j.consult.latest;
+    var rid = qs.get("renew"), it = rid && j.items.filter(function(x){ return String(x.id) === rid && !x.covered; })[0];
+    if (L) { W = { kind: L.category, day_id: L.day_id }; showConsult(L); }
+    else if (it) confirmRenew(it);
+    else if (qs.get("new") && j.items.length < j.max) startNew();
+    else home();
   }).catch(function(e){ if (String(e.message) !== "login") fatal("ひらけませんでした。", "少し待ってから、もう一度お試しください。"); });
 })();
 </script>
