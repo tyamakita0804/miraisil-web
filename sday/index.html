@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>大切な日 | 今日の運勢 AIミライ</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/favicon-32x32.png">
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<style>
+  /* 大切な日（2026-11-21）。配色は振り返りの画面（/review/）と同じ。 */
+  :root{
+    --navy:#2f3768; --navy-2:#3f4a8f; --gold:#c4a462; --gold-soft:#ecdfbf; --gold-text:#7d5f1e;
+    --tint:#eef0f8; --cream-tint:#fbf3e2; --ivory:#fbf8f1; --paper:#ffffff; --ink:#34374d; --muted:#666a80;
+    --line:#e4e2ec; --bad:#9a4b3c; --bad-bg:#f7e9e5; --shadow:0 6px 20px rgba(47,55,104,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{background:linear-gradient(180deg,#f3f3f9 0%,var(--ivory) 240px,var(--ivory) 100%);color:var(--ink);
+       font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;font-size:18px;line-height:1.7;min-height:100vh}
+  button,input{font-family:inherit;font-size:inherit;color:inherit}
+  .wrap{max-width:520px;margin:0 auto;padding:16px 16px calc(40px + env(safe-area-inset-bottom))}
+  .head{display:flex;align-items:center;gap:12px;margin:4px 0 14px}
+  .head img{width:52px;height:52px;border-radius:50%;box-shadow:0 3px 12px rgba(27,37,80,.2);flex:none}
+  .head h1{font-size:22px;color:var(--navy);line-height:1.4}
+  .head .count{font-size:14px;color:var(--gold-text);margin-top:2px}
+  .card{background:var(--paper);border-radius:18px;box-shadow:var(--shadow);padding:14px 14px 16px;margin-bottom:14px}
+  .lead{font-size:15px;color:var(--muted);margin:0 2px 12px}
+  .item .nm{font-size:19px;font-weight:700;color:var(--ink);word-break:break-all}
+  .item .chip{display:inline-block;font-size:12px;color:var(--gold-text);background:var(--cream-tint);border-radius:999px;padding:1px 10px;margin-top:2px}
+  .item .when{font-size:15px;color:var(--muted);margin-top:4px}
+  .item .when b{color:var(--navy)}
+  .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .btn{min-height:44px;border-radius:999px;border:1.5px solid #cfd2e6;background:#fff;color:var(--navy);font-size:15px;padding:6px 16px;cursor:pointer}
+  .btn.main{background:var(--navy-2);border-color:var(--navy-2);color:#fff;font-weight:700}
+  .btn.gold{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:700}
+  .btn.danger{background:var(--bad);border-color:var(--bad);color:#fff;font-weight:700}
+  .btn:disabled{opacity:.5;cursor:default}
+  .add{display:block;width:100%;min-height:54px;border-radius:16px;border:2px dashed var(--gold);background:var(--cream-tint);color:var(--gold-text);font-size:17px;font-weight:700;cursor:pointer;margin-bottom:14px}
+  .confirm{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--bad-bg);font-size:15px;color:var(--bad)}
+  .q{font-size:17px;font-weight:700;color:var(--ink);margin:4px 2px 8px}
+  .picks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .pick{min-height:52px;border-radius:14px;border:1.5px solid #cfd2e6;background:#fff;padding:6px 10px;font-size:15px;text-align:left;cursor:pointer;line-height:1.4}
+  .pick.on{background:var(--cream-tint);border-color:var(--gold);color:var(--gold-text);font-weight:700}
+  .pick small{display:block;font-size:12px;color:var(--muted);font-weight:400}
+  .field{margin-top:14px}
+  .field label{display:block;font-size:15px;color:var(--muted);margin:0 2px 4px}
+  .field input{width:100%;min-height:48px;border:1.5px solid var(--line);border-radius:12px;padding:8px 12px;font-size:17px;background:#fdfcf9}
+  .hint{font-size:13px;color:var(--muted);margin:4px 2px 0}
+  .empty{font-size:16px;color:var(--muted);text-align:center;padding:18px 8px}
+  .chat{display:block;text-align:center;margin:8px auto 0;max-width:320px;padding:14px;border-radius:999px;background:#06C755;color:#fff;font-weight:700;text-decoration:none;font-size:17px}
+  .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;
+         background:var(--navy);color:#fff;border-radius:14px;padding:12px 18px;font-size:16px;max-width:calc(100% - 32px);
+         box-shadow:0 8px 24px rgba(27,37,80,.3);transition:all .3s;pointer-events:none;z-index:20}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  .fatal{text-align:center;padding:40px 8px}
+  .fatal h2{color:var(--navy);font-size:21px;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <img src="/start/img/mirai.png" alt="ミライ">
+    <div>
+      <h1>大切な日</h1>
+      <div class="count" id="count">読み込んでいます…</div>
+    </div>
+  </div>
+
+  <div id="main" hidden>
+    <p class="lead">登録した日は、朝のカードでカウントダウンし、7日前からミライがその日に向けて語りかけます。</p>
+    <button class="add" id="addbtn" type="button">＋ 大切な日を足す</button>
+    <div class="card" id="form" hidden></div>
+    <div id="list"></div>
+  </div>
+
+  <div id="fatal" class="fatal" hidden>
+    <h2 id="ftitle"></h2>
+    <p id="ftext"></p>
+  </div>
+  <a class="chat" id="tochat" href="https://line.me/R/oaMessage/%40768invlu/">トークに戻る</a>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var LIFF_URL = "https://liff.line.me/2010604081-ZArs25u8?sday=1";
+  var CHAT_URL = "https://line.me/R/oaMessage/%40768invlu/";
+  var API = "https://miraisil-webhook.onrender.com";
+  var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var qs = new URLSearchParams(location.search);
+  if (local && qs.get("api")) API = qs.get("api");
+  var ERR = { full: "登録できるのは10件までです。", date: "その日付は選べません。", category: "何の日かを選んでください。",
+              missing: "その日は見つかりませんでした。", fortune_range: "その日の運勢は、まだ見られません。",
+              ephemeris: "いまは運勢を作れません。少し待ってからお試しください。", rate: "少し時間をおいてからお試しください。" };
+
+  function $(id){ return document.getElementById(id); }
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function btn(cls, text, fn){ var b = el("button", "btn " + cls, text); b.type = "button"; b.addEventListener("click", fn); return b; }
+  function store(k, v){ try { if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) {} }
+  function load(k){ try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+  function toast(t){ var x = $("toast"); x.textContent = t; x.classList.add("on"); clearTimeout(toast._t); toast._t = setTimeout(function(){ x.classList.remove("on"); }, 3200); }
+  function fatal(t, s){ $("main").hidden = true; $("fatal").hidden = false; $("ftitle").textContent = t; $("ftext").textContent = s || ""; }
+  function closeToChat(){
+    try { if (window.liff && liff.isInClient && liff.isInClient()) { liff.closeWindow(); setTimeout(function(){ location.href = CHAT_URL; }, 800); return; } } catch (e) {}
+    location.href = CHAT_URL;
+  }
+  $("tochat").addEventListener("click", function(ev){ ev.preventDefault(); closeToChat(); });
+
+  var S = load("sday_s") || (local ? qs.get("s") : null);
+  if (!S) {
+    var t = +(load("sday_redir") || 0);
+    if (Date.now() - t > 20000) { store("sday_redir", String(Date.now())); location.replace(LIFF_URL); }
+    else fatal("LINEとの連携ができませんでした。", "LINEのトークから、もう一度開いてください。");
+    return;
+  }
+
+  function api(path, body){
+    body = body || {}; body.s = S;
+    return fetch(API + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then(function(r){
+        if (r.status === 401) { store("sday_s", null); location.replace(LIFF_URL); throw new Error("login"); }
+        return r.json().then(function(j){ if (!r.ok) { var e = new Error(j.error || ("http " + r.status)); e.code = j.error; throw e; } return j; });
+      });
+  }
+  function fail(e){ if (String(e.message) === "login") return; toast(ERR[e.code] || "うまくいきませんでした。もう一度お試しください。"); }
+
+  var ST = null;
+  function render(j){
+    ST = j;
+    $("main").hidden = false;
+    $("count").textContent = j.items.length ? (j.items.length + "件（" + j.max + "件まで）") : "まだ登録はありません";
+    $("addbtn").hidden = j.items.length >= j.max;
+    var L = $("list"); L.innerHTML = "";
+    if (!j.items.length) { L.appendChild(el("div", "card empty", "試験や記念日など、大切な日を足してみましょう。")); return; }
+    j.items.forEach(function(it){
+      var c = el("div", "card item");
+      c.appendChild(el("div", "nm", it.display));
+      c.appendChild(el("span", "chip", it.label + (it.yearly ? "・毎年" : "")));
+      c.appendChild(el("div", "when", it.when));
+      var row = el("div", "row");
+      if (it.fortune) row.appendChild(btn("gold", "この日の運勢を見る", function(){ seeFortune(it, this); }));
+      row.appendChild(btn("", "変える", function(){ openForm(it); }));
+      var cf = el("div", "confirm"); cf.hidden = true;
+      row.appendChild(btn("", "消す", function(){ cf.hidden = false; }));
+      c.appendChild(row);
+      cf.appendChild(document.createTextNode("「" + it.display + "」を消しますか？消すと元に戻せません。"));
+      var crow = el("div", "row");
+      crow.appendChild(btn("", "やめる", function(){ cf.hidden = true; }));
+      crow.appendChild(btn("danger", "消す", function(){
+        this.disabled = true;
+        api("/sday/api/delete", { id: it.id }).then(function(j){ render(j); toast("「" + it.display + "」を消しました。"); }).catch(fail);
+      }));
+      cf.appendChild(crow); c.appendChild(cf);
+      L.appendChild(c);
+    });
+  }
+
+  function seeFortune(it, b){
+    b.disabled = true;
+    api("/sday/api/fortune", { id: it.id }).then(function(j){
+      toast(j.status === "busy" ? "いま作っています。できたらトークに届きます。" :
+            j.status === "sent" ? "トークに届けました。" : "この日の運勢を作っています。1分ほどでトークに届きます。");
+      setTimeout(closeToChat, 1800);
+    }).catch(function(e){ b.disabled = false; fail(e); });
+  }
+
+  // 追加・変更の欄。it があれば変更。
+  function openForm(it){
+    var F = $("form"); F.innerHTML = ""; F.hidden = false;
+    var cat = it ? it.category : null;
+    F.appendChild(el("p", "q", it ? "「" + it.display + "」を変える" : "何の日ですか？"));
+    var picks = el("div", "picks"), date = el("input"), name = el("input");
+    function opt(){ return ST.options.filter(function(o){ return o.key === cat; })[0]; }
+    function setRange(){
+      var o = opt(); if (!o) return;
+      date.min = o.min; date.max = o.max;
+      hint.textContent = o.yearly ? "毎年くり返します。過去の日付（例：結婚した日・生まれた日）も選べます。" : "1回だけの日です。過ぎた次の日に一覧から外れます。";
+    }
+    ST.options.forEach(function(o){
+      if (!o.new && !(it && it.category === o.key)) return;
+      var b = el("button", "pick" + (o.key === cat ? " on" : ""), o.label); b.type = "button";
+      if (o.yearly) b.appendChild(el("small", null, "毎年"));
+      b.addEventListener("click", function(){
+        cat = o.key; Array.prototype.forEach.call(picks.children, function(x){ x.classList.remove("on"); }); b.classList.add("on"); setRange();
+      });
+      picks.appendChild(b);
+    });
+    F.appendChild(picks);
+    var f1 = el("div", "field"), l1 = el("label", null, "日付"); date.type = "date"; date.id = "f-date"; l1.htmlFor = "f-date";
+    var hint = el("p", "hint", "");
+    date.value = it ? it.date : "";
+    f1.appendChild(l1); f1.appendChild(date); f1.appendChild(hint); F.appendChild(f1);
+    var f2 = el("div", "field"), l2 = el("label", null, "名前（任意・" + ST.name_max + "字まで）");
+    name.type = "text"; name.maxLength = ST.name_max; name.id = "f-name"; l2.htmlFor = "f-name";
+    name.placeholder = "例：第一志望の面接"; name.value = it ? it.name : "";
+    f2.appendChild(l2); f2.appendChild(name);
+    f2.appendChild(el("p", "hint", "名前は朝のカードと一覧にだけ出ます。ミライの文章には使いません。"));
+    F.appendChild(f2);
+    var row = el("div", "row");
+    row.appendChild(btn("", "やめる", function(){ F.hidden = true; F.innerHTML = ""; }));
+    row.appendChild(btn("main", it ? "保存する" : "登録する", function(){
+      if (!cat) { toast(ERR.category); return; }
+      if (!date.value) { toast("日付を選んでください。"); return; }
+      var b = this; b.disabled = true;
+      var body = { category: cat, date: date.value, name: name.value };
+      if (it) body.id = it.id;
+      api("/sday/api/save", body).then(function(j){ F.hidden = true; F.innerHTML = ""; render(j); toast(it ? "変えました。" : "登録しました。"); })
+        .catch(function(e){ b.disabled = false; fail(e); });
+    }));
+    F.appendChild(row);
+    setRange();
+    F.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  $("addbtn").addEventListener("click", function(){ openForm(null); });
+  api("/sday/api/state").then(render).catch(function(e){ if (String(e.message) !== "login") fatal("ひらけませんでした。", "少し待ってから、もう一度お試しください。"); });
+})();
+</script>
+</body>
+</html>

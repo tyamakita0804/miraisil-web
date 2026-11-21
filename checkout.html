@@ -251,10 +251,36 @@
       });
   }
 
+  // ── 大切な日（2026-11-21）────────────────────────
+  // ?sday=1 のとき、振り返りと同じく LINE ログインのあとアクセストークンを検証してもらい、通行証を受け取って /sday/ を開く。
+  var SDAY_LOGIN_API = "https://miraisil-webhook.onrender.com/sday/api/login";
+  function handleSday() {
+    startView("大切な日をひらいています…", "");
+    if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return; }
+    fetch(SDAY_LOGIN_API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ access_token: liff.getAccessToken() }) })
+      .then(function(r) {
+        if (r.status === 403) { var e = new Error("closed"); e.closed = true; throw e; }
+        if (!r.ok) throw new Error("login " + r.status);
+        return r.json();
+      })
+      .then(function(j) {
+        try { sessionStorage.setItem("sday_s", j.s); sessionStorage.removeItem("sday_redir"); } catch (e) {}
+        location.replace("/sday/");
+      })
+      .catch(function(e) {
+        if (e && e.closed) {
+          startView("準備中です", "大切な日の画面は、まだお使いいただけません。", [{ href: CHAT_URL, label: "LINEのトークに戻る", kind: "line" }]);
+          return;
+        }
+        startView("うまくひらけませんでした", "少し待ってから、もう一度お試しください。", [{ href: location.href, label: "もう一度試す", kind: "ghost" }, { href: CHAT_URL, label: "LINEのトークに戻る", kind: "line" }]);
+      });
+  }
+
   var _early = new URLSearchParams(location.search);
   if (_early.get("start") || (_early.get("liff.state") || "").indexOf("start=") >= 0
       || _early.get("kantei") || (_early.get("liff.state") || "").indexOf("kantei=") >= 0
-      || _early.get("review") || (_early.get("liff.state") || "").indexOf("review=") >= 0) {
+      || _early.get("review") || (_early.get("liff.state") || "").indexOf("review=") >= 0
+      || _early.get("sday") || (_early.get("liff.state") || "").indexOf("sday=") >= 0) {
     document.getElementById("start-box").style.display = "block";
   }
 
@@ -262,6 +288,7 @@
     .then(function() {
       if (getParam("kantei")) { handleKantei(); return; }
       if (getParam("review")) { handleReview(); return; }
+      if (getParam("sday")) { handleSday(); return; }
       var startToken = getParam("start");
       if (startToken) { handleStart(startToken); return; }
       var plan = getPlan();
