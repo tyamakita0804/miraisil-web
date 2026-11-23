@@ -1,0 +1,36 @@
+/* 大切な日（sday/）と振り返り（review/）の共通の色（2026-11-23）。
+   どちらの画面も色はこのファイルだけで決める。画面の側で色の値を書かない（変数を使う）。
+   金は朝のカード（LINE の Flex）の主なボタンと同じ #C9A94E（dataunsei-automation の mirai_image._GOLD）。
+   金の文字・点数の棒だけは、同じ色味（色相 44°）のまま濃くして読みやすさを保つ。 */
+:root{
+  /* 金 */
+  --gold:#C9A94E;        /* 朝のカードのボタンと同じ。主なボタン・枠・選んだ日・印 */
+  --frame:#C9A94E;       /* カードの細い枠 */
+  --btn-gold:#C9A94E;    /* 主なボタンの地（文字は墨色） */
+  --gold-text:#856D29;   /* 金の文字（アイボリーの上で 4.9） */
+  --gold-deep:#856D29;   /* 値段など大きな金の数字 */
+  --bar:#947A2D;         /* 点数の棒（下地との比 3.3） */
+  --track:#EFE6D2;       /* 点数の棒の下地 */
+  --gold-soft:#EADBB4;
+  /* 地 */
+  --page-bg:linear-gradient(180deg,#F3EBDC 0%,#F8F3EA 240px,#F8F3EA 100%);
+  --ivory:#F8F3EA; --paper:#FFFCF5; --card:#FFFCF5;
+  --tint:#F4EDDF;        /* カレンダーの日の地 */
+  --cream-tint:#FBF3E2;  /* 選んだタイルの地 */
+  --done:#F5E6BC;        /* 振り返りのカレンダーの記録済みの日 */
+  --line:#E6DCC8;        /* 白いボタン・タイルの線 */
+  --off:#CDC4B2;         /* 選べない日の数字 */
+  /* 文字 */
+  --ink:#2B2418;         /* 日付・見出し・本文（墨色） */
+  --navy:#2B2418; --navy-2:#2B2418;   /* 旧名（紺）。墨色に置きかえ済み */
+  --muted:#6B6150;       /* 小さい説明文 */
+  /* そのほか */
+  --sun:#b0574a; --sat:#4a63b0;   /* 曜日の日・土 */
+  --mark:#b4533c;        /* 振り返りのカレンダーの大切な日の★ */
+  --good:#3f7d5a; --good-bg:#e7f2eb; --bad:#9a4b3c; --bad-bg:#f7e9e5;
+  --shadow:0 6px 20px rgba(90,70,30,.08);
+  --shadow-strong:0 10px 28px rgba(90,70,30,.14);
+}
+body{background:var(--page-bg);color:var(--ink)}
+/* 入力欄を選んだときの枠（ブラウザ既定の青をやめる） */
+input:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:0;border-color:var(--gold)}

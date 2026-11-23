@@ -6,52 +6,45 @@
 <title>運勢の振り返り | 今日の運勢 AIミライ</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="/favicon-32x32.png">
+<link rel="stylesheet" href="/liff-theme/ivory-gold.css">
 <!-- 「トークに戻る」でページを閉じる（liff.closeWindow は liff.init の前でも使える：LIFF SDK v2.4.0 以降） -->
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <style>
-  /* 運勢の振り返り（2026-11-19）。配色は /start と同じ：クリーム地に、やわらかいインディゴと控えめな金。 */
-  :root{
-    --navy:#2f3768; --navy-2:#3f4a8f; --indigo-2:#5662a8;
-    --gold:#c4a462; --gold-soft:#ecdfbf; --gold-text:#7d5f1e;
-    --tint:#eef0f8; --cream-tint:#fbf3e2;
-    --ivory:#fbf8f1; --paper:#ffffff; --ink:#34374d; --muted:#666a80; --line:#e4e2ec;
-    --good:#3f7d5a; --good-bg:#e7f2eb; --bad:#9a4b3c; --bad-bg:#f7e9e5;
-    --shadow:0 6px 20px rgba(47,55,104,.08);
-  }
+  /* 運勢の振り返り（2026-11-19）。色は /liff-theme/ivory-gold.css（大切な日の画面と共通・2026-11-23）。ここに色の値を書かない。 */
   *{box-sizing:border-box;margin:0;padding:0}
   [hidden]{display:none!important}
   html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-  body{background:linear-gradient(180deg,#f3f3f9 0%,var(--ivory) 240px,var(--ivory) 100%);color:var(--ink);
+  body{
        font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;font-size:18px;line-height:1.7;min-height:100vh}
   button,textarea{font-family:inherit;font-size:inherit;color:inherit}
   .wrap{max-width:520px;margin:0 auto;padding:16px 16px calc(40px + env(safe-area-inset-bottom))}
 
   .head{display:flex;align-items:center;gap:12px;margin:4px 0 14px}
-  .head img{width:52px;height:52px;border-radius:50%;box-shadow:0 3px 12px rgba(27,37,80,.2);flex:none}
+  .head img{width:52px;height:52px;border-radius:50%;box-shadow:0 3px 12px rgba(90,70,30,.2);flex:none}
   .head h1{font-size:22px;color:var(--navy);line-height:1.4}
   .head .count{font-size:14px;color:var(--gold-text);margin-top:2px}
 
-  .card{background:var(--paper);border-radius:18px;box-shadow:var(--shadow);padding:14px 12px 16px;margin-bottom:16px}
+  .card{background:var(--paper);border:1px solid var(--frame);border-radius:18px;box-shadow:var(--shadow);padding:14px 12px 16px;margin-bottom:16px}
   .lead{font-size:15px;color:var(--muted);margin:0 4px 10px}
 
   /* カレンダー */
   .cal-nav{display:flex;align-items:center;justify-content:space-between;margin:0 2px 8px}
   .cal-nav b{font-size:19px;color:var(--navy)}
-  .nav-btn{width:44px;height:44px;border-radius:50%;border:1.5px solid #cfd2e6;background:#fff;color:var(--navy);font-size:20px;cursor:pointer}
+  .nav-btn{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--frame);background:#fff;color:var(--gold-text);font-size:20px;cursor:pointer}
   .nav-btn:disabled{opacity:.3;cursor:default}
   .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
   .wd{font-size:13px;color:var(--muted);padding:2px 0}
-  .wd.sun{color:#b0574a} .wd.sat{color:#4a63b0}
+  .wd.sun{color:var(--sun)} .wd.sat{color:var(--sat)}
   .day{position:relative;aspect-ratio:1/1;min-height:42px;border-radius:12px;border:none;background:var(--tint);
        font-size:17px;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:center}
-  .day.off{background:transparent;color:#c3c4d0;cursor:default}
+  .day.off{background:transparent;color:var(--off);cursor:default}
   .day.blank{background:transparent;cursor:default}
-  .day.done{background:var(--cream-tint)}
+  .day.done{background:var(--done)}
   .day.done::after{content:"";position:absolute;bottom:6px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--gold)}
-  .day.sel{outline:3px solid var(--navy-2);outline-offset:-3px;font-weight:700}
+  .day.sel{outline:3px solid var(--gold);outline-offset:-3px;font-weight:700}
   /* 大切な日の印（2026-11-21）。右上の小さな★ */
-  .day.sp::before{content:"★";position:absolute;top:2px;right:5px;font-size:11px;line-height:1;color:#b4533c}
-  .legend .sp-l{color:#b4533c}
+  .day.sp::before{content:"★";position:absolute;top:2px;right:5px;font-size:11px;line-height:1;color:var(--mark)}
+  .legend .sp-l{color:var(--mark)}
   .legend{display:flex;gap:14px;justify-content:flex-end;font-size:13px;color:var(--muted);margin-top:8px}
   .legend i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-right:4px;vertical-align:middle}
 
@@ -61,40 +54,40 @@
   /* 運を1つ選ぶ */
   .q{font-size:18px;font-weight:700;color:var(--ink);margin:2px 4px 10px}
   .picks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .pick{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:58px;border-radius:14px;border:1.5px solid #cfd2e6;
+  .pick{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:58px;border-radius:14px;border:1.5px solid var(--line);
         background:#fff;padding:8px 12px;text-align:left;cursor:pointer}
   .pick .pn{font-size:17px;font-weight:700;color:var(--ink)}
   .pick .pm{font-size:13px;color:var(--muted)}
   .pick.done{background:var(--cream-tint);border-color:var(--gold)}
   .pick.done .pm{color:var(--gold-text)}
   /* 選んだ運 */
-  .back{border:none;background:none;color:var(--navy-2);font-size:15px;cursor:pointer;padding:2px 4px;margin-bottom:6px}
+  .back{border:none;background:none;color:var(--gold-text);font-size:15px;cursor:pointer;padding:2px 4px;margin-bottom:6px}
   .rhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 4px}
   .rname{font-size:20px;font-weight:700;color:var(--ink)}
   .rscore{font-size:14px;color:var(--muted);white-space:nowrap}
   .rscore b{font-size:18px;color:var(--navy)}
   .ask{font-size:16px;color:var(--ink);margin:10px 4px 0}
   .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
-  .opt{min-height:50px;border-radius:12px;border:1.5px solid #cfd2e6;background:#fff;font-size:16px;cursor:pointer;padding:4px 2px}
+  .opt{min-height:50px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-size:16px;cursor:pointer;padding:4px 2px}
   .opt.on.r1{background:var(--good-bg);border-color:var(--good);color:var(--good);font-weight:700}
-  .opt.on.r0{background:var(--tint);border-color:var(--navy-2);color:var(--navy-2);font-weight:700}
+  .opt.on.r0{background:var(--cream-tint);border-color:var(--gold);color:var(--ink);font-weight:700}
   .opt.on.rm1{background:var(--bad-bg);border-color:var(--bad);color:var(--bad);font-weight:700}
   .opt:disabled{opacity:.6}
   .memo{margin-top:12px}
   .memo label{display:block;font-size:14px;color:var(--muted);margin:0 4px 4px}
   .memo textarea{width:100%;min-height:64px;border:1.5px solid var(--line);border-radius:12px;padding:8px 10px;font-size:16px;line-height:1.6;resize:vertical;background:#fdfcf9}
   .memo .mrow{display:flex;justify-content:space-between;align-items:center;margin-top:4px;font-size:13px;color:var(--muted)}
-  .memo button{border:none;border-radius:999px;background:var(--navy-2);color:#fff;font-size:15px;padding:8px 16px;cursor:pointer}
-  .memo button:disabled{background:#b9bdd6}
+  .memo button{border:none;border-radius:999px;background:var(--btn-gold);color:var(--ink);font-weight:700;font-size:15px;padding:8px 16px;cursor:pointer}
+  .memo button:disabled{background:var(--line);color:var(--muted)}
   .saved{margin:12px 4px 0;font-size:16px;color:var(--good);font-weight:700}
-  .more{display:inline-block;margin:6px 4px 0;border:none;background:none;color:var(--navy-2);font-size:14px;cursor:pointer;padding:2px 0;text-decoration:underline}
+  .more{display:inline-block;margin:6px 4px 0;border:none;background:none;color:var(--gold-text);font-size:14px;cursor:pointer;padding:2px 0;text-decoration:underline}
 
   .empty{font-size:16px;color:var(--muted);text-align:center;padding:18px 8px}
   .chat{display:block;text-align:center;margin:8px auto 0;max-width:320px;padding:14px;border-radius:999px;background:#06C755;color:#fff;font-weight:700;text-decoration:none;font-size:17px}
 
   .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;
          background:var(--navy);color:#fff;border-radius:14px;padding:12px 18px;font-size:16px;max-width:calc(100% - 32px);
-         box-shadow:0 8px 24px rgba(27,37,80,.3);transition:all .3s;pointer-events:none;z-index:20}
+         box-shadow:0 8px 24px rgba(90,70,30,.3);transition:all .3s;pointer-events:none;z-index:20}
   .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
   .fatal{text-align:center;padding:40px 8px}
   .fatal h2{color:var(--navy);font-size:21px;margin-bottom:8px}
