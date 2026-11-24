@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>大切な日を決める | 今日の運勢 AIミライ</title>
+<title>大切な日を登録する | 今日の運勢 AIミライ</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="/favicon-32x32.png">
 <link rel="stylesheet" href="/liff-theme/ivory-gold.css">
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <style>
-  /* 大切な日を決める（2026-11-21 夜）。1画面に1つの質問。色は /liff-theme/ivory-gold.css（振り返りの画面と共通）。ここに色の値を書かない。 */
+  /* 大切な日を登録する（2026-11-21 夜・11-25 改名）。1画面に1つの質問。色は /liff-theme/ivory-gold.css（振り返りの画面と共通）。ここに色の値を書かない。 */
   *{box-sizing:border-box;margin:0;padding:0}
   [hidden]{display:none!important}
   html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
@@ -132,7 +132,7 @@
 <div class="wrap">
   <div class="head">
     <img src="/start/img/mirai.png" alt="ミライ">
-    <div><h1>大切な日を決める</h1><div class="sub" id="sub">読み込んでいます…</div></div>
+    <div><h1>大切な日を登録する</h1><div class="sub" id="sub">読み込んでいます…</div></div>
   </div>
   <div id="view"></div>
   <div id="fatal" class="fatal" hidden><h2 id="ftitle"></h2><p id="ftext"></p></div>
@@ -201,10 +201,10 @@
   // ── 一覧 ──
   function home(){
     var v = screen(); setSub();
-    if (ST.items.length < ST.max) v.appendChild(btn("btn gold", "＋ 大切な日を決める", startNew));
+    if (ST.items.length < ST.max) v.appendChild(btn("btn gold", "＋ 大切な日を登録する", startNew));
     if (!ST.items.length) {
       var c = el("div", "card empty");
-      c.textContent = "試験や記念日など大切な日を決めると、朝のカードでカウントダウンし、ミライが毎朝その日に向けた運の使い方を伝えます。";
+      c.textContent = "試験や記念日など大切な日を登録すると、朝のカードでカウントダウンし、ミライが毎朝その日に向けた運の使い方を伝えます。";
       v.appendChild(c); return;
     }
     var h = el("p", "lead", "近い順に並んでいます。"); h.style.marginTop = "16px"; v.appendChild(h);
