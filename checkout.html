@@ -268,6 +268,7 @@
         // 一覧のカード・朝のカードから来たとき：new=1（決めるから始める）・renew=ID（次の年の分の確認画面）
         var q = [];
         if (getParam("new")) q.push("new=1");
+        if (getParam("menu")) q.push("menu=1");   // メニューのボタンから（0件ならすぐ登録の流れ・2026-11-25）
         if (/^\d+$/.test(getParam("renew") || "")) q.push("renew=" + getParam("renew"));
         location.replace("/sday/" + (q.length ? "?" + q.join("&") : ""));
       })

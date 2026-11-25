@@ -492,6 +492,8 @@
     if (L) { W = { kind: L.category, day_id: L.day_id }; showConsult(L); }
     else if (it) confirmRenew(it);
     else if (qs.get("new") && j.items.length < j.max) startNew();
+    // メニューの「大切な日を登録する」から（2026-11-25）：登録が0件ならすぐ登録の流れから、あれば一覧から
+    else if (qs.get("menu") && j.items.length === 0) startNew();
     else home();
   }).catch(function(e){ if (String(e.message) !== "login") fatal("ひらけませんでした。", "少し待ってから、もう一度お試しください。"); });
 })();
