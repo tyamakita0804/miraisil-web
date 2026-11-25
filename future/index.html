@@ -95,7 +95,7 @@
 
   <div id="main" hidden>
     <div class="card">
-      <p class="lead">見たい日を選んでください。生まれた日から1年先までの日を選べます。</p>
+      <p class="lead" id="lead">見たい日を選んでください。生まれた日から、今日の1年後までの日を選べます。</p>
       <div class="jump">
         <select id="ysel" aria-label="年"></select>
         <select id="msel" aria-label="月"></select>
@@ -228,10 +228,13 @@
     box.appendChild(b); box.appendChild(c); bg.appendChild(box); document.body.appendChild(bg); b.focus();
   }
 
+  // 選べる範囲の説明（生年月日が無い人は今日から）。11/26 てつさん指示の言い回し
+  function rangeText(){ return (ST && ST.birthdate) ? "生まれた日から、今日の1年後までの日を選べます。" : "今日から、1年後までの日を選べます。"; }
+
   function waitView(title, text){
     var w = el("div", "wait");
     var img = el("img"); img.src = "/start/img/mirai.png"; img.alt = "ミライ"; w.appendChild(img);
-    var h = el("h2");   // 文ごとに折り返す（「ミライが占っています。」「トークに届けます」）
+    var h = el("h2");   // 文ごとに折り返す（「ミライが星を読んでいます。」「トークに届けます」）
     title.split(/(?<=。)/).forEach(function(t){ h.appendChild(el("span", null, t)); });
     w.appendChild(h);
     if (text) w.appendChild(el("p", null, text));
@@ -245,14 +248,14 @@
     api("/future/api/order", { date: d }).then(function(j){
       close();
       if (j.status === "sent") waitView("トークに届けました", "トークでご覧ください。");
-      else if (j.status === "busy") waitView("ミライが占っています。トークに届けます", "この日の運勢は、いま作っています。できあがったらトークに届きます。");
-      else { seen[d] = true; waitView("ミライが占っています。トークに届けます", "1分ほどでトークに届きます。この画面は閉じて大丈夫です。"); }
+      else if (j.status === "busy") waitView("ミライが星を読んでいます。トークに届けます", "この日の運勢は、いま作っています。できあがったらトークに届きます。");
+      else { seen[d] = true; waitView("ミライが星を読んでいます。トークに届けます", "1分ほどでトークに届きます。この画面は閉じて大丈夫です。"); }
       // 少し見せてから画面を閉じてトークへ戻す（LINE の中で開いたときだけ）
       if (inClient()) setTimeout(function(){ try { liff.closeWindow(); } catch (e) {} }, 3500);
     }).catch(function(e){
       close();
       if (String(e.message) === "login") return;
-      if (e.code === "range") toast("その日は選べません。生まれた日から1年先までの日を選んでください。");
+      if (e.code === "range") toast("その日は選べません。" + rangeText());
       else if (e.code === "ephemeris") toast("いまは運勢を計算できない状態です。時間をおいてもう一度お試しください。");
       else if (e.code === "rate") toast("たくさん選ばれたため、しばらく時間をおいてからお試しください。");
       else toast("うまく届けられませんでした。もう一度お試しください。");
@@ -271,6 +274,7 @@
     ST = j; (j.seen || []).forEach(function(x){ seen[x] = true; });
     $("sub").textContent = j.free ? "会員は無料でご利用いただけます" : ("1日 " + j.price + "円");   // 2026-11-25 会員に開放
     $("tobd").hidden = !j.birthdate || j.birthdate < j.start;
+    $("lead").textContent = "見たい日を選んでください。" + rangeText();
     fillSelects();
     $("main").hidden = false;
     go(ymOf(j.today));
