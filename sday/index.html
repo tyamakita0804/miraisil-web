@@ -175,6 +175,9 @@
   function iso(y, m, d){ return y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d; }
   function jdate(s){ var p = s.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2]); return (+p[1]) + "月" + (+p[2]) + "日（" + WD[d.getDay()] + "）"; }
   function yen(n){ return n.toLocaleString("ja-JP") + "円"; }
+  // 会員は無料（2026-11-25）。値段の所は「会員は無料」、ボタンは「無料で〜」にする
+  function price(n){ return ST.free ? "会員は無料" : yen(n); }
+  function payBtn(n, verb){ return (ST.free ? "無料" : yen(n)) + "で" + verb; }
 
   var S = load("sday_s") || (local ? qs.get("s") : null);
   if (!S) {
@@ -218,12 +221,12 @@
       c.appendChild(el("div", "when", it.when));
       if (!it.covered) c.appendChild(el("div", "warn", "次のその日の分は、まだ始めていません（カウントダウンと毎朝のことばは止まっています）"));
       var row = el("div", "row");
-      if (!it.covered) row.appendChild(btn("sbtn gold", yen(ST.prices.renew) + "で始める", function(){ confirmRenew(it); }));
+      if (!it.covered) row.appendChild(btn("sbtn gold", payBtn(ST.prices.renew, "始める"), function(){ confirmRenew(it); }));
       if (it.covered && it.fortune) row.appendChild(btn("sbtn", "この日の運勢を見る", function(){ seeFortune(it.id, this); }));
       row.appendChild(btn("sbtn", "日付を変える", function(){ moveDay(it); }));
       var cf = el("div", "confirm"); cf.hidden = true;
       row.appendChild(btn("sbtn", "消す", function(){ cf.hidden = false; }));
-      if (it.reconsult) row.appendChild(btn("sbtn gold", "ミライと相談し直す " + yen(ST.prices.reconsult), function(){ startReconsult(it); }));
+      if (it.reconsult) row.appendChild(btn("sbtn gold", "ミライと相談し直す" + (ST.free ? "" : " " + yen(ST.prices.reconsult)), function(){ startReconsult(it); }));
       c.appendChild(row);
       cf.appendChild(document.createTextNode("「" + it.display + "」を消しますか？元に戻せません。お支払い済みの代金は返金されません。"));
       var cr = el("div", "row");
@@ -283,12 +286,12 @@
     v.appendChild(el("p", "q", "日にちは決まっていますか？"));
     var o = ST.kinds.options[W.kind];
     var a = el("button", "plan"); a.type = "button";
-    var at = el("div", "pt"); at.appendChild(el("span", "pn", "日にちは決まっている")); at.appendChild(el("span", "pp", yen(ST.prices.fixed))); a.appendChild(at);
+    var at = el("div", "pt"); at.appendChild(el("span", "pn", "日にちは決まっている")); at.appendChild(el("span", "pp", price(ST.prices.fixed))); a.appendChild(at);
     var ul = el("ul"); ul.appendChild(el("li", null, "📌 当日までのカウントダウン")); ul.appendChild(el("li", null, "🌙 毎朝、準備期間の運の使い方をミライが伝える")); a.appendChild(ul);
     a.addEventListener("click", function(){ W.mode = "fixed"; pickOne(); });
     v.appendChild(a);
     var b = el("button", "plan dark"); b.type = "button";
-    var bt = el("div", "pt"); bt.appendChild(el("span", "pn", "ミライと日取りから決める")); bt.appendChild(el("span", "pp", yen(ST.prices.consult))); b.appendChild(bt);
+    var bt = el("div", "pt"); bt.appendChild(el("span", "pn", "ミライと日取りから決める")); bt.appendChild(el("span", "pp", price(ST.prices.consult))); b.appendChild(bt);
     var ul2 = el("ul"); ul2.appendChild(el("li", null, "🔮 候補の日からベストな日を解説付きで提案")); ul2.appendChild(el("li", null, "＋ 上の内容がすべて付く")); b.appendChild(ul2);
     b.addEventListener("click", function(){ W.mode = "consult"; pickMany(); });
     if (!o.consult) { b.disabled = true; v.appendChild(b); v.appendChild(el("p", "hint", "「" + o.short + "」は、日取りの相談ができない種類です。")); }
@@ -358,11 +361,11 @@
   function bill(v, what, name, price, lines){
     var b = el("div", "bill");
     b.appendChild(el("div", "what", what)); b.appendChild(el("div", "name", name));
-    var pr = el("div", "price", yen(price)); pr.appendChild(el("small", null, "（1回だけのお支払い）")); b.appendChild(pr);
+    var pr = el("div", "price", ST.free ? "会員は無料" : yen(price)); if (!ST.free) pr.appendChild(el("small", null, "（1回だけのお支払い）")); b.appendChild(pr);
     var ul = el("ul"); lines.forEach(function(x){ ul.appendChild(el("li", null, x)); }); b.appendChild(ul);
     v.appendChild(b);
-    v.appendChild(el("p", "note", "日付の変更・削除・一覧を見るのは無料です。削除してもお支払いは返金されません。"));
-    if (ST.can_pay) v.appendChild(el("p", "test", "いまは試験中のため、実際の請求はありません。"));
+    v.appendChild(el("p", "note", ST.free ? "日付の変更・削除・一覧を見るのも無料です。" : "日付の変更・削除・一覧を見るのは無料です。削除してもお支払いは返金されません。"));
+    if (ST.can_pay && !ST.free) v.appendChild(el("p", "test", "いまは試験中のため、実際の請求はありません。"));
   }
   function nameOf(){ var o = ST.kinds.options[W.kind]; return (W.name || "").trim() || o.short; }
   function confirmFixed(){
@@ -371,7 +374,7 @@
     var o = ST.kinds.options[W.kind];
     bill(v, o.icon + " " + o.label + "・" + jdate(W.date), nameOf(), ST.prices.fixed,
          ["📌 当日までのカウントダウン（朝のカード）", "🌙 毎朝、準備期間の運の使い方をミライが伝える"].concat(o.yearly ? ["🎂 毎年の日は、次のその日まで"] : []));
-    v.appendChild(btn("btn gold", yen(ST.prices.fixed) + "で決める", function(){
+    v.appendChild(btn("btn gold", payBtn(ST.prices.fixed, "決める"), function(){
       var b = this; b.disabled = true;
       api("/sday/api/register", { category: W.kind, date: W.date, name: W.name || "" }).then(function(j){ ST = j.state; done(j.done); })
         .catch(function(e){ b.disabled = false; fail(e); });
@@ -386,7 +389,7 @@
          ["🔮 候補の日からベストな日を解説付きで提案（順位と理由・当日の過ごし方）"].concat(
            re ? ["🔁 選んだ日に置き換えます（カウントダウンと毎朝のことばは続きます）"]
               : ["📌 当日までのカウントダウン（朝のカード）", "🌙 毎朝、準備期間の運の使い方をミライが伝える"]));
-    v.appendChild(btn("btn gold", yen(price) + "で相談する", function(){
+    v.appendChild(btn("btn gold", payBtn(price, "相談する"), function(){
       var b = this; b.disabled = true;
       var body = re ? { day_id: W.day_id, dates: W.dates } : { category: W.kind, dates: W.dates };
       api("/sday/api/consult", body).then(function(j){ showConsult(j.consult); }).catch(function(e){ b.disabled = false; fail(e); });
@@ -397,7 +400,7 @@
     v.appendChild(el("p", "q", "今年も準備を始めますか？"));
     bill(v, it.icon + " " + it.label + "・次は" + jdate(it.next), it.display, ST.prices.renew,
          ["📌 次のその日までのカウントダウン（朝のカード）", "🌙 毎朝、準備期間の運の使い方をミライが伝える", "自動で更新されることはありません"]);
-    v.appendChild(btn("btn gold", yen(ST.prices.renew) + "で始める", function(){
+    v.appendChild(btn("btn gold", payBtn(ST.prices.renew, "始める"), function(){
       var b = this; b.disabled = true;
       api("/sday/api/renew", { id: it.id }).then(function(j){ ST = j.state; done(j.done); }).catch(function(e){ b.disabled = false; fail(e); });
     }));

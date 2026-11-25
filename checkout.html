@@ -231,7 +231,7 @@
   function handleReview() {
     startView("運勢の振り返りをひらいています…", "");
     if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return; }
-    fetch(REVIEW_LOGIN_API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ access_token: liff.getAccessToken() }) })
+    fetch(REVIEW_LOGIN_API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ access_token: liff.getAccessToken(), src: getParam("src") || "" }) })
       .then(function(r) {
         if (r.status === 403) { var e = new Error("closed"); e.closed = true; throw e; }
         if (!r.ok) throw new Error("login " + r.status);
@@ -257,9 +257,9 @@
   function handleSday() {
     startView("大切な日をひらいています…", "");
     if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return; }
-    fetch(SDAY_LOGIN_API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ access_token: liff.getAccessToken() }) })
+    fetch(SDAY_LOGIN_API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ access_token: liff.getAccessToken(), src: getParam("src") || "" }) })
       .then(function(r) {
-        if (r.status === 403) { var e = new Error("closed"); e.closed = true; throw e; }
+        if (r.status === 403) return r.json().catch(function(){ return {}; }).then(function(b){ var e = new Error("closed"); e.closed = true; e.members = b.error === "members"; e.price = b.price || ""; throw e; });
         if (!r.ok) throw new Error("login " + r.status);
         return r.json();
       })
@@ -273,6 +273,7 @@
         location.replace("/sday/" + (q.length ? "?" + q.join("&") : ""));
       })
       .catch(function(e) {
+        if (e && e.members) { membersOnly("大切な日を登録する", e.price); return; }
         if (e && e.closed) {
           startView("準備中です", "大切な日の画面は、まだお使いいただけません。", [{ href: CHAT_URL, label: "LINEのトークに戻る", kind: "line" }]);
           return;
@@ -283,13 +284,21 @@
 
   // ── 日付指定 あなたの運勢（2026-11-25）────────────────
   // ?future=1 のとき、大切な日と同じく LINE ログインのあとアクセストークンを検証してもらい、通行証を受け取って /future/ を開く。
+  // 会員だけの機能を、会員でない人が開いたとき（2026-11-25）。［会員登録へ進む］はトークに「プレミアム会員登録」を送る
+  function membersOnly(name, price) {
+    startView("会員の方のための機能です",
+      name + "は、Premium会員" + (price ? "（" + price.replace("（税込）", "・税込") + "）" : "") + "なら無料でご利用いただけます。",
+      [{ href: CHAT_URL + "?" + encodeURIComponent("プレミアム会員登録"), label: "会員登録へ進む", kind: "line" },
+       { href: CHAT_URL, label: "LINEのトークに戻る", kind: "ghost" }]);
+  }
+
   var FUTURE_LOGIN_API = "https://miraisil-webhook.onrender.com/future/api/login";
   function handleFuture() {
     startView("カレンダーをひらいています…", "");
     if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return; }
-    fetch(FUTURE_LOGIN_API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ access_token: liff.getAccessToken() }) })
+    fetch(FUTURE_LOGIN_API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ access_token: liff.getAccessToken(), src: getParam("src") || "" }) })
       .then(function(r) {
-        if (r.status === 403) { var e = new Error("closed"); e.closed = true; throw e; }
+        if (r.status === 403) return r.json().catch(function(){ return {}; }).then(function(b){ var e = new Error("closed"); e.closed = true; e.members = b.error === "members"; e.price = b.price || ""; throw e; });
         if (!r.ok) throw new Error("login " + r.status);
         return r.json();
       })
@@ -298,6 +307,7 @@
         location.replace("/future/");
       })
       .catch(function(e) {
+        if (e && e.members) { membersOnly("日付指定 あなたの運勢", e.price); return; }
         if (e && e.closed) {
           startView("準備中です", "日付指定 あなたの運勢は、いま準備しています。もうしばらくお待ちください。", [{ href: CHAT_URL, label: "LINEのトークに戻る", kind: "line" }]);
           return;
