@@ -287,7 +287,7 @@
   // 会員だけの機能を、会員でない人が開いたとき（2026-11-25）。［会員登録へ進む］はトークに「プレミアム会員登録」を送る
   function membersOnly(name, price) {
     startView("会員の方のための機能です",
-      name + "は、Premium会員" + (price ? "（" + price.replace("（税込）", "・税込") + "）" : "") + "なら無料でご利用いただけます。",
+      name + "は、会員向けの機能です。会員登録のうえ、ご利用ください。",   // 「会員なら無料」と書かない（2026-11-26）
       [{ href: CHAT_URL + "?" + encodeURIComponent("プレミアム会員登録"), label: "会員登録へ進む", kind: "line" },
        { href: CHAT_URL, label: "LINEのトークに戻る", kind: "ghost" }]);
   }

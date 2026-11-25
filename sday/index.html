@@ -175,9 +175,9 @@
   function iso(y, m, d){ return y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d; }
   function jdate(s){ var p = s.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2]); return (+p[1]) + "月" + (+p[2]) + "日（" + WD[d.getDay()] + "）"; }
   function yen(n){ return n.toLocaleString("ja-JP") + "円"; }
-  // 会員は無料（2026-11-25）。値段の所は「会員は無料」、ボタンは「無料で〜」にする
-  function price(n){ return ST.free ? "会員は無料" : yen(n); }
-  function payBtn(n, verb){ return (ST.free ? "無料" : yen(n)) + "で" + verb; }
+  // いまは期間限定で0円（支払いの仕組み PAY.JP ができるまで）。「会員は無料」と書かない（2026-11-26 てつさん指示）
+  function price(n){ return ST.free ? "期間限定で無料" : yen(n); }
+  function payBtn(n, verb){ return ST.free ? (verb + "（期間限定で無料）") : (yen(n) + "で" + verb); }
 
   var S = load("sday_s") || (local ? qs.get("s") : null);
   if (!S) {
@@ -361,7 +361,7 @@
   function bill(v, what, name, price, lines){
     var b = el("div", "bill");
     b.appendChild(el("div", "what", what)); b.appendChild(el("div", "name", name));
-    var pr = el("div", "price", ST.free ? "会員は無料" : yen(price)); if (!ST.free) pr.appendChild(el("small", null, "（1回だけのお支払い）")); b.appendChild(pr);
+    var pr = el("div", "price", ST.free ? "期間限定で無料" : yen(price)); pr.appendChild(el("small", null, ST.free ? "（通常 " + yen(price) + "）" : "（1回だけのお支払い）")); b.appendChild(pr);
     var ul = el("ul"); lines.forEach(function(x){ ul.appendChild(el("li", null, x)); }); b.appendChild(ul);
     v.appendChild(b);
     v.appendChild(el("p", "note", ST.free ? "日付の変更・削除・一覧を見るのも無料です。" : "日付の変更・削除・一覧を見るのは無料です。削除してもお支払いは返金されません。"));
