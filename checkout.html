@@ -170,7 +170,7 @@
         var toChat = { href: CHAT_URL, label: "LINEのトークを開く", kind: "line" };
         // S16「今すぐPremiumを始める」から来た人：登録のあと Stripe の申し込みへ（2026-10-13）
         var toPay = j.go_checkout && j.checkout_url ? { href: j.checkout_url, label: "Premiumのお申し込みへ進む", kind: "line",
-          note: "月額330円（税込）。お申し込みの時点で初回のご請求となり、以後毎月自動で更新されます。解約は LINE で「解約」と送るだけです。" } : null;
+          note: "月額490円（税込）。お申し込みの時点で初回のご請求となり、以後毎月自動で更新されます。解約は LINE で「解約」と送るだけです。" } : null;
         if (toPay && (j.status === "created" || j.status === "completed" || j.status === "test")) {
           var head = j.status === "test" ? "【テスト】" : "";
           if (j.needs_friend) {
@@ -190,7 +190,7 @@
           if (liff.isInClient()) setTimeout(function() { location.href = CHAT_URL; }, 2500);
         } else if (j.status === "existing") {
           var acts = [toChat];
-          if (j.checkout_url) acts.push({ href: j.checkout_url, label: "Premiumを申し込む（月額330円）", kind: "ghost", note: "お申し込みの時点で月額330円（税込）をご請求し、以後は毎月自動更新されます。解約はいつでもLINEで「解約」と送ってください。" });
+          if (j.checkout_url) acts.push({ href: j.checkout_url, label: "Premiumを申し込む（月額490円）", kind: "ghost", note: "お申し込みの時点で月額490円（税込）をご請求し、以後は毎月自動更新されます。解約はいつでもLINEで「解約」と送ってください。" });
           startView("すでにご登録いただいています", nn + "登録内容はそのままです。LINEのトークからご利用ください。", acts);
         } else if (j.status === "test") {
           startView("【テスト】送りました", "あなたのLINEに、登録直後に届くメッセージ（あいさつ → 今日の運勢）を送りました。本当の登録内容・課金状態は変えていません。", [toChat]);
