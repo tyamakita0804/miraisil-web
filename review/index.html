@@ -76,9 +76,19 @@
   .memo{margin-top:12px}
   .memo label{display:block;font-size:14px;color:var(--muted);margin:0 4px 4px}
   .memo textarea{width:100%;min-height:64px;border:1.5px solid var(--line);border-radius:12px;padding:8px 10px;font-size:16px;line-height:1.6;resize:vertical;background:#fdfcf9}
-  .memo .mrow{display:flex;justify-content:space-between;align-items:center;margin-top:4px;font-size:13px;color:var(--muted)}
-  .memo button{border:none;border-radius:999px;background:var(--btn-gold);color:var(--ink);font-weight:700;font-size:15px;padding:8px 16px;cursor:pointer}
-  .memo button:disabled{background:var(--line);color:var(--muted)}
+  .memo .mrow{margin-top:4px;font-size:13px;color:var(--muted);text-align:right}
+  /* 保存は一番下のこのボタン1つだけ（2026-11-25）。評価を選ぶまでは薄く表示して押せない */
+  .savebtn{display:block;width:100%;margin-top:14px;min-height:50px;border:none;border-radius:999px;background:var(--btn-gold);color:var(--ink);font-weight:700;font-size:17px;cursor:pointer}
+  .savebtn:disabled{opacity:.4;cursor:default}
+  .savehint{margin:6px 4px 0;font-size:13px;color:var(--muted);text-align:center}
+  /* 保存していない内容があるときの確かめ（2026-11-25） */
+  .dlg-bg{position:fixed;inset:0;background:rgba(43,36,24,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:30}
+  .dlg{background:var(--paper);border:1px solid var(--frame);border-radius:16px;padding:20px 18px 16px;max-width:340px;width:100%;box-shadow:var(--shadow-strong)}
+  .dlg p{font-size:16px;line-height:1.7;margin:0 0 14px;color:var(--ink)}
+  .dlg .row{display:flex;gap:8px}
+  .dlg button{flex:1;min-height:46px;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer}
+  .dlg .stay{background:var(--btn-gold);border:none;color:var(--ink)}
+  .dlg .leave{background:#fff;border:1.5px solid var(--frame);color:var(--gold-text)}
   .saved{margin:12px 4px 0;font-size:16px;color:var(--good);font-weight:700}
   .more{display:inline-block;margin:6px 4px 0;border:none;background:none;color:var(--gold-text);font-size:14px;cursor:pointer;padding:2px 0;text-decoration:underline}
 
@@ -224,7 +234,24 @@
 
   // 日付を選ぶ → 「何の運について振り返りますか？」で1つ選ぶ → その運だけを出す（2026-11-19 てつさん指示）
   var DAY = null;
+  // 選んだ評価・ひとことを保存していないとき、別の日や別の運へ移る前に確かめる（2026-11-25）
+  var DIRTY = function(){ return false; };
+  function confirmLeave(go){
+    if (!DIRTY()) { go(); return; }
+    var bg = el("div", "dlg-bg"), box = el("div", "dlg"), row = el("div", "row");
+    box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
+    box.appendChild(el("p", null, "選んだ内容はまだ保存していません。移ると、選んだ内容は消えます。よろしいですか？"));
+    var stay = el("button", "stay", "戻って保存する"), leave = el("button", "leave", "消して移る");
+    stay.type = leave.type = "button";
+    stay.addEventListener("click", function(){ document.body.removeChild(bg); });
+    leave.addEventListener("click", function(){ document.body.removeChild(bg); DIRTY = function(){ return false; }; go(); });
+    row.appendChild(leave); row.appendChild(stay); box.appendChild(row); bg.appendChild(box);
+    document.body.appendChild(bg); stay.focus();
+  }
+
   function openDay(d, cat){
+    if (DIRTY() && d !== selDate) { confirmLeave(function(){ openDay(d, cat); }); return; }
+    DIRTY = function(){ return false; };
     selDate = d; drawMonth();
     $("daycard").hidden = false; $("dayview").innerHTML = ""; $("daytitle").textContent = "読み込んでいます…";
     api("/review/api/day", { date: d }).then(function(j){
@@ -237,6 +264,7 @@
   }
 
   function showPicker(){
+    DIRTY = function(){ return false; };
     var v = $("dayview"); v.innerHTML = "";
     v.appendChild(el("p", "q", "何の運について振り返りますか？"));
     var g = el("div", "picks");
@@ -254,7 +282,7 @@
   function showCat(c){
     var v = $("dayview"); v.innerHTML = "";
     var back = el("button", "back", "‹ 運を選びなおす"); back.type = "button";
-    back.addEventListener("click", showPicker); v.appendChild(back);
+    back.addEventListener("click", function(){ confirmLeave(showPicker); }); v.appendChild(back);
     var h = el("div", "rhead");
     h.appendChild(el("div", "rname", c.emoji + " " + c.label));
     var sc = el("div", "rscore");
@@ -263,45 +291,53 @@
     var note = DAY.source === "computed" ? "この日は配信の記録が無いため、生年月日から計算した予報の点数です。" : "";
     v.appendChild(el("p", "ask", "この日の" + c.label + "は、どうでしたか？" + (note ? "（" + note + "）" : "")));
 
+    // 3つのボタンは「選ぶ」だけ。保存は一番下の［保存する］で、評価とひとことを一緒に（2026-11-25 てつさん指示）
+    var pick = c.rating != null ? c.rating : null;
     var opts = el("div", "opts"), btns = {};
-    [1, 0, -1].forEach(function(r){
-      var b = el("button", "opt " + CLS[r] + (c.rating === r ? " on" : ""), LABEL[r]);
-      b.type = "button"; b.setAttribute("aria-pressed", c.rating === r ? "true" : "false");
-      b.addEventListener("click", function(){ save(r); });
+    [-1, 0, 1].forEach(function(r){   // 左から よくなかった・ふつう・良かった
+      var b = el("button", "opt " + CLS[r], LABEL[r]);
+      b.type = "button";
+      b.addEventListener("click", function(){ pick = r; refresh(); });
       btns[r] = b; opts.appendChild(b);
     });
     v.appendChild(opts);
 
-    var memo = el("div", "memo"), lab = el("label", null, "ひとこと（任意）"), ta = el("textarea"), mrow = el("div", "mrow"), left = el("span"), mb = el("button", null, "ひとことを保存");
+    var memo = el("div", "memo"), lab = el("label", null, "ひとこと（任意）"), ta = el("textarea"), mrow = el("div", "mrow");
     ta.maxLength = 200; ta.value = c.comment || ""; ta.id = "memo"; lab.htmlFor = "memo";
-    mb.type = "button"; mb.disabled = true; left.textContent = "200字まで";
-    mrow.appendChild(left); mrow.appendChild(mb);
     memo.appendChild(lab); memo.appendChild(ta); memo.appendChild(mrow); v.appendChild(memo);
-    ta.addEventListener("input", function(){
-      mb.disabled = c.rating == null || ta.value === (c.comment || "");
-      left.textContent = c.rating == null ? "書いたあと、上の3つから選ぶと一緒に保存します" : (ta.value.length + "/200字");
-    });
-    mb.addEventListener("click", function(){ save(c.rating); });
+    ta.addEventListener("input", refresh);
+
+    var sb = el("button", "savebtn"), hint = el("p", "savehint");
+    sb.type = "button"; v.appendChild(sb); v.appendChild(hint);
     var done = el("div"); v.appendChild(done);
 
+    function changed(){ return pick !== (c.rating != null ? c.rating : null) || ta.value.trim() !== (c.comment || ""); }
+    DIRTY = changed;   // 評価かひとことを、保存した内容から変えたとき
     var busy = false;
-    function save(r){
-      if (busy || r == null) return; busy = true;
-      Object.keys(btns).forEach(function(k){ btns[k].disabled = true; });
-      mb.disabled = true;
-      api("/review/api/save", { date: selDate, category: c.key, rating: r, comment: ta.value }).then(function(j){
-        c.rating = r; c.comment = ta.value.trim();
-        Object.keys(btns).forEach(function(k){ var on = +k === r; btns[k].classList.toggle("on", on); btns[k].setAttribute("aria-pressed", on ? "true" : "false"); });
+    function refresh(){
+      Object.keys(btns).forEach(function(k){ var on = pick != null && +k === pick; btns[k].classList.toggle("on", on); btns[k].setAttribute("aria-pressed", on ? "true" : "false"); });
+      mrow.textContent = ta.value.length + "/200字";
+      sb.textContent = c.rating != null ? "保存し直す" : "保存する";
+      sb.disabled = busy || pick == null || !changed();
+      hint.textContent = pick == null ? "上の3つから選ぶと、保存できます" : "";
+      if (changed()) done.innerHTML = "";
+    }
+    refresh();
+
+    sb.addEventListener("click", function(){
+      if (busy || pick == null) return; busy = true; refresh();
+      var r = pick, text = ta.value;
+      api("/review/api/save", { date: selDate, category: c.key, rating: r, comment: text }).then(function(j){
+        c.rating = r; c.comment = text.trim(); ta.value = c.comment;
         setCount(j.counts);
         if (!j.overwritten) { M.recorded[selDate] = (M.recorded[selDate] || 0) + 1; drawMonth(); }
-        left.textContent = "200字まで";
+        busy = false; refresh();
         done.innerHTML = "";
         done.appendChild(el("p", "saved", j.overwritten ? "書き直しました。" : ("記録しました。記録は" + j.counts.records + "回目です。")));
         var more = el("button", "more", "ほかの運も振り返る"); more.type = "button";
         more.addEventListener("click", showPicker); done.appendChild(more);
-      }).catch(function(e){ if (String(e.message) !== "login") toast("保存できませんでした。もう一度お試しください。"); })
-        .then(function(){ busy = false; Object.keys(btns).forEach(function(k){ btns[k].disabled = false; }); });
-    }
+      }).catch(function(e){ busy = false; refresh(); if (String(e.message) !== "login") toast("保存できませんでした。もう一度お試しください。"); });
+    });
   }
 
   $("prev").addEventListener("click", function(){ loadMonth(ymAdd(M.month, -1)); });
