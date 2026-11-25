@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>日付指定 あなたの運勢 | 今日の運勢 AIミライ</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/favicon-32x32.png">
+<link rel="stylesheet" href="/liff-theme/ivory-gold.css">
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<style>
+  /* 日付指定 あなたの運勢（2026-11-25）。LINE の回転式の日付選択の代わりのカレンダー。
+     色は /liff-theme/ivory-gold.css（振り返り・大切な日の画面と共通）。ここに色の値を書かない。 */
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;font-size:18px;line-height:1.7;min-height:100vh}
+  button,select{font-family:inherit;font-size:inherit;color:inherit}
+  .wrap{max-width:520px;margin:0 auto;padding:16px 16px calc(40px + env(safe-area-inset-bottom))}
+
+  .head{display:flex;align-items:center;gap:12px;margin:4px 0 14px}
+  .head img{width:52px;height:52px;border-radius:50%;box-shadow:0 3px 12px rgba(90,70,30,.2);flex:none}
+  .head h1{font-size:22px;color:var(--navy);line-height:1.4}
+  .head .sub{font-size:14px;color:var(--gold-text);margin-top:2px}
+
+  .card{background:var(--paper);border:1px solid var(--frame);border-radius:18px;box-shadow:var(--shadow);padding:14px 12px 16px;margin-bottom:16px}
+  .lead{font-size:15px;color:var(--muted);margin:0 4px 10px}
+
+  /* 年と月を選ぶ・今日／生まれた日へ */
+  .jump{display:flex;gap:8px;margin:0 2px 8px}
+  .jump select{flex:1;min-height:44px;border:1.5px solid var(--frame);border-radius:12px;background:#fff;padding:0 10px;font-size:17px;color:var(--ink)}
+  .quick{display:flex;gap:8px;margin:0 2px 12px}
+  .qbtn{flex:1;min-height:40px;border-radius:999px;border:1.5px solid var(--frame);background:#fff;color:var(--gold-text);font-size:15px;font-weight:700;cursor:pointer}
+
+  /* カレンダー（振り返りの画面と同じ形） */
+  .cal-nav{display:flex;align-items:center;justify-content:space-between;margin:0 2px 8px}
+  .cal-nav b{font-size:19px;color:var(--navy)}
+  .nav-btn{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--frame);background:#fff;color:var(--gold-text);font-size:20px;cursor:pointer}
+  .nav-btn:disabled{opacity:.3;cursor:default}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+  .wd{font-size:13px;color:var(--muted);padding:2px 0}
+  .wd.sun{color:var(--sun)} .wd.sat{color:var(--sat)}
+  .day{position:relative;aspect-ratio:1/1;min-height:42px;border-radius:12px;border:none;background:var(--tint);
+       font-size:17px;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .day.off{background:transparent;color:var(--off);cursor:default}
+  .day.blank{background:transparent;cursor:default}
+  .day.seen{background:var(--done)}
+  .day.seen::after{content:"";position:absolute;bottom:6px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--gold)}
+  .day.today{font-weight:700;box-shadow:inset 0 0 0 1.5px var(--frame)}
+  .day.bd{font-weight:700}
+  .day.sel{outline:3px solid var(--gold);outline-offset:-3px;font-weight:700}
+  .day.sp::before{content:"★";position:absolute;top:2px;right:5px;font-size:11px;line-height:1;color:var(--mark)}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:flex-end;font-size:13px;color:var(--muted);margin-top:8px}
+  .legend .sp-l{color:var(--mark)}
+  .legend i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-right:4px;vertical-align:middle}
+  .legend u{display:inline-block;width:12px;height:12px;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--frame);margin-right:4px;vertical-align:middle}
+
+  /* 確認（下から出す） */
+  .dlg-bg{position:fixed;inset:0;background:rgba(43,36,24,.45);display:flex;align-items:flex-end;justify-content:center;z-index:30}
+  .dlg{background:var(--paper);border:1px solid var(--frame);border-radius:20px 20px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom));width:100%;max-width:520px;box-shadow:var(--shadow-strong)}
+  .dlg .dt{font-size:20px;font-weight:700;color:var(--ink);margin:0 2px 4px}
+  .dlg .dn{font-size:14px;color:var(--muted);margin:0 2px 14px}
+  .go{display:block;width:100%;min-height:52px;border:none;border-radius:999px;background:var(--btn-gold);color:var(--ink);font-weight:700;font-size:16px;line-height:1.4;padding:8px 14px;cursor:pointer}
+  .go:disabled{opacity:.5}
+  .cancel{display:block;width:100%;margin-top:8px;min-height:44px;border:none;background:none;color:var(--gold-text);font-size:15px;cursor:pointer}
+
+  /* 押したあと */
+  .wait{position:fixed;inset:0;background:var(--page-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;z-index:40}
+  .wait img{width:120px;height:120px;border-radius:50%;box-shadow:0 6px 20px rgba(90,70,30,.25);margin-bottom:18px;animation:float 2.4s ease-in-out infinite}
+  .wait h2{font-size:21px;color:var(--ink);line-height:1.6}
+  .wait h2 span{display:inline-block}   /* 「。」のあとで折り返す */
+  .wait p{font-size:15px;color:var(--muted);margin-top:8px}
+  .wait .chat{margin-top:22px}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  @media (prefers-reduced-motion: reduce){.wait img{animation:none}}
+
+  .chat{display:block;text-align:center;margin:8px auto 0;max-width:320px;width:100%;padding:14px;border-radius:999px;background:#06C755;color:#fff;font-weight:700;text-decoration:none;font-size:17px}
+  .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;
+         background:var(--navy);color:#fff;border-radius:14px;padding:12px 18px;font-size:16px;max-width:calc(100% - 32px);
+         box-shadow:0 8px 24px rgba(90,70,30,.3);transition:all .3s;pointer-events:none;z-index:50}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  .fatal{text-align:center;padding:40px 8px}
+  .fatal h2{color:var(--navy);font-size:21px;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="head">
+    <img src="/start/img/mirai.png" alt="ミライ">
+    <div>
+      <h1>日付指定 あなたの運勢</h1>
+      <div class="sub" id="sub">読み込んでいます…</div>
+    </div>
+  </div>
+
+  <div id="main" hidden>
+    <div class="card">
+      <p class="lead">見たい日を選んでください。生まれた日から1年先までの日を選べます。</p>
+      <div class="jump">
+        <select id="ysel" aria-label="年"></select>
+        <select id="msel" aria-label="月"></select>
+      </div>
+      <div class="quick">
+        <button class="qbtn" id="totoday" type="button">今日</button>
+        <button class="qbtn" id="tobd" type="button" hidden>生まれた日</button>
+      </div>
+      <div class="cal-nav">
+        <button class="nav-btn" id="prev" aria-label="前の月">‹</button>
+        <b id="ym"></b>
+        <button class="nav-btn" id="next" aria-label="次の月">›</button>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="legend"><span><u></u>今日</span><span id="splegend" class="sp-l" hidden>★ 大切な日</span><span><i></i>前に見た日</span></div>
+    </div>
+  </div>
+
+  <div id="fatal" class="fatal" hidden>
+    <h2 id="ftitle"></h2>
+    <p id="ftext"></p>
+  </div>
+
+  <a class="chat" id="tochat" href="https://line.me/R/oaMessage/%40768invlu/">トークに戻る</a>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var LIFF_URL = "https://liff.line.me/2010604081-ZArs25u8?future=1";
+  var CHAT_URL = "https://line.me/R/oaMessage/%40768invlu/";
+  var API = "https://miraisil-webhook.onrender.com";
+  var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var qs = new URLSearchParams(location.search);
+  if (local && qs.get("api")) API = qs.get("api");
+  var WD = ["日", "月", "火", "水", "木", "金", "土"];
+
+  function $(id){ return document.getElementById(id); }
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function store(k, v){ try { if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) {} }
+  function load(k){ try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+  function toast(t){ var x = $("toast"); x.textContent = t; x.classList.add("on"); clearTimeout(toast._t); toast._t = setTimeout(function(){ x.classList.remove("on"); }, 2800); }
+  function fatal(t, s){ $("main").hidden = true; $("fatal").hidden = false; $("ftitle").textContent = t; $("ftext").textContent = s || ""; $("sub").textContent = ""; }
+  function inClient(){ try { return !!(window.liff && liff.isInClient && liff.isInClient()); } catch (e) { return false; } }
+  function toChat(){
+    if (inClient()) { try { liff.closeWindow(); setTimeout(function(){ location.href = CHAT_URL; }, 800); return; } catch (e) {} }
+    location.href = CHAT_URL;
+  }
+  $("tochat").addEventListener("click", function(ev){ ev.preventDefault(); toChat(); });
+
+  var S = load("future_s") || (local ? qs.get("s") : null);
+  if (!S) {
+    var t = +(load("future_redir") || 0);
+    if (Date.now() - t > 20000) { store("future_redir", String(Date.now())); location.replace(LIFF_URL); }
+    else fatal("LINEとの連携ができませんでした。", "LINEのトークから、もう一度開いてください。");
+    return;
+  }
+
+  function api(path, body){
+    body = body || {}; body.s = S;
+    return fetch(API + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then(function(r){
+        if (r.status === 401) { store("future_s", null); location.replace(LIFF_URL); throw new Error("login"); }
+        return r.json().then(function(j){ if (!r.ok) { var e = new Error(j.error || ("http " + r.status)); e.code = j.error; throw e; } return j; });
+      });
+  }
+
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+  function iso(y, m, d){ return y + "-" + pad(m) + "-" + pad(d); }
+  function ymOf(s){ return s.slice(0, 7); }
+  function ymAdd(ym, n){ var y = +ym.slice(0, 4), m = +ym.slice(5, 7) - 1 + n; y += Math.floor(m / 12); m = ((m % 12) + 12) % 12; return y + "-" + pad(m + 1); }
+  function clampYm(ym){ return ym < ymOf(ST.start) ? ymOf(ST.start) : (ym > ymOf(ST.end) ? ymOf(ST.end) : ym); }
+  function longDate(s){ var p = s.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2]); return +p[0] + "年" + (+p[1]) + "月" + (+p[2]) + "日（" + WD[d.getDay()] + "）"; }
+
+  var ST = null, cur = null, sel = null, seen = {}, SP = {};
+
+  function fillSelects(){
+    var ys = $("ysel"); ys.innerHTML = "";
+    for (var y = +ST.end.slice(0, 4); y >= +ST.start.slice(0, 4); y--) { var o = el("option", null, y + "年"); o.value = y; ys.appendChild(o); }
+    var ms = $("msel"); ms.innerHTML = "";
+    for (var m = 1; m <= 12; m++) { var o2 = el("option", null, m + "月"); o2.value = m; ms.appendChild(o2); }
+  }
+
+  function go(ym){
+    cur = clampYm(ym); draw();
+    if (!SP[cur]) api("/future/api/month", { month: cur }).then(function(j){ SP[j.month] = j.special || {}; if (j.month === cur) draw(); }).catch(function(){});
+  }
+
+  function draw(){
+    var y = +cur.slice(0, 4), m = +cur.slice(5, 7), sp = SP[cur] || {};
+    $("ym").textContent = y + "年" + m + "月";
+    $("ysel").value = String(y); $("msel").value = String(m);
+    $("prev").disabled = cur <= ymOf(ST.start); $("next").disabled = cur >= ymOf(ST.end);
+    $("splegend").hidden = !Object.keys(sp).length;
+    var g = $("grid"); g.innerHTML = "";
+    WD.forEach(function(w, i){ g.appendChild(el("div", "wd" + (i === 0 ? " sun" : i === 6 ? " sat" : ""), w)); });
+    var first = new Date(y, m - 1, 1).getDay(), days = new Date(y, m, 0).getDate();
+    for (var i = 0; i < first; i++) g.appendChild(el("div", "day blank"));
+    for (var d = 1; d <= days; d++) {
+      var key = iso(y, m, d), ok = key >= ST.start && key <= ST.end, s = sp[key];
+      var cls = "day" + (ok ? "" : " off") + (seen[key] ? " seen" : "") + (s ? " sp" : "") + (key === ST.today ? " today" : "")
+              + (key === ST.birthdate ? " bd" : "") + (key === sel ? " sel" : "");
+      var b = el("button", cls, String(d)); b.type = "button";
+      var lab = m + "月" + d + "日" + (key === ST.today ? "（今日）" : "") + (key === ST.birthdate ? "（生まれた日）" : "")
+              + (seen[key] ? "（前に見た日）" : "") + (s ? "・大切な日：" + s.join("・") : "");
+      b.setAttribute("aria-label", lab);
+      if (s) b.title = s.join("・");
+      if (ok) { b.dataset.d = key; b.addEventListener("click", function(){ ask(this.dataset.d); }); }
+      else b.disabled = true;
+      g.appendChild(b);
+    }
+  }
+
+  // 日を押したら確認を出す
+  function ask(d){
+    sel = d; draw();
+    var again = !!seen[d];
+    var bg = el("div", "dlg-bg"), box = el("div", "dlg");
+    box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
+    box.appendChild(el("p", "dt", longDate(d)));
+    box.appendChild(el("p", "dn", again ? "前に見た日です。そのときの運勢を、もう一度トークに届けます。"
+                                       : "この日の運勢を、朝と同じ3枚のカードでトークに届けます。"));
+    var b = el("button", "go", (again ? "この日の運勢をもう一度見る" : (+d.slice(0, 4)) + "年" + (+d.slice(5, 7)) + "月" + (+d.slice(8, 10)) + "日の運勢を見る（" + ST.price + "円）"));
+    var c = el("button", "cancel", "やめる"); b.type = c.type = "button";
+    function close(){ if (bg.parentNode) document.body.removeChild(bg); sel = null; draw(); }
+    c.addEventListener("click", close);
+    bg.addEventListener("click", function(ev){ if (ev.target === bg) close(); });
+    b.addEventListener("click", function(){ b.disabled = true; order(d, close); });
+    box.appendChild(b); box.appendChild(c); bg.appendChild(box); document.body.appendChild(bg); b.focus();
+  }
+
+  function waitView(title, text){
+    var w = el("div", "wait");
+    var img = el("img"); img.src = "/start/img/mirai.png"; img.alt = "ミライ"; w.appendChild(img);
+    var h = el("h2");   // 文ごとに折り返す（「ミライが占っています。」「トークに届けます」）
+    title.split(/(?<=。)/).forEach(function(t){ h.appendChild(el("span", null, t)); });
+    w.appendChild(h);
+    if (text) w.appendChild(el("p", null, text));
+    var a = el("a", "chat", "トークに戻る"); a.href = CHAT_URL;
+    a.addEventListener("click", function(ev){ ev.preventDefault(); toChat(); });
+    w.appendChild(a);
+    document.body.appendChild(w);
+  }
+
+  function order(d, close){
+    api("/future/api/order", { date: d }).then(function(j){
+      close();
+      if (j.status === "sent") waitView("トークに届けました", "トークでご覧ください。");
+      else if (j.status === "busy") waitView("ミライが占っています。トークに届けます", "この日の運勢は、いま作っています。できあがったらトークに届きます。");
+      else { seen[d] = true; waitView("ミライが占っています。トークに届けます", "1分ほどでトークに届きます。この画面は閉じて大丈夫です。"); }
+      // 少し見せてから画面を閉じてトークへ戻す（LINE の中で開いたときだけ）
+      if (inClient()) setTimeout(function(){ try { liff.closeWindow(); } catch (e) {} }, 3500);
+    }).catch(function(e){
+      close();
+      if (String(e.message) === "login") return;
+      if (e.code === "range") toast("その日は選べません。生まれた日から1年先までの日を選んでください。");
+      else if (e.code === "ephemeris") toast("いまは運勢を計算できない状態です。時間をおいてもう一度お試しください。");
+      else if (e.code === "rate") toast("たくさん選ばれたため、しばらく時間をおいてからお試しください。");
+      else toast("うまく届けられませんでした。もう一度お試しください。");
+    });
+  }
+
+  $("prev").addEventListener("click", function(){ go(ymAdd(cur, -1)); });
+  $("next").addEventListener("click", function(){ go(ymAdd(cur, 1)); });
+  function jump(){ go($("ysel").value + "-" + pad(+$("msel").value)); }
+  $("ysel").addEventListener("change", jump);
+  $("msel").addEventListener("change", jump);
+  $("totoday").addEventListener("click", function(){ go(ymOf(ST.today)); });
+  $("tobd").addEventListener("click", function(){ if (ST.birthdate) go(ymOf(ST.birthdate)); });
+
+  api("/future/api/state").then(function(j){
+    ST = j; (j.seen || []).forEach(function(x){ seen[x] = true; });
+    $("sub").textContent = "1日 " + j.price + "円";
+    $("tobd").hidden = !j.birthdate || j.birthdate < j.start;
+    fillSelects();
+    $("main").hidden = false;
+    go(ymOf(j.today));
+  }).catch(function(e){ if (String(e.message) !== "login") fatal("ひらけませんでした。", "少し待ってから、もう一度お試しください。"); });
+})();
+</script>
+</body>
+</html>
