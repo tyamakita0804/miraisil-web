@@ -29,7 +29,10 @@
   .padd{display:block;width:100%;min-height:48px;border-radius:999px;border:1.5px solid var(--frame);background:#fff;color:var(--gold-text);font-size:16px;font-weight:700;cursor:pointer}
   .pnote{font-size:13px;color:var(--mid,#8a8070);margin-top:8px}
   .pform label{display:block;font-size:15px;font-weight:700;margin:10px 0 4px}
-  .pform input{width:100%;min-height:48px;border:1.5px solid var(--frame);border-radius:12px;padding:0 12px;font-size:17px;background:#fff;color:var(--ink)}
+  .pform input{display:block;width:100%;min-width:0;max-width:100%;height:48px;border:1.5px solid var(--frame);border-radius:12px;padding:0 12px;font-size:17px;font-family:inherit;line-height:normal;background:#fff;color:var(--ink);text-align:left;-webkit-appearance:none;appearance:none}
+  /* iPhone の日付欄：独自の最小幅・中央寄せで右にはみ出すので、呼び名の欄とそろえる（2026-11-28） */
+  .pform input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0}
+  .pform input[type=date]::-webkit-datetime-edit{padding:0}
   .pgo{display:block;width:100%;min-height:52px;border-radius:999px;border:none;background:var(--gold,#C9A94E);color:var(--ink);font-size:17px;font-weight:700;margin-top:14px;cursor:pointer}
   .pback{display:inline-block;margin-top:10px;font-size:15px;color:var(--gold-text);background:none;border:none;cursor:pointer}
   .pwho{font-size:14px;color:var(--gold-text);margin-bottom:6px}
