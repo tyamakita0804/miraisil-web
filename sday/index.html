@@ -207,7 +207,7 @@
     if (ST.items.length < ST.max) v.appendChild(btn("btn gold", "＋ 大切な日を登録する", startNew));
     if (!ST.items.length) {
       var c = el("div", "card empty");
-      c.textContent = "試験や記念日など大切な日を登録すると、大切な日まで毎日、その日の運勢に合わせて、どう過ごせばいいかをミライが伝えます。";
+      c.textContent = "試験や記念日など大切な日を登録すると、大切な日の30日前から、その日の運勢に合わせた過ごし方をミライが伝えます。近づくほどこまめに、最後の7日は毎日。";
       v.appendChild(c); return;
     }
     var h = el("p", "lead", "近い順に並んでいます。"); h.style.marginTop = "16px"; v.appendChild(h);
@@ -219,7 +219,7 @@
       top.appendChild(el("div", "left", it.days === 0 ? "今日" : ("あと" + it.days + "日")));
       c.appendChild(top);
       c.appendChild(el("div", "when", it.when));
-      if (!it.covered) c.appendChild(el("div", "warn", "次のその日の分は、まだ始めていません（カウントダウンと毎朝のことばは止まっています）"));
+      if (!it.covered) c.appendChild(el("div", "warn", "次のその日の分は、まだ始めていません（カウントダウンとミライのことばは止まっています）"));
       var row = el("div", "row");
       if (!it.covered) row.appendChild(btn("sbtn gold", payBtn(ST.prices.renew, "次の年の分をはじめる"), function(){ confirmRenew(it); }));
       if (it.covered && it.fortune) row.appendChild(btn("sbtn", "この日の運勢を見る", function(){ seeFortune(it.id, this); }));
@@ -287,7 +287,7 @@
     var o = ST.kinds.options[W.kind];
     var a = el("button", "plan"); a.type = "button";
     var at = el("div", "pt"); at.appendChild(el("span", "pn", "日にちは決まっている")); at.appendChild(el("span", "pp", price(ST.prices.fixed))); a.appendChild(at);
-    var ul = el("ul"); ul.appendChild(el("li", null, "📌 当日までのカウントダウン")); ul.appendChild(el("li", null, "🌙 大切な日まで毎日、その日の運勢に合わせた過ごし方をミライが伝える")); a.appendChild(ul);
+    var ul = el("ul"); ul.appendChild(el("li", null, "📌 30日前からカウントダウン")); ul.appendChild(el("li", null, "🌙 30日前から、その日の運勢に合わせた過ごし方をミライが伝える（最後の7日は毎日）")); a.appendChild(ul);
     a.addEventListener("click", function(){ W.mode = "fixed"; pickOne(); });
     v.appendChild(a);
     var b = el("button", "plan dark"); b.type = "button";
@@ -373,7 +373,7 @@
     v.appendChild(el("p", "q", "この内容で決めますか？"));
     var o = ST.kinds.options[W.kind];
     bill(v, o.icon + " " + o.label + "・" + jdate(W.date), nameOf(), ST.prices.fixed,
-         ["📌 当日までのカウントダウン（朝のカード）", "🌙 大切な日まで毎日、その日の運勢に合わせた過ごし方をミライが伝える"].concat(o.yearly ? ["🎂 毎年の日は、次のその日まで"] : []));
+         ["📌 30日前からカウントダウン（朝のカード）", "🌙 30日前から、その日の運勢に合わせた過ごし方をミライが伝える（最後の7日は毎日）"].concat(o.yearly ? ["🎂 毎年の日は、次のその日まで"] : []));
     v.appendChild(btn("btn gold", payBtn(ST.prices.fixed, "決める"), function(){
       var b = this; b.disabled = true;
       api("/sday/api/register", { category: W.kind, date: W.date, name: W.name || "" }).then(function(j){ ST = j.state; done(j.done); })
@@ -387,8 +387,8 @@
     var o = ST.kinds.options[W.kind];
     bill(v, o.icon + " " + o.label + "・候補 " + W.dates.length + "日", nameOf(), price,
          ["🔮 候補の日からベストな日を解説付きで提案（順位と理由・当日の過ごし方）"].concat(
-           re ? ["🔁 選んだ日に置き換えます（カウントダウンと毎朝のことばは続きます）"]
-              : ["📌 当日までのカウントダウン（朝のカード）", "🌙 大切な日まで毎日、その日の運勢に合わせた過ごし方をミライが伝える"]));
+           re ? ["🔁 選んだ日に置き換えます（カウントダウンとミライのことばは続きます）"]
+              : ["📌 30日前からカウントダウン（朝のカード）", "🌙 30日前から、その日の運勢に合わせた過ごし方をミライが伝える（最後の7日は毎日）"]));
     v.appendChild(btn("btn gold", payBtn(price, "相談する"), function(){
       var b = this; b.disabled = true;
       var body = re ? { day_id: W.day_id, dates: W.dates } : { category: W.kind, dates: W.dates };
@@ -399,7 +399,7 @@
     var v = screen(); backTo(v, home, "一覧へ");
     v.appendChild(el("p", "q", "今年も準備を始めますか？"));
     bill(v, it.icon + " " + it.label + "・次は" + jdate(it.next), it.display, ST.prices.renew,
-         ["📌 次のその日までのカウントダウン（朝のカード）", "🌙 大切な日まで毎日、その日の運勢に合わせた過ごし方をミライが伝える", "自動で更新されることはありません"]);
+         ["📌 次のその日の30日前からカウントダウン（朝のカード）", "🌙 30日前から、その日の運勢に合わせた過ごし方をミライが伝える（最後の7日は毎日）", "自動で更新されることはありません"]);
     v.appendChild(btn("btn gold", payBtn(ST.prices.renew, "はじめる"), function(){
       var b = this; b.disabled = true;
       api("/sday/api/renew", { id: it.id }).then(function(j){ ST = j.state; done(j.done); }).catch(function(e){ b.disabled = false; fail(e); });
