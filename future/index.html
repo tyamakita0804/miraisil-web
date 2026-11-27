@@ -219,7 +219,7 @@
     box.appendChild(el("p", "dt", longDate(d)));
     box.appendChild(el("p", "dn", again ? "前に見た日です。そのときの運勢を、もう一度トークに届けます。"
                                        : "この日の運勢を、朝と同じカードでトークに届けます。"));
-    var b = el("button", "go", (again ? "この日の運勢をもう一度見る" : (+d.slice(0, 4)) + "年" + (+d.slice(5, 7)) + "月" + (+d.slice(8, 10)) + "日の運勢を見る（" + (ST.free ? "期間限定で無料" : ST.price + "円") + "）"));
+    var b = el("button", "go", (again ? "この日の運勢をもう一度見る" : (+d.slice(0, 4)) + "年" + (+d.slice(5, 7)) + "月" + (+d.slice(8, 10)) + "日の運勢を見る"));
     var c = el("button", "cancel", "やめる"); b.type = c.type = "button";
     function close(){ if (bg.parentNode) document.body.removeChild(bg); sel = null; draw(); }
     c.addEventListener("click", close);
@@ -272,7 +272,7 @@
 
   api("/future/api/state").then(function(j){
     ST = j; (j.seen || []).forEach(function(x){ seen[x] = true; });
-    $("sub").textContent = j.free ? "いまは期間限定で無料" : ("1日 " + j.price + "円");   // 支払いの仕組みができるまでの期間限定（「会員は無料」と書かない・2026-11-26）
+    $("sub").textContent = "1日 " + j.price + "円";   // 値段はふつうに出す（2026-11-27 てつさん指示。いまは0円のまま）
     $("tobd").hidden = !j.birthdate || j.birthdate < j.start;
     $("lead").textContent = "見たい日を選んでください。" + rangeText();
     fillSelects();

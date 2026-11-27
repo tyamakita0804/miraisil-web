@@ -175,9 +175,9 @@
   function iso(y, m, d){ return y + "-" + (m < 10 ? "0" : "") + m + "-" + (d < 10 ? "0" : "") + d; }
   function jdate(s){ var p = s.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2]); return (+p[1]) + "月" + (+p[2]) + "日（" + WD[d.getDay()] + "）"; }
   function yen(n){ return n.toLocaleString("ja-JP") + "円"; }
-  // いまは期間限定で0円（支払いの仕組み PAY.JP ができるまで）。「会員は無料」と書かない（2026-11-26 てつさん指示）
-  function price(n){ return ST.free ? "期間限定で無料" : yen(n); }
-  function payBtn(n, verb){ return ST.free ? (verb + "（期間限定で無料）") : (yen(n) + "で" + verb); }
+  // 値段はふつうに出し、ボタンには値段も無料も付けない（2026-11-27 てつさん指示。いまは支払いの仕組みができるまで0円のまま）
+  function price(n){ return yen(n); }
+  function payBtn(n, verb){ return verb; }
 
   var S = load("sday_s") || (local ? qs.get("s") : null);
   if (!S) {
@@ -221,12 +221,12 @@
       c.appendChild(el("div", "when", it.when));
       if (!it.covered) c.appendChild(el("div", "warn", "次のその日の分は、まだ始めていません（カウントダウンと毎朝のことばは止まっています）"));
       var row = el("div", "row");
-      if (!it.covered) row.appendChild(btn("sbtn gold", payBtn(ST.prices.renew, "始める"), function(){ confirmRenew(it); }));
+      if (!it.covered) row.appendChild(btn("sbtn gold", payBtn(ST.prices.renew, "次の年の分をはじめる"), function(){ confirmRenew(it); }));
       if (it.covered && it.fortune) row.appendChild(btn("sbtn", "この日の運勢を見る", function(){ seeFortune(it.id, this); }));
       row.appendChild(btn("sbtn", "日付を変える", function(){ moveDay(it); }));
       var cf = el("div", "confirm"); cf.hidden = true;
       row.appendChild(btn("sbtn", "消す", function(){ cf.hidden = false; }));
-      if (it.reconsult) row.appendChild(btn("sbtn gold", "ミライと相談し直す" + (ST.free ? "" : " " + yen(ST.prices.reconsult)), function(){ startReconsult(it); }));
+      if (it.reconsult) row.appendChild(btn("sbtn gold", "ミライと相談し直す", function(){ startReconsult(it); }));
       c.appendChild(row);
       cf.appendChild(document.createTextNode("「" + it.display + "」を消しますか？元に戻せません。お支払い済みの代金は返金されません。"));
       var cr = el("div", "row");
@@ -361,10 +361,10 @@
   function bill(v, what, name, price, lines){
     var b = el("div", "bill");
     b.appendChild(el("div", "what", what)); b.appendChild(el("div", "name", name));
-    var pr = el("div", "price", ST.free ? "期間限定で無料" : yen(price)); pr.appendChild(el("small", null, ST.free ? "（通常 " + yen(price) + "）" : "（1回だけのお支払い）")); b.appendChild(pr);
+    var pr = el("div", "price", yen(price)); pr.appendChild(el("small", null, "（1回だけのお支払い）")); b.appendChild(pr);
     var ul = el("ul"); lines.forEach(function(x){ ul.appendChild(el("li", null, x)); }); b.appendChild(ul);
     v.appendChild(b);
-    v.appendChild(el("p", "note", ST.free ? "日付の変更・削除・一覧を見るのも無料です。" : "日付の変更・削除・一覧を見るのは無料です。削除してもお支払いは返金されません。"));
+    v.appendChild(el("p", "note", "日付の変更・削除・一覧を見るのは無料です。"));
     if (ST.can_pay && !ST.free) v.appendChild(el("p", "test", "いまは試験中のため、実際の請求はありません。"));
   }
   function nameOf(){ var o = ST.kinds.options[W.kind]; return (W.name || "").trim() || o.short; }
@@ -400,7 +400,7 @@
     v.appendChild(el("p", "q", "今年も準備を始めますか？"));
     bill(v, it.icon + " " + it.label + "・次は" + jdate(it.next), it.display, ST.prices.renew,
          ["📌 次のその日までのカウントダウン（朝のカード）", "🌙 大切な日まで毎日、その日の運勢に合わせた過ごし方をミライが伝える", "自動で更新されることはありません"]);
-    v.appendChild(btn("btn gold", payBtn(ST.prices.renew, "始める"), function(){
+    v.appendChild(btn("btn gold", payBtn(ST.prices.renew, "はじめる"), function(){
       var b = this; b.disabled = true;
       api("/sday/api/renew", { id: it.id }).then(function(j){ ST = j.state; done(j.done); }).catch(function(e){ b.disabled = false; fail(e); });
     }));
