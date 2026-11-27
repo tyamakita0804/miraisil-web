@@ -294,9 +294,12 @@
 
   var FUTURE_LOGIN_API = "https://miraisil-webhook.onrender.com/future/api/login";
   function handleFuture() {
+    // ?pair=1 は「日付指定 ふたりの相性」（2026-11-28）。同じカレンダーの画面を、ふたり用の形で開く
+    var pair = !!getParam("pair");
+    var fname = pair ? "日付指定 ふたりの相性" : "日付指定 あなたの運勢";
     startView("カレンダーをひらいています…", "");
     if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return; }
-    fetch(FUTURE_LOGIN_API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ access_token: liff.getAccessToken(), src: getParam("src") || "" }) })
+    fetch(FUTURE_LOGIN_API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ access_token: liff.getAccessToken(), src: getParam("src") || "", pair: pair }) })
       .then(function(r) {
         if (r.status === 403) return r.json().catch(function(){ return {}; }).then(function(b){ var e = new Error("closed"); e.closed = true; e.members = b.error === "members"; e.price = b.price || ""; throw e; });
         if (!r.ok) throw new Error("login " + r.status);
@@ -304,12 +307,12 @@
       })
       .then(function(j) {
         try { sessionStorage.setItem("future_s", j.s); sessionStorage.removeItem("future_redir"); } catch (e) {}
-        location.replace("/future/");
+        location.replace(pair ? "/future/?pair=1" : "/future/");
       })
       .catch(function(e) {
-        if (e && e.members) { membersOnly("日付指定 あなたの運勢", e.price); return; }
+        if (e && e.members) { membersOnly(fname, e.price); return; }
         if (e && e.closed) {
-          startView("準備中です", "日付指定 あなたの運勢は、いま準備しています。もうしばらくお待ちください。", [{ href: CHAT_URL, label: "LINEのトークに戻る", kind: "line" }]);
+          startView("準備中です", fname + "は、いま準備しています。もうしばらくお待ちください。", [{ href: CHAT_URL, label: "LINEのトークに戻る", kind: "line" }]);
           return;
         }
         startView("うまくひらけませんでした", "少し待ってから、もう一度お試しください。", [{ href: location.href, label: "もう一度試す", kind: "ghost" }, { href: CHAT_URL, label: "LINEのトークに戻る", kind: "line" }]);

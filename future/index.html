@@ -22,6 +22,17 @@
   .head img{width:52px;height:52px;border-radius:50%;box-shadow:0 3px 12px rgba(90,70,30,.2);flex:none}
   .head h1{font-size:22px;color:var(--navy);line-height:1.4}
   .head .sub{font-size:14px;color:var(--gold-text);margin-top:2px}
+  /* 日付指定 ふたりの相性（?pair=1・2026-11-28）：お相手を選ぶ・登録する */
+  .pq{font-size:19px;font-weight:700;margin:2px 0 10px}
+  .prow{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;border:1.5px solid var(--frame);border-radius:14px;background:#fff;padding:12px 14px;margin-bottom:10px;cursor:pointer}
+  .prow b{display:block;font-size:17px;color:var(--ink)}.prow small{display:block;font-size:13px;color:var(--mid,#8a8070)}.prow .go-i{color:var(--gold-text);font-weight:700}
+  .padd{display:block;width:100%;min-height:48px;border-radius:999px;border:1.5px solid var(--frame);background:#fff;color:var(--gold-text);font-size:16px;font-weight:700;cursor:pointer}
+  .pnote{font-size:13px;color:var(--mid,#8a8070);margin-top:8px}
+  .pform label{display:block;font-size:15px;font-weight:700;margin:10px 0 4px}
+  .pform input{width:100%;min-height:48px;border:1.5px solid var(--frame);border-radius:12px;padding:0 12px;font-size:17px;background:#fff;color:var(--ink)}
+  .pgo{display:block;width:100%;min-height:52px;border-radius:999px;border:none;background:var(--gold,#C9A94E);color:var(--ink);font-size:17px;font-weight:700;margin-top:14px;cursor:pointer}
+  .pback{display:inline-block;margin-top:10px;font-size:15px;color:var(--gold-text);background:none;border:none;cursor:pointer}
+  .pwho{font-size:14px;color:var(--gold-text);margin-bottom:6px}
 
   .card{background:var(--paper);border:1px solid var(--frame);border-radius:18px;box-shadow:var(--shadow);padding:14px 12px 16px;margin-bottom:16px}
   .lead{font-size:15px;color:var(--muted);margin:0 4px 10px}
@@ -88,13 +99,32 @@
   <div class="head">
     <img src="/start/img/mirai.png" alt="ミライ">
     <div>
-      <h1>日付指定 あなたの運勢</h1>
+      <h1 id="title">日付指定 あなたの運勢</h1>
       <div class="sub" id="sub">読み込んでいます…</div>
     </div>
   </div>
 
+  <div id="plist" class="card" hidden>
+    <p class="pq">だれとの相性を見ますか？</p>
+    <div id="prows"></div>
+    <button class="padd" id="paddbtn" type="button">＋ 新しいお相手を登録する</button>
+    <p class="pnote" id="pnote">「今日のふたりの相性」で登録したお相手が並びます（5人まで）。</p>
+  </div>
+
+  <div id="pform" class="card pform" hidden>
+    <p class="pq">お相手を登録する</p>
+    <label for="pbd">お相手の生年月日</label>
+    <input id="pbd" type="date" min="1900-01-01">
+    <label for="pnick">呼び名（なくても大丈夫・10文字まで）</label>
+    <input id="pnick" type="text" maxlength="10" autocomplete="off">
+    <p class="pnote">呼び名はカードの見出しにだけ使い、ミライには伝えません。呼び名がないときは「乙女座のお相手」のように出します。</p>
+    <button class="pgo" id="psave" type="button">登録して日付を選ぶ</button>
+    <button class="pback" id="pcancel" type="button">‹ お相手の一覧にもどる</button>
+  </div>
+
   <div id="main" hidden>
     <div class="card">
+      <p class="pwho" id="pwho" hidden></p>
       <p class="lead" id="lead">見たい日を選んでください。生まれた日から、今日の1年後までの日を選べます。</p>
       <div class="jump">
         <select id="ysel" aria-label="年"></select>
@@ -111,6 +141,7 @@
       </div>
       <div class="grid" id="grid"></div>
       <div class="legend"><span><u></u>今日</span><span id="splegend" class="sp-l" hidden>★ 大切な日</span><span><i></i>前に見た日</span></div>
+      <button class="pback" id="prepick" type="button" hidden>‹ お相手を選び直す</button>
     </div>
   </div>
 
@@ -126,7 +157,8 @@
 <script>
 (function(){
   "use strict";
-  var LIFF_URL = "https://liff.line.me/2010604081-ZArs25u8?future=1";
+  var PAIR = new URLSearchParams(location.search).get("pair") === "1";   // 日付指定 ふたりの相性（2026-11-28）
+  var LIFF_URL = "https://liff.line.me/2010604081-ZArs25u8?future=1" + (PAIR ? "&pair=1" : "");
   var CHAT_URL = "https://line.me/R/oaMessage/%40768invlu/";
   var API = "https://miraisil-webhook.onrender.com";
   var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
@@ -216,10 +248,13 @@
     var again = !!seen[d];
     var bg = el("div", "dlg-bg"), box = el("div", "dlg");
     box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
+    if (PAIR) box.appendChild(el("p", "pwho", PT.label + "との相性" + (again ? "・前に見た日" : "")));
     box.appendChild(el("p", "dt", longDate(d)));
-    box.appendChild(el("p", "dn", again ? "前に見た日です。そのときの運勢を、もう一度トークに届けます。"
-                                       : "この日の運勢を、朝と同じカードでトークに届けます。"));
-    var b = el("button", "go", (again ? "この日の運勢をもう一度見る" : (+d.slice(0, 4)) + "年" + (+d.slice(5, 7)) + "月" + (+d.slice(8, 10)) + "日の運勢を見る"));
+    box.appendChild(el("p", "dn", PAIR ? (again ? "前に見た日なので、もう一度無料でお届けします。" : "この日のふたりの相性を、朝と同じカードでトークに届けます。")
+                                       : (again ? "前に見た日です。そのときの運勢を、もう一度トークに届けます。"
+                                                : "この日の運勢を、朝と同じカードでトークに届けます。")));
+    var b = el("button", "go", PAIR ? (again ? "もう一度見る" : "ふたりの相性を見る")
+                                    : (again ? "この日の運勢をもう一度見る" : (+d.slice(0, 4)) + "年" + (+d.slice(5, 7)) + "月" + (+d.slice(8, 10)) + "日の運勢を見る"));
     var c = el("button", "cancel", "やめる"); b.type = c.type = "button";
     function close(){ if (bg.parentNode) document.body.removeChild(bg); sel = null; draw(); }
     c.addEventListener("click", close);
@@ -229,7 +264,10 @@
   }
 
   // 選べる範囲の説明（生年月日が無い人は今日から）。11/26 てつさん指示の言い回し
-  function rangeText(){ return (ST && ST.birthdate) ? "生まれた日から、今日の1年後までの日を選べます。" : "今日から、1年後までの日を選べます。"; }
+  function rangeText(){
+    if (PAIR) return "おふたりが生まれた日から、今日の1年後までの日を選べます。";
+    return (ST && ST.birthdate) ? "生まれた日から、今日の1年後までの日を選べます。" : "今日から、1年後までの日を選べます。";
+  }
 
   function waitView(title, text){
     var w = el("div", "wait");
@@ -245,10 +283,10 @@
   }
 
   function order(d, close){
-    api("/future/api/order", { date: d }).then(function(j){
+    (PAIR ? api("/future/api/pair/order", { partner: PT.id, date: d }) : api("/future/api/order", { date: d })).then(function(j){
       close();
       if (j.status === "sent") waitView("トークに届けました", "トークでご覧ください。");
-      else if (j.status === "busy") waitView("ミライが星を読んでいます。トークに届けます", "この日の運勢は、いま作っています。できあがったらトークに届きます。");
+      else if (j.status === "busy") waitView("ミライが星を読んでいます。トークに届けます", (PAIR ? "この日のふたりの相性" : "この日の運勢") + "は、いま作っています。できあがったらトークに届きます。");
       else { seen[d] = true; waitView("ミライが星を読んでいます。トークに届けます", "1分ほどでトークに届きます。この画面は閉じて大丈夫です。"); }
       // 少し見せてから画面を閉じてトークへ戻す（LINE の中で開いたときだけ）
       if (inClient()) setTimeout(function(){ try { liff.closeWindow(); } catch (e) {} }, 3500);
@@ -269,6 +307,69 @@
   $("msel").addEventListener("change", jump);
   $("totoday").addEventListener("click", function(){ go(ymOf(ST.today)); });
   $("tobd").addEventListener("click", function(){ if (ST.birthdate) go(ymOf(ST.birthdate)); });
+
+  // ── 日付指定 ふたりの相性（?pair=1）：お相手を選ぶ → 同じカレンダー ──
+  var PS = null, PT = null;
+  function nickOk(){ return ($("pnick").value || "").trim().length <= 10; }
+  function showList(){
+    $("main").hidden = true; $("pform").hidden = true; $("plist").hidden = false;
+    var box = $("prows"); box.innerHTML = "";
+    (PS.partners || []).forEach(function(p){
+      var r = el("button", "prow"); r.type = "button";
+      var t = el("div"); t.appendChild(el("b", null, p.label));
+      var bd = p.birthdate.split("-");
+      t.appendChild(el("small", null, p.sign + "・" + (+bd[0]) + "年" + (+bd[1]) + "月" + (+bd[2]) + "日生まれ"));
+      r.appendChild(t); r.appendChild(el("span", "go-i", "›"));
+      r.addEventListener("click", function(){ pick(p); });
+      box.appendChild(r);
+    });
+    var full = (PS.partners || []).length >= PS.max;
+    $("paddbtn").hidden = full;
+    $("pnote").textContent = full ? "お相手は5人まで登録できます。新しく登録するには、トークの「今日のふたりの相性」からどなたかを消してください。"
+                                  : "「今日のふたりの相性」で登録したお相手が並びます（5人まで）。";
+    if (!(PS.partners || []).length) showForm(true);
+  }
+  function showForm(first){
+    $("plist").hidden = true; $("main").hidden = true; $("pform").hidden = false;
+    $("pbd").max = PS.today; $("pcancel").hidden = !(PS.partners || []).length;
+  }
+  function pick(p){
+    PT = p; seen = {}; (p.seen || []).forEach(function(x){ seen[x] = true; });
+    ST = { today: PS.today, start: p.start, end: p.end, birthdate: null, price: PS.price };
+    $("plist").hidden = true; $("pform").hidden = true;
+    $("pwho").hidden = false; $("pwho").textContent = p.label + "との相性";
+    $("prepick").hidden = false; $("tobd").hidden = true;
+    $("lead").textContent = "見たい日を選んでください。" + rangeText();
+    fillSelects(); $("main").hidden = false; go(ymOf(PS.today));
+  }
+  if (PAIR) {
+    $("title").textContent = "日付指定 ふたりの相性"; document.title = "日付指定 ふたりの相性";
+    $("paddbtn").addEventListener("click", function(){ showForm(false); });
+    $("pcancel").addEventListener("click", showList);
+    $("prepick").addEventListener("click", showList);
+    $("psave").addEventListener("click", function(){
+      var bd = $("pbd").value, nick = ($("pnick").value || "").trim();
+      if (!bd) { toast("お相手の生年月日を選んでください。"); return; }
+      if (!nickOk()) { toast("呼び名は10文字までです。"); return; }
+      var btn = this; btn.disabled = true;
+      api("/future/api/pair/partner", { birthdate: bd, nickname: nick }).then(function(j){
+        btn.disabled = false; PS = j; $("pbd").value = ""; $("pnick").value = "";
+        var p = (j.partners || []).filter(function(x){ return x.birthdate === bd; })[0];
+        if (p) pick(p); else showList();
+      }).catch(function(e){
+        btn.disabled = false;
+        if (String(e.message) === "login") return;
+        if (e.code === "full") toast("お相手は5人まで登録できます。");
+        else if (e.code === "birthdate") toast("生年月日を確かめてください。");
+        else if (e.code === "nickname") toast("呼び名は10文字までです。");
+        else toast("うまく登録できませんでした。もう一度お試しください。");
+      });
+    });
+    api("/future/api/pair/state").then(function(j){
+      PS = j; $("sub").textContent = "1日 " + j.price + "円"; showList();
+    }).catch(function(e){ if (String(e.message) !== "login") fatal("ひらけませんでした。", "少し待ってから、もう一度お試しください。"); });
+    return;
+  }
 
   api("/future/api/state").then(function(j){
     ST = j; (j.seen || []).forEach(function(x){ seen[x] = true; });
