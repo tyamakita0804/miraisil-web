@@ -108,7 +108,7 @@
     <p class="pq">だれとの相性を見ますか？</p>
     <div id="prows"></div>
     <button class="padd" id="paddbtn" type="button">＋ 新しいお相手を登録する</button>
-    <p class="pnote" id="pnote">「今日のふたりの相性」で登録したお相手が並びます（5人まで）。</p>
+    <p class="pnote" id="pnote">登録したお相手が並びます（5人まで）。</p>
   </div>
 
   <div id="pform" class="card pform" hidden>
@@ -326,7 +326,7 @@
     var full = (PS.partners || []).length >= PS.max;
     $("paddbtn").hidden = full;
     $("pnote").textContent = full ? "お相手は5人まで登録できます。新しく登録するには、トークの「今日のふたりの相性」からどなたかを消してください。"
-                                  : "「今日のふたりの相性」で登録したお相手が並びます（5人まで）。";
+                                  : "登録したお相手が並びます（5人まで）。";
     if (!(PS.partners || []).length) showForm(true);
   }
   function showForm(first){
