@@ -369,14 +369,14 @@
       });
     });
     api("/future/api/pair/state").then(function(j){
-      PS = j; $("sub").textContent = "1日 " + j.price + "円"; showList();
+      PS = j; $("sub").textContent = "1日分 " + j.price + "円"; showList();
     }).catch(function(e){ if (String(e.message) !== "login") fatal("ひらけませんでした。", "少し待ってから、もう一度お試しください。"); });
     return;
   }
 
   api("/future/api/state").then(function(j){
     ST = j; (j.seen || []).forEach(function(x){ seen[x] = true; });
-    $("sub").textContent = "1日 " + j.price + "円";   // 値段はふつうに出す（2026-11-27 てつさん指示。いまは0円のまま）
+    $("sub").textContent = "1日分 " + j.price + "円";   // 値段はふつうに出す（2026-11-27 てつさん指示。いまは0円のまま）
     $("tobd").hidden = !j.birthdate || j.birthdate < j.start;
     $("lead").textContent = "見たい日を選んでください。" + rangeText();
     fillSelects();
