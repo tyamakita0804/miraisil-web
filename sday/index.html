@@ -207,7 +207,7 @@
     if (ST.items.length < ST.max) v.appendChild(btn("btn gold", "＋ 大切な日を登録する", startNew));
     if (!ST.items.length) {
       var c = el("div", "card empty");
-      c.textContent = "試験や記念日など大切な日を登録すると、朝のカードでカウントダウンします。大切な日まで毎日、その日の運勢に合わせて、どう過ごせばいいかをミライが伝えます。";
+      c.textContent = "試験や記念日など大切な日を登録すると、大切な日まで毎日、その日の運勢に合わせて、どう過ごせばいいかをミライが伝えます。";
       v.appendChild(c); return;
     }
     var h = el("p", "lead", "近い順に並んでいます。"); h.style.marginTop = "16px"; v.appendChild(h);
