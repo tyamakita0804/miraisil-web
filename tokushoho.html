@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>特定商取引法に基づく表記 | 今日の運勢</title>
   <style>
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
     :root {
       --ink:    #1a1a2e;
       --mid:    #4a4a6a;
@@ -152,12 +153,20 @@
     }
     tr:last-child th, tr:last-child td { border-bottom: none; }
     .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    /* 販売価格の料金の列は1行で出す（「（税込）」が途中で切れないように・2026-11-28） */
-    table.price .nw { white-space: nowrap; }
-    table.price .nw { display: inline-block; }
+    /* 販売価格の表（2026-11-28 てつさん指示）：商品名は語のまとまり・「」・（）ごとに、料金は1行で出す。
+       どの幅でも横にはみ出さないように、スマホでは1行を「商品名＋右に料金」にし、入りきらないときは料金をまるごと次の行の右へ送る */
+    table.price .nw { white-space: nowrap; display: inline-block; }
+    table.price td:last-child, table.price th:last-child { white-space: nowrap; }
     .price-note { margin-top: 10px; }
-    @media (max-width: 420px) { table.price th, table.price td { padding: 11px 10px; } }
-    @media (max-width: 359px) { table.price .nw { white-space: normal; } }
+    @media (max-width: 480px) {
+      table.price, table.price tbody { display: block; }
+      table.price tr { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; border-bottom: 1px solid var(--rule); padding: 11px 12px; }
+      table.price tr:last-child { border-bottom: none; }
+      table.price th, table.price td { display: block; padding: 0; border: none; }
+      table.price td:first-child, table.price th:first-child { flex: 1 1 auto; }
+      table.price td:last-child, table.price th:last-child { flex: 0 0 auto; margin-left: auto; text-align: right; }
+      table.price tr:first-child { background: var(--bg); }
+    }
     .contact-box {
       background: var(--surface);
       border: 1px solid var(--rule);
@@ -227,18 +236,18 @@
     <h2>販売価格</h2>
     <div class="table-wrap">
       <table class="price">
-        <tr><th>プラン・商品</th><th>料金</th></tr>
+        <tr><th>プラン・商品</th><th>料金（税込）</th></tr>
         <tr><td>無料プラン</td><td>0円</td></tr>
-        <tr><td><span class="nw">プレミアムプラン</span><span class="nw">（月額・自動更新）</span></td><td><span class="nw">月額490円</span><span class="nw">（税込）</span></td></tr>
-        <tr><td><span class="nw">個人鑑定</span><span class="nw">「性格鑑定書」</span></td><td><span class="nw">1,980円</span><span class="nw">（税込）</span></td></tr>
-        <tr><td><span class="nw">個人鑑定</span><span class="nw">「お悩み鑑定書」</span></td><td><span class="nw">1,980円</span><span class="nw">（税込）</span></td></tr>
-        <tr><td><span class="nw">個人鑑定</span><span class="nw">「ふたりの相性鑑定書」</span></td><td><span class="nw">1,980円</span><span class="nw">（税込）</span></td></tr>
-        <tr><td><span class="nw">日付指定</span> <span class="nw">あなたの運勢</span><span class="nw">（1日分）</span></td><td><span class="nw">300円</span><span class="nw">（税込）</span></td></tr>
-        <tr><td><span class="nw">日付指定</span> <span class="nw">ふたりの相性</span><span class="nw">（1日分）</span></td><td><span class="nw">500円</span><span class="nw">（税込）</span></td></tr>
-        <tr><td><span class="nw">大切な日</span><span class="nw">「日にちが決まっている」</span><span class="nw">（1件）</span></td><td><span class="nw">500円</span><span class="nw">（税込）</span></td></tr>
-        <tr><td><span class="nw">大切な日</span><span class="nw">「ミライといちばん良い日を選ぶ」</span><span class="nw">（1件）</span></td><td><span class="nw">980円</span><span class="nw">（税込）</span></td></tr>
-        <tr><td><span class="nw">大切な日</span> <span class="nw">相談し直し</span><span class="nw">（1回）</span></td><td><span class="nw">480円</span><span class="nw">（税込）</span></td></tr>
-        <tr><td><span class="nw">大切な日</span> <span class="nw">毎年の日の次の年の分</span><span class="nw">（1件）</span></td><td><span class="nw">500円</span><span class="nw">（税込）</span></td></tr>
+        <tr><td><span class="nw">プレミアムプラン</span><span class="nw">（月額・自動更新）</span></td><td>月額490円</td></tr>
+        <tr><td><span class="nw">個人鑑定</span><span class="nw">「性格鑑定書」</span></td><td>1,980円</td></tr>
+        <tr><td><span class="nw">個人鑑定</span><span class="nw">「お悩み鑑定書」</span></td><td>1,980円</td></tr>
+        <tr><td><span class="nw">個人鑑定</span><span class="nw">「ふたりの相性鑑定書」</span></td><td>1,980円</td></tr>
+        <tr><td><span class="nw">日付指定</span> <span class="nw">あなたの運勢</span><span class="nw">（1日分）</span></td><td>300円</td></tr>
+        <tr><td><span class="nw">日付指定</span> <span class="nw">ふたりの相性</span><span class="nw">（1日分）</span></td><td>500円</td></tr>
+        <tr><td><span class="nw">大切な日</span><span class="nw">「日にちが決まっている」</span><span class="nw">（1件）</span></td><td>500円</td></tr>
+        <tr><td><span class="nw">大切な日</span><span class="nw">「ミライといちばん</span><span class="nw">良い日を選ぶ」</span><span class="nw">（1件）</span></td><td>980円</td></tr>
+        <tr><td><span class="nw">大切な日</span> <span class="nw">相談し直し</span><span class="nw">（1回）</span></td><td>480円</td></tr>
+        <tr><td><span class="nw">大切な日</span> <span class="nw">毎年の日の次の年の分</span><span class="nw">（1件）</span></td><td>500円</td></tr>
       </table>
     </div>
     <p class="price-note">月額プラン以外は、1回ごとのお支払いです。</p>
